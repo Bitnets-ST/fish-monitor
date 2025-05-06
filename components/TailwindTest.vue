@@ -15,21 +15,21 @@
     <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="bg-dark-surface p-4 rounded-lg">
         <div class="h-4 w-full bg-gray-700 rounded">
-          <div class="h-4 bg-primary rounded" style="width: 70%"></div>
+          <div class="h-4 bg-primary rounded" style="width: 70%" />
         </div>
         <p class="text-gray-400 mt-2 text-sm">Progreso 70%</p>
       </div>
       
       <div class="bg-dark-surface p-4 rounded-lg">
         <div class="h-4 w-full bg-gray-700 rounded">
-          <div class="h-4 bg-accent rounded" style="width: 45%"></div>
+          <div class="h-4 bg-accent rounded" style="width: 45%" />
         </div>
         <p class="text-gray-400 mt-2 text-sm">Progreso 45%</p>
       </div>
       
       <div class="bg-dark-surface p-4 rounded-lg">
         <div class="h-4 w-full bg-gray-700 rounded">
-          <div class="h-4 bg-red-500 rounded" style="width: 20%"></div>
+          <div class="h-4 bg-red-500 rounded" style="width: 20%" />
         </div>
         <p class="text-gray-400 mt-2 text-sm">Progreso 20%</p>
       </div>
