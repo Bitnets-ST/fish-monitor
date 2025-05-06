@@ -1,0 +1,126 @@
+/* Estilos globales para la aplicación */
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #0a2b30;
+    color: #fff;
+    line-height: 1.6;
+  }
+  
+  /* Variables globales de colores */
+  :root {
+    --primary-bg: #0a2b30;
+    --secondary-bg: #063c44;
+    --accent-green: #4caf50;
+    --accent-blue: #118ab2;
+    --warning: #ffc107;
+    --danger: #f44336;
+    --text-light: #ffffff;
+    --text-muted: #a0a0a0;
+    --border-color: #0f4c5c;
+  }
+  
+  /* Enlaces */
+  a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  a:hover {
+    color: #2196f3;
+  }
+  
+  /* Botones globales */
+  button {
+    cursor: pointer;
+  }
+  
+  /* Contenedor principal para todas las páginas */
+  .app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Evitar desbordamiento horizontal */
+  .app-container > * {
+    width: 100%;
+  }
+  
+  /* Estilos para formularios */
+  input, select, textarea {
+    background-color: #052126;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: white;
+    padding: 0.5rem;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(17, 138, 178, 0.2);
+  }
+  
+  /* Animaciones */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .pulse {
+    animation: pulse 2s infinite;
+  }
+  
+  /* Helpers */
+  .text-center {
+    text-align: center;
+  }
+  
+  .mt-1 {
+    margin-top: 0.5rem;
+  }
+  
+  .mt-2 {
+    margin-top: 1rem;
+  }
+  
+  .mt-3 {
+    margin-top: 1.5rem;
+  }
+  
+  .mb-1 {
+    margin-bottom: 0.5rem;
+  }
+  
+  .mb-2 {
+    margin-bottom: 1rem;
+  }
+  
+  .mb-3 {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Responsive breakpoints */
+  @media (max-width: 768px) {
+    .hide-mobile {
+      display: none;
+    }
+  }
