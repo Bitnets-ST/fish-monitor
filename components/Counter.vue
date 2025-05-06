@@ -16,7 +16,7 @@
   
         <div class="counter-details">
           <div class="detail-item">
-            <span class="detail-label">Promedió/hora:</span>
+            <span class="detail-label">Promedio/hora:</span>
             <span class="detail-value">{{ hourlyAverage }}</span>
           </div>
           <div class="detail-item">
