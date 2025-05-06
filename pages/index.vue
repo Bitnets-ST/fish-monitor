@@ -1,112 +1,184 @@
 <template>
     <div class="fish-monitoring-system">
-      <header class="header">
-        <div class="logo-container">
-          <h1 class="logo">FISHMONITOR</h1>
-        </div>
-        <div class="user-info">
-          <p>Bienvenido, {{ username }}</p>
+      <header class="header bg-gradient-to-r from-cyan-700 to-blue-800 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+          <div class="logo-container">
+            <h1 class="logo text-2xl font-bold">BITNETS</h1>
+          </div>
+          <div class="user-info flex items-center gap-4">
+            <p>Bienvenido, {{ username }}</p>
+            <button 
+              class="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded text-sm transition"
+              @click="logout"
+            >
+              Cerrar sesión
+            </button>
+          </div>
         </div>
       </header>
   
-      <div class="dashboard-container">
-        <aside class="sidebar">
-          <nav class="nav-menu">
-            <div class="nav-item active">
-              <i class="nav-icon">📊</i>
+      <div class="dashboard-container flex flex-1">
+        <aside class="sidebar w-56 bg-gray-800 text-white p-4">
+          <nav class="nav-menu space-y-2">
+            <div class="nav-item flex items-center p-3 rounded bg-cyan-600 cursor-pointer">
+              <i class="nav-icon mr-3">📊</i>
               <span>Monitoreo</span>
             </div>
-            <div class="nav-item">
-              <i class="nav-icon">📜</i>
+            <div class="nav-item flex items-center p-3 rounded hover:bg-gray-700 cursor-pointer">
+              <i class="nav-icon mr-3">📜</i>
               <span>Reportes</span>
             </div>
-            <div class="nav-item">
-              <i class="nav-icon">🗺️</i>
+            <div class="nav-item flex items-center p-3 rounded hover:bg-gray-700 cursor-pointer">
+              <i class="nav-icon mr-3">🗺️</i>
               <span>Mapa</span>
             </div>
-            <div class="nav-item">
-              <i class="nav-icon">⚡</i>
+            <div class="nav-item flex items-center p-3 rounded hover:bg-gray-700 cursor-pointer">
+              <i class="nav-icon mr-3">⚡</i>
               <span>Estadísticas</span>
             </div>
-            <div class="nav-item">
-              <i class="nav-icon">⚙️</i>
+            <div class="nav-item flex items-center p-3 rounded hover:bg-gray-700 cursor-pointer">
+              <i class="nav-icon mr-3">⚙️</i>
               <span>Configuración</span>
             </div>
           </nav>
         </aside>
   
-        <main class="main-content">
-          <div class="status-bar">
-            <div class="status-indicator active">
-              <span class="status-dot"></span>
+        <main class="main-content flex-1 p-6 bg-gray-100">
+          <div class="status-bar flex flex-wrap gap-2 mb-6">
+            <div class="status-indicator flex items-center bg-white rounded-full px-4 py-2 shadow-sm">
+              <span class="status-dot w-3 h-3 rounded-full bg-green-500 mr-2" />
               Conteo en tiempo real
             </div>
-            <div class="status-indicator">
-              <span class="status-dot yellow"></span>
+            <div class="status-indicator flex items-center bg-white rounded-full px-4 py-2 shadow-sm">
+              <span class="status-dot w-3 h-3 rounded-full bg-yellow-500 mr-2" />
               Sin registros recientes
             </div>
-            <div class="status-indicator">
-              <span class="status-dot red"></span>
+            <div class="status-indicator flex items-center bg-white rounded-full px-4 py-2 shadow-sm">
+              <span class="status-dot w-3 h-3 rounded-full bg-red-500 mr-2" />
               Alerta de densidad
             </div>
-            <div class="status-indicator">
-              <span class="status-dot green"></span>
+            <div class="status-indicator flex items-center bg-white rounded-full px-4 py-2 shadow-sm">
+              <span class="status-dot w-3 h-3 rounded-full bg-green-500 mr-2" />
               Flujo normal
             </div>
           </div>
   
-          <div class="location-tabs">
-            <button class="tab-button active">Todos</button>
-            <button class="tab-button">Zona Norte</button>
-            <button class="tab-button">Zona Central</button>
-            <button class="tab-button">Zona Sur</button>
+          <div class="location-tabs flex mb-6 border-b border-gray-200">
+            <button class="tab-button px-4 py-2 font-medium border-b-2 border-cyan-500 text-cyan-600">Todos</button>
+            <button class="tab-button px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Zona Norte</button>
+            <button class="tab-button px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Zona Central</button>
+            <button class="tab-button px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Zona Sur</button>
           </div>
   
-          <div class="data-table">
-            <table>
-              <thead>
+          <div class="data-table bg-white shadow-md rounded-lg overflow-hidden mb-6">
+            <table class="w-full">
+              <thead class="bg-gray-50">
                 <tr>
-                  <th>Ubicación</th>
-                  <th>Conteo</th>
-                  <th>Flujo</th>
-                  <th>Temperatura</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ubicación</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conteo</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Flujo</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Temperatura</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nivel de Luz</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nivel de Agua</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Biomasa</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr v-for="(location, index) in locations" :key="index">
-                  <td>{{ location.name }}</td>
-                  <td>
-                    <div class="fish-count">
-                      <div class="indicator-dots">
+              <tbody class="divide-y divide-gray-200">
+                <tr v-for="(location, index) in locations" :key="index" class="hover:bg-gray-50">
+                  <td class="px-4 py-4 whitespace-nowrap font-medium text-gray-900">{{ location.name }}</td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <div class="fish-count flex items-center">
+                      <div class="indicator-dots flex space-x-1 mr-2">
                         <span 
                           v-for="n in 4" 
                           :key="n" 
-                          class="dot" 
-                          :class="getDotClass(location.count, n)"
-                        ></span>
+                          class="dot w-2 h-2 rounded-full" 
+                          :class="{
+                            'bg-green-500': getDotClass(location.count, n) === 'green',
+                            'bg-yellow-500': getDotClass(location.count, n) === 'yellow',
+                            'bg-red-500': getDotClass(location.count, n) === 'red',
+                            'bg-gray-300': getDotClass(location.count, n) === 'empty'
+                          }"
+                        />
                       </div>
                       <span class="count-number">{{ location.count }}</span>
                     </div>
                   </td>
-                  <td>
-                    <div class="status-indicator">
-                      <span class="status-dot" :class="location.flowStatus"></span>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <div class="status-indicator flex items-center">
+                      <span 
+                        class="status-dot w-3 h-3 rounded-full mr-2"
+                        :class="{
+                          'bg-green-500': location.flowStatus === 'green',
+                          'bg-yellow-500': location.flowStatus === 'yellow',
+                          'bg-red-500': location.flowStatus === 'red',
+                        }"
+                      />
+                      {{ location.flowStatus === 'green' ? 'Normal' : 
+                         location.flowStatus === 'yellow' ? 'Precaución' : 'Bajo' }}
                     </div>
                   </td>
-                  <td>{{ location.temperature }}°C</td>
-                  <td>
-                    <div class="status-icon" :class="location.status">
-                      <i v-if="location.status === 'normal'">🟢</i>
-                      <i v-else-if="location.status === 'warning'">🟡</i>
-                      <i v-else>🔴</i>
+                  <td class="px-4 py-4 whitespace-nowrap">{{ location.temperature }}°C</td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="w-16 bg-gray-200 rounded-full h-2.5 mr-2">
+                        <div 
+                          class="h-2.5 rounded-full" 
+                          :class="{
+                            'bg-green-500': location.lightLevel >= 60,
+                            'bg-yellow-500': location.lightLevel >= 30 && location.lightLevel < 60,
+                            'bg-red-500': location.lightLevel < 30
+                          }"
+                          :style="{ width: `${location.lightLevel}%` }" 
+                        />
+                      </div>
+                      <span class="text-sm px-2 py-0.5 rounded" :class="getLightLevelClass(location.lightLevel)">
+                        {{ location.lightLevel }}%
+                      </span>
                     </div>
                   </td>
-                  <td>
-                    <div class="action-buttons">
-                      <button class="btn btn-excel">Excel</button>
-                      <button class="btn btn-stats">Estadísticas</button>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="w-16 bg-gray-200 rounded-full h-2.5 mr-2">
+                        <div 
+                          class="h-2.5 rounded-full" 
+                          :class="{
+                            'bg-green-500': location.waterLevel >= 70,
+                            'bg-yellow-500': location.waterLevel >= 40 && location.waterLevel < 70,
+                            'bg-red-500': location.waterLevel < 40
+                          }"
+                          :style="{ width: `${location.waterLevel}%` }" 
+                        />
+                      </div>
+                      <span class="text-sm px-2 py-0.5 rounded" :class="getWaterLevelClass(location.waterLevel)">
+                        {{ location.waterLevel }}%
+                      </span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap font-medium">
+                    {{ location.biomass }} kg
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <div class="status-icon">
+                      <span 
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                        :class="{
+                          'bg-green-100 text-green-800': location.status === 'normal',
+                          'bg-yellow-100 text-yellow-800': location.status === 'warning',
+                          'bg-red-100 text-red-800': location.status === 'danger'
+                        }"
+                      >
+                        {{ location.status === 'normal' ? 'Normal' : 
+                           location.status === 'warning' ? 'Advertencia' : 'Peligro' }}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <div class="action-buttons flex space-x-2">
+                      <button class="btn bg-cyan-600 hover:bg-cyan-700 text-white py-1 px-2 rounded text-xs">Excel</button>
+                      <button class="btn bg-purple-600 hover:bg-purple-700 text-white py-1 px-2 rounded text-xs">Estadísticas</button>
                     </div>
                   </td>
                 </tr>
@@ -114,8 +186,14 @@
             </table>
           </div>
   
-          <div class="counter-component">
+          <div class="counter-component bg-white p-6 rounded-lg shadow-md">
             <Counter @update-count="updateCount" />
+          </div>
+          
+          <!-- Componente de prueba de Tailwind -->
+          <div class="mt-6">
+            <h3 class="text-lg font-medium text-gray-800 mb-3">Prueba de tema personalizado de Tailwind CSS</h3>
+            <TailwindTest />
           </div>
         </main>
       </div>
@@ -124,53 +202,81 @@
   
   <script>
   import Counter from '../components/Counter.vue';
+  import TailwindTest from '../components/TailwindTest.vue';
   
   export default {
     name: 'IndexPage',
     components: {
       Counter,
+      TailwindTest,
     },
     data() {
       return {
-        username: 'usuario',
+        username: 'Admin',
         locations: [
           {
             name: 'Estanque 1',
             count: 145,
             flowStatus: 'green',
             temperature: 18.5,
-            status: 'normal'
+            status: 'normal',
+            lightLevel: 75, // Nivel de luz (0-100%)
+            waterLevel: 85, // Nivel de agua (0-100%)
+            biomass: 230    // Biomasa en kg
           },
           {
             name: 'Estanque 2',
             count: 230,
             flowStatus: 'green',
             temperature: 19.2,
-            status: 'normal'
+            status: 'normal',
+            lightLevel: 68,
+            waterLevel: 92,
+            biomass: 410
           },
           {
             name: 'Estanque 3',
             count: 78,
             flowStatus: 'yellow',
             temperature: 20.1,
-            status: 'warning'
+            status: 'warning',
+            lightLevel: 45,
+            waterLevel: 60,
+            biomass: 130
           },
           {
             name: 'Estanque 4',
             count: 0,
             flowStatus: 'red',
             temperature: 22.3,
-            status: 'danger'
+            status: 'danger',
+            lightLevel: 10,
+            waterLevel: 30,
+            biomass: 0
           },
           {
             name: 'Estanque 5',
             count: 320,
             flowStatus: 'green',
             temperature: 17.8,
-            status: 'normal'
+            status: 'normal',
+            lightLevel: 80,
+            waterLevel: 88,
+            biomass: 520
           }
         ]
       };
+    },
+    mounted() {
+      // Verificar si el usuario está autenticado
+      const isAuthenticated = localStorage.getItem('isAuthenticated');
+      const username = localStorage.getItem('username');
+      
+      if (isAuthenticated !== 'true') {
+        this.$router.push('/login');
+      } else if (username) {
+        this.username = username;
+      }
     },
     methods: {
       getDotClass(count, position) {
@@ -188,6 +294,21 @@
         if (locationIndex >= 0 && locationIndex < this.locations.length) {
           this.locations[locationIndex].count = newCount;
         }
+      },
+      logout() {
+        localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('username');
+        this.$router.push('/login');
+      },
+      getLightLevelClass(level) {
+        if (level < 30) return 'bg-red-200 text-red-800';
+        if (level < 60) return 'bg-yellow-200 text-yellow-800';
+        return 'bg-green-200 text-green-800';
+      },
+      getWaterLevelClass(level) {
+        if (level < 40) return 'bg-red-200 text-red-800';
+        if (level < 70) return 'bg-yellow-200 text-yellow-800';
+        return 'bg-green-200 text-green-800';
       }
     }
   };
