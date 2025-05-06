@@ -309,7 +309,7 @@
     display: flex;
     margin-bottom: 1.5rem;
     gap: 1.5rem;
-    flex-wrap: wrap;
+    flex-wrap:  wrap;
   }
   
   @media (max-width: 768px) {
