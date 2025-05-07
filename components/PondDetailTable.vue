@@ -30,19 +30,19 @@
           class="py-2 px-4 text-sm" 
           :class="normalizedCurrentZoneId === 1 ? 'bg-cyan-700 border-b-2 border-cyan-400' : 'bg-gray-800'"
         >
-          Zona Norte
+          Puerto Montt
         </button>
         <button 
           class="py-2 px-4 text-sm" 
           :class="normalizedCurrentZoneId === 2 ? 'bg-cyan-700 border-b-2 border-cyan-400' : 'bg-gray-800'"
         >
-          Zona Central
+          Puerto Varas
         </button>
         <button 
           class="py-2 px-4 text-sm" 
           :class="normalizedCurrentZoneId === 3 ? 'bg-cyan-700 border-b-2 border-cyan-400' : 'bg-gray-800'"
         >
-          Zona Sur
+          Ensenada
         </button>
       </div>
       
