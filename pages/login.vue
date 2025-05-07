@@ -27,8 +27,10 @@
             <button
               type="submit"
               class="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition-colors tracking-wide uppercase"
+              :disabled="isLoading"
             >
-              INGRESAR
+              <span v-if="isLoading">CARGANDO...</span>
+              <span v-else>INGRESAR</span>
             </button>
           </form>
           <div class="text-center mt-4">
@@ -66,7 +68,8 @@ export default {
     return {
       username: '',
       password: '',
-      errorMessage: ''
+      errorMessage: '',
+      isLoading: false
     };
   },
   mounted() {
@@ -76,14 +79,46 @@ export default {
     }
   },
   methods: {
-    handleLogin() {
-      // Simplemente para demostración, usuario: bitnets, contraseña: 123
-      if (this.username === 'bitnets' && this.password === '123') {
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('username', this.username);
+    async handleLogin() {
+      try {
+        // Validar entrada
+        if (!this.username || !this.password) {
+          this.errorMessage = 'Por favor, completa todos los campos';
+          return;
+        }
+        
+        this.isLoading = true;
+        this.errorMessage = '';
+        
+        // Llamar a la API de login
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: this.username,
+            password: this.password
+          })
+        });
+        
+        const data = await response.json();
+        
+        // Verificar el statusCode en la respuesta
+        if (data.statusCode !== 200) {
+          throw new Error(data.body?.error || 'Error al iniciar sesión');
+        }
+        
+        // Guardar token y datos del usuario
+        User.login(data.body.user, data.body.token);
+        
+        // Redirigir al dashboard
         this.$router.push('/');
-      } else {
-        this.errorMessage = 'Usuario o contraseña incorrectos';
+      } catch (error) {
+        console.error('Error al iniciar sesión:', error);
+        this.errorMessage = error.message || 'Error al iniciar sesión';
+      } finally {
+        this.isLoading = false;
       }
     }
   }

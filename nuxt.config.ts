@@ -35,21 +35,32 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' }
   },
-  // Configuración del middleware global
-  router: {
-    middleware: ['auth']
-  },
   // Configuraciones para la carga
   experimental: {
     payloadExtraction: false
   },
   runtimeConfig: {
+    // Variables privadas de servidor (no expuestas al cliente)
+    cosmosEndpoint: process.env.COSMOS_ENDPOINT,
+    cosmosKey: process.env.COSMOS_KEY,
+    cosmosDatabase: process.env.COSMOS_DATABASE,
+    cosmosContainer: process.env.COSMOS_CONTAINER,
+    jwtSecret: process.env.JWT_SECRET,
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN,
+    
+    // Variables públicas (accesibles desde el cliente)
     public: {
       loadingIndicator: {
         name: 'custom',
         color: '#3498db',
         background: 'white'
       }
+    }
+  },
+  // Cargar variables de entorno en desarrollo
+  nitro: {
+    routeRules: {
+      '/api/**': { cors: true }
     }
   }
 })
