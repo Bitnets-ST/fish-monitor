@@ -19,10 +19,11 @@
           <span class="stat-value-sm" :class="getOxygenTextColor(pond.oxygen)">{{ pond.oxygenLabel }}</span>
         </div>
         <div class="w-full bg-cyan-950/70 rounded-full h-3">
-          <div class="h-3 rounded-full" 
+          <div
+class="h-3 rounded-full" 
                :style="{ width: getOxygenPercentage(pond.oxygen) }" 
                :class="getOxygenBarColor(pond.oxygen)">
-            <div class="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent background-shimmer"></div>
+            <div class="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent background-shimmer"/>
           </div>
         </div>
       </div>
@@ -33,10 +34,11 @@
           <span class="stat-value-sm">{{ pond.biomass }} kg</span>
         </div>
         <div class="w-full bg-cyan-950/70 rounded-full h-3">
-          <div class="h-3 rounded-full" 
+          <div
+class="h-3 rounded-full" 
                :style="{ width: getBiomassPercentage(pond.biomass) }" 
                :class="getBiomassBarColor(pond.biomass)">
-            <div class="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent background-shimmer"></div>
+            <div class="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent background-shimmer"/>
           </div>
         </div>
       </div>
@@ -47,10 +49,11 @@
           <span class="stat-value-sm">{{ pond.waterLevel }}%</span>
         </div>
         <div class="w-full bg-cyan-950/70 rounded-full h-3">
-          <div class="h-3 rounded-full" 
+          <div
+class="h-3 rounded-full" 
                :style="{ width: `${pond.waterLevel}%` }" 
                :class="getWaterBarColor(pond.waterLevel)">
-            <div class="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent background-shimmer"></div>
+            <div class="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent background-shimmer"/>
           </div>
         </div>
       </div>
@@ -61,10 +64,11 @@
           <span class="stat-value-sm">{{ pond.lightLevel }}%</span>
         </div>
         <div class="w-full bg-cyan-950/70 rounded-full h-3">
-          <div class="h-3 rounded-full" 
+          <div
+class="h-3 rounded-full" 
                :style="{ width: `${pond.lightLevel}%` }" 
                :class="getLightBarColor(pond.lightLevel)">
-            <div class="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent background-shimmer"></div>
+            <div class="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent background-shimmer"/>
           </div>
         </div>
       </div>
@@ -75,10 +79,11 @@
           <span class="stat-value-sm">{{ pond.pelletWaste }}%</span>
         </div>
         <div class="w-full bg-cyan-950/70 rounded-full h-3">
-          <div class="h-3 rounded-full" 
+          <div
+class="h-3 rounded-full" 
                :style="{ width: `${pond.pelletWaste}%` }" 
                :class="getPelletBarColor(pond.pelletWaste)">
-            <div class="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent background-shimmer"></div>
+            <div class="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent background-shimmer"/>
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@
     <BitnetsSplashScreen v-if="isLoading" />
     <div v-else class="page-content" :class="{ 'fade-in': !isLoading }">
       <AppHeader v-if="!isLoginPage" />
-      <NuxtPage />
+      <slot />
     </div>
   </div>
 </template>
@@ -20,12 +20,16 @@ export default {
   },
   data() {
     return {
-      isLoading: true
+      isLoading: true,
+      loadTimer: null
     }
   },
   computed: {
     isLoginPage() {
-      return this.$route.path === '/login' || this.$route.path === '/register';
+      if (import.meta.client) {
+        return this.$route && (this.$route.path === '/login' || this.$route.path === '/register');
+      }
+      return false;
     }
   },
   mounted() {
@@ -35,24 +39,22 @@ export default {
     // Fallback timer in case load event doesn't fire
     this.loadTimer = setTimeout(() => {
       this.startAppTransition();
-    }, 4000);
+    }, 2000);
   },
   beforeUnmount() {
-    window.removeEventListener('load', this.startAppTransition);
-    clearTimeout(this.loadTimer);
+    if (import.meta.client) {
+      window.removeEventListener('load', this.startAppTransition);
+      if (this.loadTimer) {
+        clearTimeout(this.loadTimer);
+      }
+    }
   },
   methods: {
     startAppTransition() {
-      // Ensure the splash screen shows for at least 2 seconds for better UX
-      const minimumLoadingTime = 2000;
-      const startTime = performance.now();
-      const elapsedTime = startTime - (this.$nuxt?.$loadingStart || 0);
-      
-      const remainingTime = Math.max(0, minimumLoadingTime - elapsedTime);
-      
+      // Usar un tiempo fijo para mejor UX
       setTimeout(() => {
         this.isLoading = false;
-      }, remainingTime);
+      }, 500);
     }
   }
 }

@@ -135,17 +135,25 @@ export default {
       type: Boolean,
       default: false
     },
+    'show-details': {
+      type: Boolean,
+      default: false
+    },
     showCamera: {
+      type: Boolean,
+      default: false
+    },
+    'show-camera': {
       type: Boolean,
       default: false
     }
   },
   computed: {
     normalizedShowDetails() {
-      return this.showDetails || false;
+      return this.showDetails || this['show-details'] || false;
     },
     normalizedShowCamera() {
-      return this.showCamera || false;
+      return this.showCamera || this['show-camera'] || false;
     },
     showExcelAndStats() {
       // Solo mostrar el botón de estadísticas para algunos estanques

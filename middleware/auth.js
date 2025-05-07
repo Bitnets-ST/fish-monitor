@@ -3,8 +3,13 @@
  * Verifica si el usuario está autenticado antes de acceder a rutas protegidas
  */
 export default defineNuxtRouteMiddleware((to) => {
+  // En modo desarrollo, permitir todas las rutas para debugging
+  if (process.dev) {
+    return;
+  }
+  
   // Verificar si se ejecuta en el cliente (no en SSR)
-  if (import.meta.client) {
+  if (process.client) {
     const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
     
     // Si el usuario no está autenticado y no está tratando de acceder a login o registro

@@ -113,11 +113,15 @@ export default {
     currentZoneId: {
       type: Number,
       default: null
+    },
+    'current-zone-id': {
+      type: Number,
+      default: null
     }
   },
   computed: {
     normalizedCurrentZoneId() {
-      return this.currentZoneId;
+      return this.currentZoneId || this['current-zone-id'] || null;
     }
   },
   methods: {

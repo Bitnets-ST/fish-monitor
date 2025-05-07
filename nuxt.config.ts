@@ -35,9 +35,9 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' }
   },
-  // Configuración del middleware global
-  router: {
-    middleware: ['auth']
+  // Configuración del middleware global en Nuxt 3
+  routeRules: {
+    '/**': { middleware: ['auth'] }
   },
   // Configuraciones para la carga
   experimental: {
