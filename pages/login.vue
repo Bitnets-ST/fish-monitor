@@ -42,7 +42,7 @@
         </div>
         <!-- Columna derecha: solo imagen de fondo sin logo encima - oculta en móviles -->
         <div class="hidden md:block md:w-1/2 relative">
-          <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/images/Fondo_inicio.png')" />
+          <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/Fondo_inicio.png')" />
         </div>
       </div>
     </div>

@@ -137,7 +137,6 @@
         if (this.activeZone === 'Todos') {
           return this.locations;
         } else {
-          // Filtrar por zona (asumiendo que cada location tiene una propiedad 'zone')
           return this.locations.filter(location => location.zone === this.activeZone);
         }
       }
@@ -149,7 +148,6 @@
         if (count < 100 && position > 2) return 'empty';
         if (count < 200 && position > 3) return 'empty';
         
-        // Asignar colores basados en la cantidad
         if (count > 300) return 'red';
         if (count > 200) return 'yellow';
         return 'green';

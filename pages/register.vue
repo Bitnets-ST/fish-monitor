@@ -38,7 +38,7 @@
         </div>
         <!-- Columna derecha: solo visible en tablet/desktop -->
         <div class="hidden md:block md:w-1/2 relative overflow-hidden">
-          <div class="absolute inset-0 bg-cover bg-center transform scale-110 rotate-3" style="background-image: url('/assets/images/Fondo.jpg')" />
+          <div class="absolute inset-0 bg-cover bg-center transform scale-110 rotate-3" style="background-image: url('/Fondo.jpg')" />
           <div class="absolute inset-0 bg-blue-500 bg-opacity-20" />
         </div>
       </div>

@@ -2,22 +2,30 @@
   <div>
     <BitnetsSplashScreen v-if="isLoading" />
     <div v-else class="page-content" :class="{ 'fade-in': !isLoading }">
-      <slot />
+      <AppHeader v-if="!isLoginPage" />
+      <NuxtPage />
     </div>
   </div>
 </template>
 
 <script>
 import BitnetsSplashScreen from '~/components/BitnetsSplashScreen.vue'
+import AppHeader from '~/components/AppHeader.vue'
 
 export default {
   name: 'DefaultLayout',
   components: {
-    BitnetsSplashScreen
+    BitnetsSplashScreen,
+    AppHeader
   },
   data() {
     return {
       isLoading: true
+    }
+  },
+  computed: {
+    isLoginPage() {
+      return this.$route.path === '/login' || this.$route.path === '/register';
     }
   },
   mounted() {

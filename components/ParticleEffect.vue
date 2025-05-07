@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="canvas" class="effect-canvas" />
+  <canvas ref="canvas" :class="['effect-canvas', canvasClass]" />
 </template>
 
 <script>
@@ -28,14 +28,9 @@ export default {
     this.canvas = this.$refs.canvas;
     this.ctx = this.canvas.getContext('2d');
     
-    // Aplicar la clase proporcionada
-    this.canvas.className = this.canvasClass;
-    
-    // Obtener el color de fondo de las variables CSS si está disponible
-    const cssVarColor = getComputedStyle(document.documentElement).getPropertyValue('--color-background').trim();
-    if (cssVarColor) {
-      this.backgroundColor = cssVarColor;
-    }
+    // Usar color de fondo predeterminado en lugar de buscar una variable CSS
+    // que podría no existir
+    this.backgroundColor = '#01374a';
     
     // Set canvas dimensions
     this.resize();
@@ -73,7 +68,8 @@ export default {
     
     initParticles() {
       this.particles = [];
-      const particlesCount = Math.min(Math.floor(this.width / 10), 150);
+      // Reducir el número de partículas para mejor rendimiento
+      const particlesCount = Math.min(Math.floor(this.width / 20), 80);
       
       for (let i = 0; i < particlesCount; i++) {
         this.particles.push({

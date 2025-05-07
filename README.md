@@ -1,75 +1,69 @@
-# Nuxt Minimal Starter
+# BITNETS Fish Monitor 🐟
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Sistema de monitoreo y conteo de peces para acuicultura, desarrollado con Nuxt 3 y Tailwind CSS.
 
-## Setup
+## Características
 
-Make sure to install dependencies:
+- ✅ Monitoreo en tiempo real de estanques
+- ✅ Seguimiento de niveles de oxígeno, temperatura, biomasa
+- ✅ Autenticación de usuarios
+- ✅ Interfaz responsive y moderna
+- ✅ Visualización de datos con gráficos y tablas
+- ✅ Listo para conectar con APIs externas
 
+## Capturas de pantalla
+
+- Dashboard principal con mapa de estanques
+- Sistema de login/registro personalizado
+- Estadísticas detalladas por estanque
+
+## Estructura del proyecto
+
+```
+├── components/         # Componentes Vue reutilizables
+├── layouts/            # Layouts de la aplicación
+├── middleware/         # Middleware (autenticación)
+├── models/             # Modelos de datos
+├── pages/              # Páginas de la aplicación
+├── public/             # Archivos públicos (imágenes, etc.)
+├── server/             # Lógica del servidor
+└── nuxt.config.ts      # Configuración de Nuxt
+```
+
+## Instalación
+
+1. Clonar el repositorio
 ```bash
-# npm
+git clone https://github.com/tu-usuario/fish-count.git
+cd fish-count
+```
+
+2. Instalar dependencias
+```bash
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
+3. Iniciar el servidor de desarrollo
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
-
+4. Compilar para producción
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
+## Credenciales de prueba
 
-```bash
-# npm
-npm run preview
+Para probar la aplicación, utiliza estas credenciales:
 
-# pnpm
-pnpm preview
+- **Usuario**: bitnets
+- **Contraseña**: 123
 
-# yarn
-yarn preview
+## Licencia
 
-# bun
-bun run preview
-```
+[MIT](LICENSE)
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Contacto
+
+Para más información, contactar al equipo de BITNETS.

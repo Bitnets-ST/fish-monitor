@@ -1,45 +1,26 @@
-
-```
 <template>
   <div class="fish-monitoring-system h-screen flex flex-col">
-    <header class="header bg-gradient-to-r from-cyan-900 to-blue-900 text-white p-4 shadow-md z-10">
-        <div class="container mx-auto flex justify-between items-center">
-          <div class="logo-container">
-            <h1 class="logo text-2xl font-bold">BITNETS</h1>
-          </div>
-          <div class="user-info flex items-center gap-4">
-            <p>Bienvenido, {{ username }}</p>
-            <button 
-              class="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded text-sm transition"
-              @click="logout"
-            >
-              Cerrar sesión
-            </button>
-          </div>
-        </div>
-      </header>
-  
     <div class="dashboard-container flex flex-1 overflow-hidden">
       <aside class="sidebar w-16 lg:w-20 bg-cyan-900 text-cyan-100 p-2 flex flex-col items-center space-y-8 z-10">
         <MarineIcon 
-          iconType="shell" 
+          icon-type="shell" 
           :status="getSidebarStatus('oxygen')" 
-          @click="setActiveMetric('oxygen')"
           class="cursor-pointer mt-8"
+          @click="setActiveMetric('oxygen')"
         />
         
         <MarineIcon 
-          iconType="jellyfish" 
+          icon-type="jellyfish" 
           :status="getSidebarStatus('water')" 
-          @click="setActiveMetric('water')"
           class="cursor-pointer"
+          @click="setActiveMetric('water')"
         />
         
         <MarineIcon 
-          iconType="fish" 
+          icon-type="fish" 
           :status="getSidebarStatus('biomass')" 
-          @click="setActiveMetric('biomass')"
           class="cursor-pointer"
+          @click="setActiveMetric('biomass')"
         />
         </aside>
   
@@ -70,14 +51,14 @@
   
             <!-- Información detallada del estanque -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <PondCard :pond="selectedPond" :showDetails="true" :showCamera="true" />
+              <PondCard :pond="selectedPond" :show-details="true" :show-camera="true" />
               <PondDetailStats :pond="selectedPond" />
           </div>
           
             <!-- Tabla de datos detallados -->
             <PondDetailTable 
               :ponds="[selectedPond, ...relatedPonds]" 
-              :currentZoneId="selectedPond.zoneId"
+              :current-zone-id="selectedPond.zoneId"
             />
           </div>
         </OceanBackground>
@@ -284,10 +265,6 @@ import PondDetailStats from '../components/PondDetailStats.vue';
     }
   },
   methods: {
-    logout() {
-      // Implementación de cerrar sesión
-      console.log('Cerrar sesión');
-    },
     selectPond(pond) {
       this.selectedPond = pond;
     },
@@ -357,27 +334,6 @@ import PondDetailStats from '../components/PondDetailStats.vue';
     transform: translateY(0);
   }
 }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #063c44;
-    border-bottom: 1px solid #0f4c5c;
-  }
-  
-  .logo {
-    color: #4caf50;
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: bold;
-    letter-spacing: 2px;
-  }
-  
-  .user-info {
-    font-size: 0.9rem;
-  }
   
   .dashboard-container {
     display: flex;
@@ -573,14 +529,6 @@ import PondDetailStats from '../components/PondDetailStats.vue';
 
 /* Media Queries */
 @media (max-width: 768px) {
-  .header {
-    padding: 0.8rem 1rem;
-  }
-  
-  .logo {
-    font-size: 1.4rem;
-  }
-  
   .dashboard-container {
     flex-direction: column;
   }

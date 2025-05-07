@@ -26,17 +26,18 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Sistema de monitoreo de peces BITNETS' }
       ],
       link: [
-        // Favicon directo
+        // Favicon 
         { rel: 'icon', type: 'image/png', href: '/images/Logo1.png' },
         { rel: 'apple-touch-icon', href: '/images/Logo1.png' },
-        
-        // Favicon ICO de respaldo
-        { rel: 'icon', type: 'image/x-icon', href: '/assets/icons/bitnets-logo.ico' },
-        { rel: 'shortcut icon', type: 'image/x-icon', href: '/assets/icons/bitnets-logo.ico' }
+        { rel: 'shortcut icon', type: 'image/png', href: '/images/Logo1.png' }
       ]
     },
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' }
+  },
+  // Configuración del middleware global
+  router: {
+    middleware: ['auth']
   },
   // Configuraciones para la carga
   experimental: {

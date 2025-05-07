@@ -10,15 +10,15 @@
       
       <div class="flex gap-4">
         <div class="flex items-center gap-2 text-xs text-gray-300">
-          <span class="w-2 h-2 rounded-full bg-green-500"></span>
+          <span class="w-2 h-2 rounded-full bg-green-500" />
           Sin alertas
         </div>
         <div class="flex items-center gap-2 text-xs text-gray-300">
-          <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+          <span class="w-2 h-2 rounded-full bg-yellow-500" />
           Alerta de revisión
         </div>
         <div class="flex items-center gap-2 text-xs text-gray-300">
-          <span class="w-2 h-2 rounded-full bg-red-500"></span>
+          <span class="w-2 h-2 rounded-full bg-red-500" />
           Alerta de densidad
         </div>
       </div>
@@ -26,9 +26,24 @@
     
     <div class="bg-gray-900 text-white">
       <div class="flex border-b border-gray-800">
-        <button class="py-2 px-4 bg-cyan-700 border-b-2 border-cyan-400 text-sm">Zona Norte</button>
-        <button class="py-2 px-4 bg-gray-800 text-sm">Zona Central</button>
-        <button class="py-2 px-4 bg-gray-800 text-sm">Zona Sur</button>
+        <button 
+          class="py-2 px-4 text-sm" 
+          :class="normalizedCurrentZoneId === 1 ? 'bg-cyan-700 border-b-2 border-cyan-400' : 'bg-gray-800'"
+        >
+          Zona Norte
+        </button>
+        <button 
+          class="py-2 px-4 text-sm" 
+          :class="normalizedCurrentZoneId === 2 ? 'bg-cyan-700 border-b-2 border-cyan-400' : 'bg-gray-800'"
+        >
+          Zona Central
+        </button>
+        <button 
+          class="py-2 px-4 text-sm" 
+          :class="normalizedCurrentZoneId === 3 ? 'bg-cyan-700 border-b-2 border-cyan-400' : 'bg-gray-800'"
+        >
+          Zona Sur
+        </button>
       </div>
       
       <table class="min-w-full">
@@ -43,29 +58,39 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(pond, index) in ponds" :key="index" 
-              class="border-b border-gray-800 text-sm hover:bg-gray-800/50 transition">
+          <tr
+v-for="(pond, index) in ponds" :key="index" 
+              class="border-b border-gray-800 text-sm hover:bg-gray-800/50 transition cursor-pointer"
+              @click="selectPond(pond)">
             <td class="py-3 px-4">{{ pond.name }}</td>
             <td class="py-3 px-4 text-center">{{ pond.count }}</td>
             <td class="py-3 px-4 text-center">
               <div class="flex justify-center">
-                <span class="inline-block w-3 h-3 rounded-full" 
-                      :class="getStatusColor(pond.flowStatus)"></span>
+                <span
+class="inline-block w-3 h-3 rounded-full" 
+                      :class="getStatusColor(pond.flowStatus)" />
               </div>
             </td>
             <td class="py-3 px-4 text-center text-cyan-100">{{ pond.temperature }}°C</td>
             <td class="py-3 px-4 text-center">
               <div class="flex justify-center">
-                <span class="inline-block w-3 h-3 rounded-full" 
-                      :class="getStatusColor(pond.status)"></span>
+                <span
+class="inline-block w-3 h-3 rounded-full" 
+                      :class="getStatusColor(pond.status)" />
               </div>
             </td>
             <td class="py-3 px-4">
               <div class="flex gap-2 justify-center">
-                <button class="bg-cyan-700 hover:bg-cyan-600 text-white py-1 px-2 rounded text-xs transition">
+                <button 
+                  class="bg-cyan-700 hover:bg-cyan-600 text-white py-1 px-2 rounded text-xs transition"
+                  @click.stop
+                >
                   Excel
                 </button>
-                <button class="bg-cyan-800 hover:bg-cyan-700 text-white py-1 px-2 rounded text-xs transition">
+                <button 
+                  class="bg-cyan-800 hover:bg-cyan-700 text-white py-1 px-2 rounded text-xs transition"
+                  @click.stop
+                >
                   Estadísticas
                 </button>
               </div>
@@ -84,6 +109,15 @@ export default {
     ponds: {
       type: Array,
       required: true
+    },
+    currentZoneId: {
+      type: Number,
+      default: null
+    }
+  },
+  computed: {
+    normalizedCurrentZoneId() {
+      return this.currentZoneId;
     }
   },
   methods: {
@@ -92,6 +126,9 @@ export default {
       if (status === 'yellow' || status === 'warning') return 'bg-yellow-500';
       if (status === 'red' || status === 'danger') return 'bg-red-500';
       return 'bg-gray-500';
+    },
+    selectPond(pond) {
+      this.$emit('select-pond', pond);
     }
   }
 }
