@@ -89,7 +89,7 @@ export default {
   methods: {
     handleLogin() {
       // Simplemente para demostración, usuario: admin, contraseña: admin
-      if (this.username === 'admin' && this.password === 'admin') {
+      if (this.username === 'bitnets' && this.password === '123') {
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('username', this.username);
         this.$router.push('/');
