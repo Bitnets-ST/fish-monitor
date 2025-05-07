@@ -14,7 +14,6 @@
         <!-- Menú de navegación -->
         <nav class="hidden md:flex space-x-4">
           <NuxtLink to="/" class="hover:text-cyan-300 transition">Dashboard</NuxtLink>
-          <NuxtLink to="/counter" class="hover:text-cyan-300 transition">Conteo</NuxtLink>
           <NuxtLink to="/#" class="hover:text-cyan-300 transition">Reportes</NuxtLink>
           <NuxtLink to="/#" class="hover:text-cyan-300 transition">Configuración</NuxtLink>
         </nav>
@@ -70,6 +69,5 @@ export default {
 </script>
 
 <style scoped>
-/* Deja los estilos que quieras personalizar aquí */
 </style>
   
