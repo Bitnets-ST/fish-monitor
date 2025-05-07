@@ -3,11 +3,14 @@
     <!-- Coral izquierdo inferior -->
     <div class="coral-left">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" class="coral">
-        <path d="M10,120 C15,100 5,90 15,80 C25,70 20,60 10,50 C0,40 5,30 15,20 C25,10 20,0 30,0" 
+        <path
+d="M10,120 C15,100 5,90 15,80 C25,70 20,60 10,50 C0,40 5,30 15,20 C25,10 20,0 30,0" 
               stroke="currentColor" stroke-width="2" fill="none" class="coral-path" />
-        <path d="M20,120 C25,100 15,90 25,80 C35,70 30,60 20,50 C10,40 15,30 25,20 C35,10 30,0 40,0" 
+        <path
+d="M20,120 C25,100 15,90 25,80 C35,70 30,60 20,50 C10,40 15,30 25,20 C35,10 30,0 40,0" 
               stroke="currentColor" stroke-width="2" fill="none" class="coral-path" />
-        <path d="M30,120 C35,100 25,90 35,80 C45,70 40,60 30,50 C20,40 25,30 35,20 C45,10 40,0 50,0" 
+        <path
+d="M30,120 C35,100 25,90 35,80 C45,70 40,60 30,50 C20,40 25,30 35,20 C45,10 40,0 50,0" 
               stroke="currentColor" stroke-width="2" fill="none" class="coral-path" />
       </svg>
     </div>
@@ -38,14 +41,14 @@
     
     <!-- Radar de fondo -->
     <div class="radar">
-      <div class="radar-circle"></div>
-      <div class="radar-circle"></div>
-      <div class="radar-circle"></div>
-      <div class="radar-line"></div>
+      <div class="radar-circle" />
+      <div class="radar-circle" />
+      <div class="radar-circle" />
+      <div class="radar-line" />
     </div>
     
     <!-- Contenido -->
-    <slot></slot>
+    <slot/>
   </div>
 </template>
 

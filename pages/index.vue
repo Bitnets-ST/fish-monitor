@@ -1,104 +1,62 @@
 <template>
   <div class="fish-monitoring-system h-screen flex flex-col">
     <header class="header bg-gradient-to-r from-cyan-900 to-blue-900 text-white p-4 shadow-md z-10">
-        <div class="container mx-auto flex justify-between items-center">
-          <div class="logo-container">
-            <h1 class="logo text-2xl font-bold">BITNETS</h1>
-          </div>
-          <div class="user-info flex items-center gap-4">
-            <p>Bienvenido, {{ username }}</p>
-            <button 
-              class="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded text-sm transition"
-              @click="logout"
-            >
-              Cerrar sesión
-            </button>
-          </div>
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="logo-container">
+          <h1 class="logo text-2xl font-bold">BITNETS</h1>
         </div>
-      </header>
-  
+        <div class="user-info flex items-center gap-4">
+          <p>Bienvenido, {{ username }}</p>
+          <button 
+            class="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded text-sm transition"
+            @click="logout"
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
     <div class="dashboard-container flex flex-1 overflow-hidden">
       <aside class="sidebar w-16 lg:w-20 bg-cyan-900 text-cyan-100 p-2 flex flex-col items-center space-y-8 z-10">
         <MarineIcon 
-          iconType="shell" 
+          icon-type="shell" 
           :status="getSidebarStatus('oxygen')" 
-          @click="setActiveMetric('oxygen')"
           class="cursor-pointer mt-8"
+          @click="setActiveMetric('oxygen')"
         />
         
         <MarineIcon 
-          iconType="jellyfish" 
+          icon-type="jellyfish" 
           :status="getSidebarStatus('water')" 
-          @click="setActiveMetric('water')"
           class="cursor-pointer"
+          @click="setActiveMetric('water')"
         />
         
         <MarineIcon 
-          iconType="fish" 
+          icon-type="fish" 
           :status="getSidebarStatus('biomass')" 
-          @click="setActiveMetric('biomass')"
           class="cursor-pointer"
+          @click="setActiveMetric('biomass')"
         />
       </aside>
 
       <main class="main-content flex-1 flex flex-col h-full overflow-auto">
-        <OceanBackground class="flex-1 p-8">
-          <!-- Encabezado de bienvenida -->
-          <div class="welcome-section mb-8">
-            <h2 class="text-4xl font-bold text-cyan-300 mb-2">Bienvenido</h2>
+        <OceanBackground class="flex-1 p-6">
+          <!-- Vista principal: Tabla de estanques por zona -->
+          <div v-if="!selectedPond" class="main-table-view">
+            <PondDetailTable 
+              :ponds="ponds" 
+              @select-pond="selectPond" 
+            />
           </div>
           
-          <!-- Selección de zonas -->
-          <div v-if="!selectedZone && !selectedPond" class="zone-selection">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div v-for="(zone, index) in zones" :key="index" @click="selectZone(zone)" class="cursor-pointer">
-                <div class="zone-card bg-cyan-900/70 rounded-lg p-5 shadow-lg backdrop-blur-sm text-cyan-100 flex flex-col h-48">
-                  <h3 class="text-2xl font-medium mb-3">{{ zone.name }}</h3>
-                  <div class="zone-info mb-3">
-                    <div class="flex items-center mb-2">
-                      <div class="w-3 h-3 rounded-full mr-2" :class="getZoneStatusColor(zone.status)"></div>
-                      <span>{{ getZoneStatusText(zone.status) }}</span>
-                    </div>
-                    <p class="text-sm opacity-75">{{ zone.estanques }} estanques</p>
-                  </div>
-                  <div class="mt-auto pt-3 flex justify-center">
-                    <button class="btn bg-cyan-700/80 hover:bg-cyan-600 text-cyan-50 py-2 px-4 rounded text-sm transition">
-                      Ver estanques
-                    </button>
-            </div>
-            </div>
-            </div>
-            </div>
-            </div>
-          
-          <!-- Estanques de la zona seleccionada -->
-          <div v-else-if="selectedZone && !selectedPond" class="zone-ponds">
-            <div class="flex justify-between items-center mb-6">
-              <button 
-                class="text-cyan-400 hover:text-cyan-300 flex items-center"
-                @click="selectedZone = null"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-                </svg>
-                Volver a zonas
-              </button>
-              <h2 class="text-3xl font-bold text-cyan-300">{{ selectedZone.name }}</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div v-for="(pond, index) in zonePonds" :key="index" @click="selectPond(pond)" class="cursor-pointer">
-                <PondCard :pond="pond" :showCamera="true" />
-            </div>
-            </div>
-          </div>
-  
           <!-- Detalle del estanque -->
           <div v-else class="pond-detail">
             <div class="flex justify-between items-center mb-4">
               <button 
                 class="text-cyan-400 hover:text-cyan-300 flex items-center"
-                @click="backToPonds"
+                @click="selectedPond = null"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
@@ -106,78 +64,59 @@
                 Volver a estanques
               </button>
               <h2 class="text-3xl font-bold text-cyan-300">{{ selectedPond.name }}</h2>
-          </div>
-  
+            </div>
+            
             <!-- Información detallada del estanque -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <PondCard :pond="selectedPond" :showDetails="true" :showCamera="true" />
-              
+              <PondCard :pond="selectedPond" :show-details="true" :show-camera="true" />
               <PondDetailStats :pond="selectedPond" />
-          </div>
-          
+            </div>
+            
             <!-- Tabla de datos detallados -->
-            <PondDetailTable :ponds="[selectedPond, ...relatedPonds]" />
+            <PondDetailTable 
+              :ponds="[selectedPond, ...relatedPonds]" 
+              :current-zone-id="selectedPond.zoneId"
+            />
           </div>
         </OceanBackground>
-        </main>
-      </div>
+      </main>
     </div>
-  </template>
-  
-  <script>
+  </div>
+</template>
+
+<script>
 import PondCard from '../components/PondCard.vue';
 import PondDetailTable from '../components/PondDetailTable.vue';
 import MarineIcon from '../components/MarineIcon.vue';
 import OceanBackground from '../components/OceanBackground.vue';
 import PondDetailStats from '../components/PondDetailStats.vue';
-  
-  export default {
-    name: 'IndexPage',
-    components: {
+
+export default {
+  name: 'IndexPage',
+  components: {
     PondCard,
     PondDetailTable,
     MarineIcon,
     OceanBackground,
     PondDetailStats
-    },
-    data() {
-      return {
-        username: 'Admin',
+  },
+  data() {
+    return {
+      username: 'Admin',
       activeMetric: 'oxygen',
-      selectedZone: null,
       selectedPond: null,
-      zones: [
-        {
-          id: 1,
-          name: 'Zona Norte',
-          status: 'normal',
-          estanques: 3
-        },
-        {
-          id: 2,
-          name: 'Zona Central',
-          status: 'warning',
-          estanques: 3
-        },
-        {
-          id: 3,
-          name: 'Zona Sur',
-          status: 'danger',
-          estanques: 3
-        }
-      ],
       ponds: [
         {
           id: 1,
           zoneId: 1,
           name: 'Alao Oeste',
-            count: 145,
+          count: 145,
           oxygen: 'Normal',
           oxygenLabel: 'Normal',
           current: 'Suave',
           currentLabel: 'Suave',
-            temperature: 18.5,
-            status: 'normal',
+          temperature: 18.5,
+          status: 'normal',
           waterLevel: 85,
           lightLevel: 75,
           biomass: 230,
@@ -225,15 +164,15 @@ import PondDetailStats from '../components/PondDetailStats.vue';
           id: 4,
           zoneId: 2,
           name: 'Bahía 2',
-            count: 230,
+          count: 230,
           oxygen: 'Alto',
           oxygenLabel: 'Alto',
           current: 'Media',
           currentLabel: 'Media',
-            temperature: 19.2,
-            status: 'normal',
+          temperature: 19.2,
+          status: 'normal',
           waterLevel: 92,
-            lightLevel: 68,
+          lightLevel: 68,
           biomass: 410,
           pelletWaste: 28,
           flowStatus: 'green',
@@ -279,15 +218,15 @@ import PondDetailStats from '../components/PondDetailStats.vue';
           id: 7,
           zoneId: 3,
           name: 'Talofa Sur',
-            count: 78,
+          count: 78,
           oxygen: 'Bajo',
           oxygenLabel: 'Bajo',
           current: 'Fuerte',
           currentLabel: 'Fuertes',
-            temperature: 20.1,
-            status: 'warning',
+          temperature: 20.1,
+          status: 'warning',
           waterLevel: 60,
-            lightLevel: 45,
+          lightLevel: 45,
           biomass: 130,
           pelletWaste: 45,
           flowStatus: 'yellow',
@@ -333,10 +272,6 @@ import PondDetailStats from '../components/PondDetailStats.vue';
     }
   },
   computed: {
-    zonePonds() {
-      if (!this.selectedZone) return [];
-      return this.ponds.filter(pond => pond.zoneId === this.selectedZone.id);
-    },
     relatedPonds() {
       if (!this.selectedPond) return [];
       // Retorna otros estanques relacionados en la misma zona
@@ -344,37 +279,18 @@ import PondDetailStats from '../components/PondDetailStats.vue';
         pond.zoneId === this.selectedPond.zoneId && 
         pond.id !== this.selectedPond.id
       );
-      }
-    },
-    methods: {
+    }
+  },
+  methods: {
     logout() {
       // Implementación de cerrar sesión
       console.log('Cerrar sesión');
     },
-    selectZone(zone) {
-      this.selectedZone = zone;
-      this.selectedPond = null;
-    },
     selectPond(pond) {
       this.selectedPond = pond;
     },
-    backToPonds() {
-      this.selectedPond = null;
-    },
     setActiveMetric(metric) {
       this.activeMetric = metric;
-    },
-    getZoneStatusColor(status) {
-      if (status === 'normal') return 'bg-green-500';
-      if (status === 'warning') return 'bg-yellow-500';
-      if (status === 'danger') return 'bg-red-500';
-      return 'bg-gray-500';
-    },
-    getZoneStatusText(status) {
-      if (status === 'normal') return 'Estado normal';
-      if (status === 'warning') return 'Precaución';
-      if (status === 'danger') return 'Alerta';
-      return 'Desconocido';
     },
     getSidebarStatus(metric) {
       // Calcula el estado del indicador de la barra lateral en función de los datos
@@ -409,26 +325,6 @@ import PondDetailStats from '../components/PondDetailStats.vue';
       }
       
       return 'normal';
-    },
-    getOxygenPercentage(level) {
-      if (level === 'Alto') return '90%';
-      if (level === 'Normal') return '70%';
-      if (level === 'Bajo') return '30%';
-      return '50%';
-    },
-    getOxygenBarColor(level) {
-      if (level === 'Alto') return 'bg-green-500';
-      if (level === 'Normal') return 'bg-cyan-500';
-      if (level === 'Bajo') return 'bg-red-500';
-      return 'bg-gray-500';
-    },
-    getBiomassPercentage(value) {
-      return Math.min(100, (value / 5)) + '%';
-    },
-    getBiomassBarColor(value) {
-      if (value > 300) return 'bg-green-500';
-      if (value > 150) return 'bg-yellow-500';
-      return 'bg-red-500';
     }
   }
 }
@@ -437,10 +333,15 @@ import PondDetailStats from '../components/PondDetailStats.vue';
 <style scoped>
 .fish-monitoring-system {
   background-color: #051525;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+  color: white;
 }
 
 /* Estilos adicionales */
-.zone-selection, .zone-ponds, .pond-detail {
+.main-table-view, .pond-detail {
   animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -453,5 +354,275 @@ import PondDetailStats from '../components/PondDetailStats.vue';
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #063c44;
+  border-bottom: 1px solid #0f4c5c;
+}
+
+.logo {
+  color: #4caf50;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.user-info {
+  font-size: 0.9rem;
+}
+
+.dashboard-container {
+  display: flex;
+  flex: 1;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #052126;
+  padding: 1rem 0;
+  transition: all 0.3s ease;
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1.5rem;
+  color: #a0a0a0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+  background-color: #0a3a42;
+  color: white;
+}
+
+.nav-item.active {
+  background-color: #0f4c5c;
+  color: white;
+  border-left: 4px solid #4caf50;
+}
+
+.nav-icon {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1rem 2rem;
+  overflow-y: auto;
+}
+
+.status-bar {
+  display: flex;
+  margin-bottom: 1.5rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-right: 1rem;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #4caf50;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+.status-dot.yellow {
+  background-color: #ffc107;
+}
+
+.status-dot.red {
+  background-color: #f44336;
+}
+
+.status-dot.green {
+  background-color: #4caf50;
+}
+
+.status-dot.empty {
+  background-color: #374a4d;
+}
+
+.location-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.tab-button {
+  padding: 0.6rem 1.2rem;
+  background-color: #063c44;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tab-button:hover {
+  background-color: #0a4f5a;
+}
+
+.tab-button.active {
+  background-color: #118ab2;
+}
+
+.data-table {
+  background-color: #063c44;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+
+.data-table table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 1rem;
+  background-color: #052126;
+  font-weight: normal;
+  border-bottom: 2px solid #0a2b30;
+}
+
+.data-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #0a2b30;
+}
+
+.data-table tbody tr:hover {
+  background-color: #0a4f5a;
+}
+
+.indicator-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.fish-count {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.count-number {
+  font-weight: bold;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.btn-excel {
+  background-color: #118ab2;
+}
+
+.btn-stats {
+  background-color: #0f4c5c;
+}
+
+.counter-component {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #063c44;
+  border-radius: 8px;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .header {
+    padding: 0.8rem 1rem;
   }
-  </style>
+  
+  .logo {
+    font-size: 1.4rem;
+  }
+  
+  .dashboard-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    order: 2;
+    padding: 0.5rem 0;
+  }
+  
+  .nav-menu {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 5px;
+  }
+  
+  .nav-item {
+    padding: 0.5rem 1rem;
+    flex-shrink: 0;
+  }
+  
+  .main-content {
+    padding: 1rem;
+    order: 1;
+  }
+  
+  .status-bar {
+    gap: 0.8rem;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 0.8rem 0.5rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+}
+</style>

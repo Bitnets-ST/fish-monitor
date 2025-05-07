@@ -6,7 +6,7 @@
       <div class="indicator-icon mr-3 text-lg">
         <div class="animate-pulse" :class="getOxygenClass(pond.oxygen)">
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 4c0 6-6 10-6 10s6 4 6 10c0-6 6-10 6-10s-6-4-6-10"></path>
+            <path d="M12 4c0 6-6 10-6 10s6 4 6 10c0-6 6-10 6-10s-6-4-6-10" />
           </svg>
         </div>
       </div>
@@ -17,9 +17,9 @@
       <div class="indicator-icon mr-3 text-lg">
         <div class="animate-pulse" :class="getCurrentClass(pond.current)">
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 12h20"></path>
-            <path d="M7 7 2 12l5 5"></path>
-            <path d="M22 7v10"></path>
+            <path d="M2 12h20" />
+            <path d="M7 7 2 12l5 5" />
+            <path d="M22 7v10" />
           </svg>
         </div>
       </div>
@@ -31,10 +31,10 @@
         <div class="indicator-icon mr-3 text-lg">
           <div class="animate-pulse" :class="getPelletClass(pond.pelletWaste)">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.2 11.2C6.4 11.2 4 7.5 4 3.5M12 13V4"></path>
-              <path d="M9 18c-2 0-4-1-4-4"></path>
-              <path d="M18 18c2 0 4-1 4-4"></path>
-              <path d="M15 18c0 2.5-1.5 4-3 4s-3-1.5-3-4c0-1 0-1 1-2 1.5-1.5 3-1.5 4 0 1 1 1 1 1 2z"></path>
+              <path d="M10.2 11.2C6.4 11.2 4 7.5 4 3.5M12 13V4" />
+              <path d="M9 18c-2 0-4-1-4-4" />
+              <path d="M18 18c2 0 4-1 4-4" />
+              <path d="M15 18c0 2.5-1.5 4-3 4s-3-1.5-3-4c0-1 0-1 1-2 1.5-1.5 3-1.5 4 0 1 1 1 1 1 2z" />
             </svg>
           </div>
         </div>
@@ -45,13 +45,13 @@
         <div class="indicator-icon mr-3 text-lg">
           <div class="animate-pulse" :class="getBiomassClass(pond.biomass)">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16.2 3.8a2.7 2.7 0 0 0-3.81 0l-.4.38-.4-.4a2.7 2.7 0 0 0-3.82 0C6.73 4.85 6.67 6.64 8 8l4 4 4-4c1.33-1.36 1.27-3.15.2-4.2z"></path>
-              <path d="M8 8c-1.36 1.33-3.15 1.27-4.2.2-1.05-1.07-1.1-2.86.24-4.2 1.1-1.05 2.86-1.1 4.2.24"></path>
-              <path d="M16 8c1.36 1.33 3.15 1.27 4.2.2 1.05-1.07 1.1-2.86-.24-4.2-1.08-1.05-2.86-1.1-4.2.24"></path>
-              <path d="M19 11v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-5"></path>
-              <path d="M12 16v4"></path>
-              <path d="M8 16v4"></path>
-              <path d="M16 16v4"></path>
+              <path d="M16.2 3.8a2.7 2.7 0 0 0-3.81 0l-.4.38-.4-.4a2.7 2.7 0 0 0-3.82 0C6.73 4.85 6.67 6.64 8 8l4 4 4-4c1.33-1.36 1.27-3.15.2-4.2z" />
+              <path d="M8 8c-1.36 1.33-3.15 1.27-4.2.2-1.05-1.07-1.1-2.86.24-4.2 1.1-1.05 2.86-1.1 4.2.24" />
+              <path d="M16 8c1.36 1.33 3.15 1.27 4.2.2 1.05-1.07 1.1-2.86-.24-4.2-1.08-1.05-2.86-1.1-4.2.24" />
+              <path d="M19 11v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-5" />
+              <path d="M12 16v4" />
+              <path d="M8 16v4" />
+              <path d="M16 16v4" />
             </svg>
           </div>
         </div>
@@ -78,15 +78,15 @@
         <div class="indicator-icon mr-3 text-lg">
           <div class="animate-pulse" :class="getLightClass(pond.lightLevel)">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="4"></circle>
-              <path d="M12 2v2"></path>
-              <path d="M12 20v2"></path>
-              <path d="M4.93 4.93l1.41 1.41"></path>
-              <path d="M17.66 17.66l1.41 1.41"></path>
-              <path d="M2 12h2"></path>
-              <path d="M20 12h2"></path>
-              <path d="M6.34 17.66l-1.41 1.41"></path>
-              <path d="M19.07 4.93l-1.41 1.41"></path>
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2" />
+              <path d="M12 20v2" />
+              <path d="M4.93 4.93l1.41 1.41" />
+              <path d="M17.66 17.66l1.41 1.41" />
+              <path d="M2 12h2" />
+              <path d="M20 12h2" />
+              <path d="M6.34 17.66l-1.41 1.41" />
+              <path d="M19.07 4.93l-1.41 1.41" />
             </svg>
           </div>
         </div>

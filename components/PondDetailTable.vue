@@ -1,6 +1,6 @@
 <template>
   <div class="pond-detail-table rounded overflow-hidden shadow-md">
-    <div class="bg-gray-800 text-white px-4 py-2 flex justify-between items-center border-b border-gray-700">
+    <div class="bg-gray-900 text-white px-4 py-2 flex justify-between items-center border-b border-gray-700">
       <div class="flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
@@ -10,15 +10,15 @@
       
       <div class="flex gap-4">
         <div class="flex items-center gap-2 text-xs text-gray-300">
-          <span class="w-2 h-2 rounded-full bg-green-500"></span>
+          <span class="w-2 h-2 rounded-full bg-green-500" />
           Sin alertas
         </div>
         <div class="flex items-center gap-2 text-xs text-gray-300">
-          <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+          <span class="w-2 h-2 rounded-full bg-yellow-500" />
           Alerta de revisión
         </div>
         <div class="flex items-center gap-2 text-xs text-gray-300">
-          <span class="w-2 h-2 rounded-full bg-red-500"></span>
+          <span class="w-2 h-2 rounded-full bg-red-500" />
           Alerta de densidad
         </div>
       </div>
@@ -26,9 +26,19 @@
     
     <div class="bg-gray-900 text-white">
       <div class="flex border-b border-gray-800">
-        <button class="py-2 px-4 bg-cyan-700 border-b-2 border-cyan-400 text-sm">Zona Norte</button>
-        <button class="py-2 px-4 bg-gray-800 text-sm">Zona Central</button>
-        <button class="py-2 px-4 bg-gray-800 text-sm">Zona Sur</button>
+        <button 
+          v-for="(tab, index) in ['Zona Norte', 'Zona Central', 'Zona Sur']" 
+          :key="index"
+          :class="[
+            'py-2 px-4 text-sm',
+            activeTab === index 
+              ? 'bg-cyan-700 border-b-2 border-cyan-400' 
+              : 'bg-gray-800 hover:bg-gray-700'
+          ]"
+          @click="setActiveTab(index)"
+        >
+          {{ tab }}
+        </button>
       </div>
       
       <table class="min-w-full">
@@ -43,29 +53,43 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(pond, index) in ponds" :key="index" 
-              class="border-b border-gray-800 text-sm hover:bg-gray-800/50 transition">
-            <td class="py-3 px-4">{{ pond.name }}</td>
-            <td class="py-3 px-4 text-center">{{ pond.count }}</td>
+          <tr 
+            v-for="pond in filteredPonds" 
+            :key="pond.id" 
+            class="border-b border-gray-800 text-sm hover:bg-gray-800/50 transition"
+            @click="selectPond(pond)"
+          >
+            <td class="py-3 px-4 text-white">{{ pond.name }}</td>
+            <td class="py-3 px-4 text-center text-white">{{ pond.count }}</td>
             <td class="py-3 px-4 text-center">
               <div class="flex justify-center">
-                <span class="inline-block w-3 h-3 rounded-full" 
-                      :class="getStatusColor(pond.flowStatus)"></span>
+                <span 
+                  class="inline-block w-3 h-3 rounded-full" 
+                  :class="getStatusColor(pond.flowStatus)" 
+                />
               </div>
             </td>
             <td class="py-3 px-4 text-center text-cyan-100">{{ pond.temperature }}°C</td>
             <td class="py-3 px-4 text-center">
               <div class="flex justify-center">
-                <span class="inline-block w-3 h-3 rounded-full" 
-                      :class="getStatusColor(pond.status)"></span>
+                <span 
+                  class="inline-block w-3 h-3 rounded-full" 
+                  :class="getStatusColor(pond.status)" 
+                />
               </div>
             </td>
             <td class="py-3 px-4">
               <div class="flex gap-2 justify-center">
-                <button class="bg-cyan-700 hover:bg-cyan-600 text-white py-1 px-2 rounded text-xs transition">
+                <button 
+                  class="bg-cyan-700 hover:bg-cyan-600 text-white py-1 px-2 rounded text-xs transition"
+                  @click.stop
+                >
                   Excel
                 </button>
-                <button class="bg-cyan-800 hover:bg-cyan-700 text-white py-1 px-2 rounded text-xs transition">
+                <button 
+                  class="bg-cyan-800 hover:bg-cyan-700 text-white py-1 px-2 rounded text-xs transition"
+                  @click.stop
+                >
                   Estadísticas
                 </button>
               </div>
@@ -84,14 +108,54 @@ export default {
     ponds: {
       type: Array,
       required: true
+    },
+    currentZoneId: {
+      type: Number,
+      default: null
+    }
+  },
+  emits: ['select-pond'],
+  data() {
+    return {
+      activeTab: 0
+    }
+  },
+  computed: {
+    filteredPonds() {
+      // Si se usa como tabla principal, filtrar por pestaña activa
+      if (this.currentZoneId === null) {
+        // Zona Norte = 1, Zona Central = 2, Zona Sur = 3
+        const zoneId = this.activeTab + 1;
+        return this.ponds.filter(pond => pond.zoneId === zoneId);
+      }
+      
+      // Si se usa como detalle de estanque, mostrar los estanques pasados
+      return this.ponds;
+    }
+  },
+  watch: {
+    currentZoneId: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal !== null) {
+          // Ajustar la pestaña activa basada en la zona actual (restar 1 porque las zonas empiezan desde 1)
+          this.activeTab = newVal - 1;
+        }
+      }
     }
   },
   methods: {
+    setActiveTab(index) {
+      this.activeTab = index;
+    },
     getStatusColor(status) {
       if (status === 'green' || status === 'normal') return 'bg-green-500';
       if (status === 'yellow' || status === 'warning') return 'bg-yellow-500';
       if (status === 'red' || status === 'danger') return 'bg-red-500';
       return 'bg-gray-500';
+    },
+    selectPond(pond) {
+      this.$emit('select-pond', pond);
     }
   }
 }
@@ -102,5 +166,13 @@ export default {
   width: 100%;
   background-color: rgb(17, 24, 39);
   color: white;
+}
+
+tr {
+  cursor: pointer;
+}
+
+button {
+  cursor: pointer;
 }
 </style> 
