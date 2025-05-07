@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     handleLogin() {
-      // Simplemente para demostración, usuario: admin, contraseña: admin
+      // Simplemente para demostración, usuario: bitnets, contraseña: 123
       if (this.username === 'bitnets' && this.password === '123') {
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('username', this.username);
