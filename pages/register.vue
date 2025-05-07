@@ -23,8 +23,10 @@
             <button
               type="submit"
               class="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition-colors tracking-wide uppercase"
+              :disabled="isLoading"
             >
-              REGISTRARSE
+              <span v-if="isLoading">CARGANDO...</span>
+              <span v-else>REGISTRARSE</span>
             </button>
           </form>
           <div class="text-center mt-4">
@@ -66,7 +68,8 @@ export default {
       username: '',
       password: '',
       confirmPassword: '',
-      errorMessage: ''
+      errorMessage: '',
+      isLoading: false
     };
   },
   mounted() {
@@ -76,28 +79,65 @@ export default {
     }
   },
   methods: {
-    handleRegister() {
-      // Validación de datos
-      if (this.password !== this.confirmPassword) {
-        this.errorMessage = 'Las contraseñas no coinciden';
-        return;
+    async handleRegister() {
+      try {
+        // Validación de datos
+        if (!this.name || !this.email || !this.username || !this.password || !this.confirmPassword) {
+          this.errorMessage = 'Por favor, completa todos los campos';
+          return;
+        }
+        
+        if (this.password !== this.confirmPassword) {
+          this.errorMessage = 'Las contraseñas no coinciden';
+          return;
+        }
+        
+        if (this.password.length < 6) {
+          this.errorMessage = 'La contraseña debe tener al menos 6 caracteres';
+          return;
+        }
+        
+        // Validar formato de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(this.email)) {
+          this.errorMessage = 'Por favor, ingresa un correo electrónico válido';
+          return;
+        }
+        
+        this.isLoading = true;
+        this.errorMessage = '';
+        
+        // Llamar a la API de registro
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: this.name,
+            email: this.email,
+            username: this.username,
+            password: this.password
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.body?.error || 'Error al registrar usuario');
+        }
+        
+        // Guardar token y datos del usuario
+        User.login(data.body.user, data.body.token);
+        
+        // Redirigir al dashboard
+        this.$router.push('/');
+      } catch (error) {
+        console.error('Error al registrar usuario:', error);
+        this.errorMessage = error.message || 'Error al registrar usuario';
+      } finally {
+        this.isLoading = false;
       }
-      if (this.password.length < 6) {
-        this.errorMessage = 'La contraseña debe tener al menos 6 caracteres';
-        return;
-      }
-      
-      // Guardar datos en localStorage (solo para demostración)
-      localStorage.setItem('registeredUser', this.username);
-      localStorage.setItem('registeredEmail', this.email);
-      localStorage.setItem('registeredName', this.name);
-      
-      // Crear y autenticar al usuario
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('username', this.username);
-      
-      // Redirigir al dashboard
-      this.$router.push('/');
     }
   }
 };

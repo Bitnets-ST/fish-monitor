@@ -30,7 +30,7 @@ export class User {
    * @returns {boolean} Estado de autenticación
    */
   static isAuthenticated() {
-    return localStorage.getItem('isAuthenticated') === 'true';
+    return !!localStorage.getItem('token');
   }
 
   /**
@@ -41,20 +41,33 @@ export class User {
     const isAuthenticated = this.isAuthenticated();
     if (!isAuthenticated) return null;
 
-    return new User(
-      null,
-      localStorage.getItem('username') || '',
-      localStorage.getItem('registeredEmail') || '',
-      localStorage.getItem('registeredName') || '',
-      localStorage.getItem('username') === 'admin'
-    );
+    const userData = localStorage.getItem('user');
+    if (!userData) return null;
+    
+    try {
+      const user = JSON.parse(userData);
+      return this.fromJson(user);
+    } catch (error) {
+      console.error('Error al obtener el usuario actual:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Inicia sesión con un usuario y token
+   * @param {Object} userData Datos del usuario
+   * @param {string} token Token JWT
+   */
+  static login(userData, token) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
   }
 
   /**
    * Cierra la sesión del usuario
    */
   static logout() {
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('username');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 } 
