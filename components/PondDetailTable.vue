@@ -10,15 +10,15 @@
       
       <div class="flex gap-4">
         <div class="flex items-center gap-2 text-xs text-gray-300">
-          <span class="w-2 h-2 rounded-full bg-green-500"></span>
+          <span class="w-2 h-2 rounded-full bg-green-500"/>
           Sin alertas
         </div>
         <div class="flex items-center gap-2 text-xs text-gray-300">
-          <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+          <span class="w-2 h-2 rounded-full bg-yellow-500"/>
           Alerta de revisión
         </div>
         <div class="flex items-center gap-2 text-xs text-gray-300">
-          <span class="w-2 h-2 rounded-full bg-red-500"></span>
+          <span class="w-2 h-2 rounded-full bg-red-500"/>
           Alerta de densidad
         </div>
       </div>
@@ -43,21 +43,24 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(pond, index) in ponds" :key="index" 
+          <tr
+v-for="(pond, index) in ponds" :key="index" 
               class="border-b border-gray-800 text-sm hover:bg-gray-800/50 transition">
             <td class="py-3 px-4">{{ pond.name }}</td>
             <td class="py-3 px-4 text-center">{{ pond.count }}</td>
             <td class="py-3 px-4 text-center">
               <div class="flex justify-center">
-                <span class="inline-block w-3 h-3 rounded-full" 
-                      :class="getStatusColor(pond.flowStatus)"></span>
+                <span
+class="inline-block w-3 h-3 rounded-full" 
+                      :class="getStatusColor(pond.flowStatus)"/>
               </div>
             </td>
             <td class="py-3 px-4 text-center text-cyan-100">{{ pond.temperature }}°C</td>
             <td class="py-3 px-4 text-center">
               <div class="flex justify-center">
-                <span class="inline-block w-3 h-3 rounded-full" 
-                      :class="getStatusColor(pond.status)"></span>
+                <span
+class="inline-block w-3 h-3 rounded-full" 
+                      :class="getStatusColor(pond.status)"/>
               </div>
             </td>
             <td class="py-3 px-4">

@@ -2,11 +2,11 @@
   <div class="relative">
     <input
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
       :type="showPassword ? 'text' : 'password'"
       :required="required"
       :placeholder="placeholder"
       class="w-full py-2 px-3 border border-gray-300 rounded-md bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+      @input="$emit('update:modelValue', $event.target.value)"
     >
     <button 
       type="button" 
@@ -41,11 +41,11 @@ export default {
       default: 'Contraseña'
     }
   },
+  emits: ['update:modelValue'],
   data() {
     return {
       showPassword: false
     };
-  },
-  emits: ['update:modelValue']
+  }
 }
 </script> 

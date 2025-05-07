@@ -17,7 +17,8 @@
       <div v-if="selectedPond" class="pond-details bg-white p-6 rounded-lg shadow-md mb-6">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold text-gray-800">{{ selectedPond.name }}</h2>
-          <div class="status-badge" 
+          <div
+class="status-badge" 
             :class="{
               'bg-green-100 text-green-800': selectedPond.status === 'normal',
               'bg-yellow-100 text-yellow-800': selectedPond.status === 'warning',
@@ -55,7 +56,7 @@
         </div>
       </div>
       
-      <slot></slot>
+      <slot/>
     </div>
   </div>
 </template>
@@ -73,6 +74,7 @@ export default {
       default: null
     }
   },
+  emits: ['pond-selected'],
   data() {
     return {
       activePond: this.initialActive || (this.ponds.length > 0 ? this.ponds[0].id : null)

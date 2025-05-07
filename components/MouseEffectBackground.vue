@@ -1,5 +1,5 @@
 <template>
-  <ParticleEffect canvasClass="fixed top-0 left-0 w-full h-full z-[-1]" />
+  <ParticleEffect canvas-class="fixed top-0 left-0 w-full h-full z-[-1]" />
 </template>
 
 <script>

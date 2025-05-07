@@ -1,6 +1,6 @@
 <template>
   <div class="splash-screen">
-    <ParticleEffect canvasClass="effect-canvas" />
+    <ParticleEffect canvas-class="effect-canvas" />
     
     <!-- Logo centrado con borde blanco circular -->
     <div class="relative z-10">
@@ -11,7 +11,7 @@
     
     <!-- Barra de carga -->
     <div class="loading-bar">
-      <div class="loading-progress"></div>
+      <div class="loading-progress"/>
     </div>
   </div>
 </template>
