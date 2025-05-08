@@ -44,12 +44,27 @@ export default defineNuxtConfig({
     payloadExtraction: false
   },
   runtimeConfig: {
+    // Variables privadas de servidor (no expuestas al cliente)
+    cosmosEndpoint: process.env.COSMOS_ENDPOINT,
+    cosmosKey: process.env.COSMOS_KEY,
+    cosmosDatabase: process.env.COSMOS_DATABASE,
+    cosmosContainer: process.env.COSMOS_CONTAINER,
+    jwtSecret: process.env.JWT_SECRET,
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN,
+    
+    // Variables públicas (accesibles desde el cliente)
     public: {
       loadingIndicator: {
         name: 'custom',
         color: '#3498db',
         background: 'white'
       }
+    }
+  },
+  // Configuración CORS para la API
+  nitro: {
+    routeRules: {
+      '/api/**': { cors: true }
     }
   }
 })
