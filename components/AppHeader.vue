@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-gradient-to-r from-cyan-900 to-blue-900 text-white p-4 shadow-md z-10">
+  <header class="fixed top-0 left-0 right-0 bg-gradient-to-r from-cyan-900 to-blue-900 text-white p-4 shadow-md z-20">
     <div class="container mx-auto flex justify-between items-center">
       <div class="logo-container flex items-center">
         <img src="/images/Logo1.png" alt="Bitnets Logo" class="h-8 w-8 mr-3">

@@ -2,31 +2,66 @@
   <div class="fish-monitoring-system h-screen flex flex-col">
     <div class="dashboard-container flex flex-1 overflow-hidden">
       <aside
-        class="sidebar w-16 lg:w-20 bg-cyan-900 text-cyan-100 p-2 flex flex-col items-center space-y-8 z-10"
+        class="sidebar fixed top-16 left-0 h-[calc(100vh-4rem)] bg-cyan-900 text-cyan-100 p-2 flex flex-col items-center space-y-8 z-10 transition-all duration-300"
+        :class="{ 'w-16': isSidebarCollapsed, 'w-60': !isSidebarCollapsed }"
       >
-        <MarineIcon
-          icon-type="shell"
-          :status="getSidebarStatus('oxygen')"
-          class="cursor-pointer mt-8"
-          @click="setActiveMetric('oxygen')"
-        />
+        <button 
+          @click="toggleSidebar" 
+          class="absolute right-2 top-2 text-cyan-300 hover:text-white"
+        >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor" 
+            class="w-6 h-6"
+          >
+            <path 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="2" 
+              :d="isSidebarCollapsed 
+                ? 'M13 5l7 7-7 7M5 5l7 7-7 7' 
+                : 'M11 19l-7-7 7-7M19 19l-7-7 7-7'" 
+            />
+          </svg>
+        </button>
 
-        <MarineIcon
-          icon-type="jellyfish"
-          :status="getSidebarStatus('water')"
-          class="cursor-pointer"
-          @click="setActiveMetric('water')"
-        />
+        <div class="flex items-center mt-8" :class="{ 'justify-center': isSidebarCollapsed, 'justify-start w-full px-4': !isSidebarCollapsed }">
+          <MarineIcon
+            icon-type="shell"
+            :status="getSidebarStatus('oxygen')"
+            class="cursor-pointer"
+            @click="setActiveMetric('oxygen')"
+          />
+          <span v-if="!isSidebarCollapsed" class="ml-3 whitespace-nowrap">Nivel de Oxígeno</span>
+        </div>
 
-        <MarineIcon
-          icon-type="fish"
-          :status="getSidebarStatus('biomass')"
-          class="cursor-pointer"
-          @click="setActiveMetric('biomass')"
-        />
+        <div class="flex items-center" :class="{ 'justify-center': isSidebarCollapsed, 'justify-start w-full px-4': !isSidebarCollapsed }">
+          <MarineIcon
+            icon-type="jellyfish"
+            :status="getSidebarStatus('water')"
+            class="cursor-pointer"
+            @click="setActiveMetric('water')"
+          />
+          <span v-if="!isSidebarCollapsed" class="ml-3 whitespace-nowrap">Nivel de Agua</span>
+        </div>
+
+        <div class="flex items-center" :class="{ 'justify-center': isSidebarCollapsed, 'justify-start w-full px-4': !isSidebarCollapsed }">
+          <MarineIcon
+            icon-type="fish"
+            :status="getSidebarStatus('biomass')"
+            class="cursor-pointer"
+            @click="setActiveMetric('biomass')"
+          />
+          <span v-if="!isSidebarCollapsed" class="ml-3 whitespace-nowrap">Biomasa</span>
+        </div>
       </aside>
 
-      <main class="main-content flex-1 flex flex-col h-full overflow-auto">
+      <main 
+        class="main-content flex-1 flex flex-col h-full overflow-auto transition-all duration-300" 
+        :class="{ 'ml-16': isSidebarCollapsed, 'ml-60': !isSidebarCollapsed }"
+      >
         <OceanBackground class="flex-1 p-6">
           <!-- Vista principal: Tabla de estanques por zona -->
           <div v-if="!selectedPond" class="main-table-view">
@@ -102,6 +137,7 @@ export default {
       username: "Admin",
       activeMetric: "oxygen",
       selectedPond: null,
+      isSidebarCollapsed: true,
       ponds: [
         {
           id: 1,
@@ -190,6 +226,9 @@ export default {
     },
   },
   methods: {
+    toggleSidebar() {
+      this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    },
     selectPond(pond) {
       this.selectedPond = pond;
     },
@@ -239,5 +278,6 @@ export default {
 </script>
 
 <style scoped>
+/* No se necesitan estilos adicionales ya que estamos usando Tailwind */
 </style>
 

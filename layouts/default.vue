@@ -3,7 +3,9 @@
     <BitnetsSplashScreen v-if="isLoading" />
     <div v-else class="page-content" :class="{ 'fade-in': !isLoading }">
       <AppHeader v-if="!isLoginPage" />
-      <NuxtPage />
+      <div :class="{ 'pt-16': !isLoginPage }">
+        <NuxtPage />
+      </div>
     </div>
   </div>
 </template>
