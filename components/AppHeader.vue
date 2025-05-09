@@ -2,8 +2,8 @@
   <header class="fixed top-0 left-0 right-0 bg-gradient-to-r from-cyan-900 to-blue-900 dark:from-gray-900 dark:to-gray-800 text-white p-4 shadow-md z-20">
     <div class="container mx-auto flex justify-between items-center">
       <div class="logo-container flex items-center">
-        <img src="/images/Logo1.png" alt="Bitnets Logo" class="h-8 w-8 mr-3">
-        <h1 class="text-2xl font-bold">BITNETS</h1>
+        <img src="/images/Logo1.png" alt="Logo" class="h-8 w-8 mr-3">
+        <span class="text-lg font-semibold text-white">Bitnets Fish Monitor</span>
       </div>
       
       <div class="flex items-center space-x-4">
@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       username: 'Admin',
-      apiStatus: 'connected', // Esto podría venir de un store o ser verificado mediante una solicitud API
+      apiStatus: 'connected'
     }
   },
   computed: {
@@ -61,7 +61,7 @@ export default {
     }
   },
   mounted() {
-    // Cargar datos del usuario desde localStorage
+    // Cargar datos del usuario desde el plugin userData
     this.loadUserData();
     
     // Aquí podrías verificar el estado de la API
@@ -69,28 +69,37 @@ export default {
   },
   methods: {
     loadUserData() {
-      // Cargar datos del usuario desde localStorage
-      const savedUser = localStorage.getItem('user');
-      if (savedUser) {
-        try {
-          const parsedUser = JSON.parse(savedUser);
-          if (parsedUser.name) {
-            this.username = parsedUser.name;
-          }
-        } catch (e) {
-          console.error('Error al cargar datos del usuario:', e);
-        }
+      const nuxtApp = useNuxtApp();
+      if (nuxtApp.$userData) {
+        this.username = nuxtApp.$userData.value.name || 'Admin';
       } else {
-        // Intentar obtener el nombre de usuario desde User.getCurrentUser()
-        const currentUser = User.getCurrentUser();
-        if (currentUser && currentUser.username) {
-          this.username = currentUser.username;
+        // Fallback: Cargar datos del usuario desde localStorage
+        if (process.client) {
+          const savedUser = localStorage.getItem('user');
+          if (savedUser) {
+            try {
+              const parsedUser = JSON.parse(savedUser);
+              if (parsedUser.name) {
+                this.username = parsedUser.name;
+              }
+            } catch (e) {
+              console.error('Error al cargar datos del usuario:', e);
+            }
+          } else {
+            // Intentar obtener el nombre de usuario desde User.getCurrentUser()
+            const currentUser = User.getCurrentUser();
+            if (currentUser && currentUser.username) {
+              this.username = currentUser.username;
+            }
+          }
         }
       }
     },
     logout() {
       // Limpiar datos del usuario en localStorage
-      localStorage.removeItem('user');
+      if (process.client) {
+        localStorage.removeItem('user');
+      }
       
       User.logout();
       this.$router.push('/login');

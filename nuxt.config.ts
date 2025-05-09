@@ -17,6 +17,11 @@ export default defineNuxtConfig({
       autoprefixer: {}
     }
   },
+  // Plugins personalizados
+  plugins: [
+    '~/plugins/notifications.js',
+    '~/plugins/darkMode.js',
+  ],
   app: {
     head: {
       title: 'Bitnets Fish Monitor',
