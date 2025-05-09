@@ -1,23 +1,23 @@
 <template>
-  <div class="dashboard-layout min-h-screen flex bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <div class="dashboard-layout min-h-screen flex bg-gray-100 text-gray-800">
     <!-- Barra lateral -->
-    <aside class="sidebar w-16 md:w-64 bg-white dark:bg-gray-800 shadow-lg flex flex-col">
+    <aside class="sidebar w-16 md:w-64 bg-white shadow-lg flex flex-col">
       <!-- Logo -->
-      <div class="sidebar-header p-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="sidebar-header p-4 border-b border-gray-200">
         <div class="flex items-center space-x-3">
           <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">B</div>
-          <h1 class="text-lg font-semibold text-blue-600 dark:text-blue-400 hidden md:block">BITNETS</h1>
+          <h1 class="text-lg font-semibold text-blue-600 hidden md:block">BITNETS</h1>
         </div>
       </div>
       
       <!-- Usuario -->
-      <div class="user-profile p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
+      <div class="user-profile p-4 border-b border-gray-200 flex items-center">
         <div class="avatar w-10 h-10 rounded-full bg-blue-500 mr-3 flex items-center justify-center text-white">
-          {{ userInitials }}
+          A
         </div>
         <div class="hidden md:block">
-          <div class="text-sm font-medium dark:text-white">{{ username }}</div>
-          <div class="text-xs text-gray-500 dark:text-gray-400">{{ userRole }}</div>
+          <div class="text-sm font-medium">Admin</div>
+          <div class="text-xs text-gray-500">Supervisor</div>
         </div>
       </div>
       
@@ -33,7 +33,7 @@
             </a>
           </li>
           <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300">
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
               </svg>
@@ -41,21 +41,13 @@
             </a>
           </li>
           <li>
-            <a href="#" @click.prevent="showStatisticsSection" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300">
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
                 <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
               </svg>
               <span class="hidden md:inline">Estadísticas</span>
             </a>
-          </li>
-          <li>
-            <NuxtLink to="/profile" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-              </svg>
-              <span class="hidden md:inline">Mi Perfil</span>
-            </NuxtLink>
           </li>
         </ul>
       </nav>
@@ -64,11 +56,11 @@
     <!-- Contenido principal -->
     <div class="flex-1 flex flex-col overflow-hidden">
       <!-- Cabecera mejorada -->
-      <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+      <header class="bg-white border-b border-gray-200 shadow-sm">
         <div class="p-4">
           <div class="flex justify-between items-center mb-4">
             <div class="flex items-center">
-              <div class="relative">
+              <div class="relative mr-4">
                 <input 
                   v-model="searchQuery" 
                   type="text" 
@@ -87,110 +79,14 @@
                 </svg>
               </div>
             </div>
-            <div class="flex items-center">
-              <!-- Botón de notificaciones (campanita) -->
-              <div class="relative">
-                <button 
-                  class="relative bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors dark:bg-gray-700 dark:hover:bg-gray-600"
-                  @click="toggleNotifications"
-                  aria-label="Ver notificaciones"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-300" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-                  </svg>
-                  <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                    {{ unreadNotifications }}
-                  </span>
-                </button>
-                
-                <!-- Dropdown de notificaciones -->
-                <div v-if="showNotificationsDropdown" class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-md shadow-lg overflow-hidden z-50">
-                  <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                    <h3 class="text-sm font-medium text-gray-900 dark:text-white">Notificaciones</h3>
-                    <button 
-                      v-if="notifications.length > 0" 
-                      @click="markAllAsRead"
-                      class="text-xs text-blue-600 dark:text-blue-400 hover:underline"
-                    >
-                      Marcar todas como leídas
-                    </button>
-                  </div>
-                  
-                  <div class="max-h-96 overflow-y-auto">
-                    <div v-if="notifications.length === 0" class="py-4 px-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                      No hay notificaciones
-                    </div>
-                    
-                    <div v-else>
-                      <div 
-                        v-for="notification in notifications" 
-                        :key="notification.id" 
-                        class="block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                        :class="{ 'bg-blue-50 dark:bg-blue-900/20': !notification.read }"
-                      >
-                        <div class="flex items-start">
-                          <div class="flex-shrink-0 mr-3">
-                            <!-- Icono según el tipo de notificación -->
-                            <div :class="getNotificationIconClass(notification.type)" class="p-2 rounded-full">
-                              <svg v-if="notification.type === 'warning'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                              </svg>
-                              <svg v-else-if="notification.type === 'danger'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                            </div>
-                          </div>
-                          <div class="flex-1">
-                            <div class="flex justify-between">
-                              <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                {{ notification.title }}
-                              </p>
-                              <button 
-                                @click.stop="deleteNotification(notification.id)"
-                                class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                              </button>
-                            </div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                              {{ notification.message }}
-                            </p>
-                            <div class="flex justify-between items-center mt-1">
-                              <p class="text-xs text-gray-400 dark:text-gray-500">
-                                {{ formatTime(notification.timestamp) }}
-                              </p>
-                              <button 
-                                v-if="!notification.read"
-                                @click.stop="markNotificationAsRead(notification.id)" 
-                                class="text-xs text-blue-600 dark:text-blue-400 hover:underline"
-                              >
-                                Marcar como leída
-                              </button>
-                              <button 
-                                v-else
-                                @click.stop="handleNotificationClick(notification)" 
-                                class="text-xs text-blue-600 dark:text-blue-400 hover:underline"
-                              >
-                                Ver detalles
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div v-if="notifications.length > 0" class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 text-center">
-                    <a href="#" @click.prevent="viewAllNotifications" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Ver todas las notificaciones</a>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <button class="relative bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+              </svg>
+              <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                {{ getWarnings().length }}
+              </span>
+            </button>
           </div>
           
           <!-- Estadísticas generales -->
@@ -257,107 +153,13 @@
       </header>
 
       <!-- Contenido -->
-      <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 p-6">
-        <!-- Estadísticas detalladas (se muestra cuando se hace clic en el enlace de estadísticas) -->
-        <div v-if="showStatistics" class="mb-6">
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Zona</label>
-                <select v-model="statisticsFilters.zone" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                  <option value="all">Todas las zonas</option>
-                  <option value="1">Zona Norte</option>
-                  <option value="2">Zona Central</option>
-                  <option value="3">Zona Sur</option>
-                </select>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Periodo</label>
-                <select v-model="statisticsFilters.period" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                  <option value="day">Último día</option>
-                  <option value="week">Última semana</option>
-                  <option value="month">Último mes</option>
-                  <option value="year">Último año</option>
-                </select>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Métrica</label>
-                <select v-model="statisticsFilters.metric" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                  <option value="temperature">Temperatura</option>
-                  <option value="oxygen">Oxígeno</option>
-                  <option value="biomass">Biomasa</option>
-                  <option value="pellet">Desperdicio de pellet</option>
-                  <option value="water">Nivel de agua</option>
-                </select>
-              </div>
-              
-              <div class="flex items-end">
-                <button @click="applyStatisticsFilters" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                  Aplicar filtros
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Tabla de detalles -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-              <h2 class="text-lg font-medium text-gray-800 dark:text-white">Detalles por estanque</h2>
-            </div>
-            
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-700">
-                  <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Estanque</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Zona</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Temperatura</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Oxígeno</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Biomasa</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Estado</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  <tr v-for="pond in filteredStatisticsPonds" :key="pond.id" class="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm font-medium text-gray-900 dark:text-white">{{ pond.name }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-500 dark:text-gray-400">{{ getZoneName(pond.zoneId) }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900 dark:text-white">{{ pond.temperature }}°C</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm" :class="getOxygenTextClass(pond.oxygen)">{{ pond.oxygen }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900 dark:text-white">{{ pond.biomass }} kg</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" :class="getStatusClass(pond.status)">
-                        {{ getStatusLabel(pond.status) }}
-                      </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      <button @click.stop="viewPondDetails(pond)" class="text-blue-600 hover:text-blue-900 dark:hover:text-blue-400">Ver detalles</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Secciones destacadas y advertencias (dashboard principal) -->
-        <div v-if="!showStatistics && !selectedZone && !selectedPond" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <!-- Secciones destacadas y advertencias -->
+        <div v-if="!selectedZone && !selectedPond" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <!-- Destacadas -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border-l-4 border-blue-500">
+          <div class="bg-white rounded-lg shadow overflow-hidden border-l-4 border-blue-500">
             <div class="p-4 border-b border-gray-100">
-              <h3 class="font-medium text-gray-800 dark:text-gray-200">Destacadas</h3>
+              <h3 class="font-medium text-gray-800">Destacadas</h3>
             </div>
             <div class="p-4">
               <div class="flex items-center mb-4">
@@ -365,8 +167,8 @@
                   {{ getBestZone().icon }}
                 </div>
                 <div>
-                  <h4 class="font-medium text-gray-800 dark:text-gray-200">{{ getBestZone().name }}</h4>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">Mejor rendimiento general</p>
+                  <h4 class="font-medium text-gray-800">{{ getBestZone().name }}</h4>
+                  <p class="text-sm text-gray-500">Mejor rendimiento general</p>
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-4">
@@ -413,9 +215,9 @@
           </div>
 
           <!-- Advertencias -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border-l-4 border-yellow-500">
+          <div class="bg-white rounded-lg shadow overflow-hidden border-l-4 border-yellow-500">
             <div class="p-4 border-b border-gray-100">
-              <h3 class="font-medium text-gray-800 dark:text-gray-200">Advertencias</h3>
+              <h3 class="font-medium text-gray-800">Advertencias</h3>
             </div>
             <div class="p-4">
               <div v-if="getWarnings().length === 0" class="text-center text-gray-500 py-4">
@@ -433,64 +235,8 @@
                     </svg>
                   </div>
                   <div>
-                    <div class="font-medium text-gray-800 dark:text-gray-200">{{ warning.title }}</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400">{{ warning.message }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Resultados de búsqueda -->
-        <div v-if="showSearchResults && searchResults.length > 0" class="mb-6">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
-              Resultados de búsqueda: "{{ searchQuery }}"
-            </h2>
-            <button 
-              @click="showSearchResults = false" 
-              class="text-sm text-blue-600 hover:text-blue-800 flex items-center"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-              </svg>
-              Cerrar resultados
-            </button>
-          </div>
-          
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div v-for="pond in searchResults" :key="pond.id" 
-                class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
-                @click="selectPond(pond)">
-              <div class="p-4 border-b border-gray-100">
-                <div class="flex justify-between items-center">
-                  <h3 class="font-medium text-gray-800 dark:text-gray-200">{{ pond.name }}</h3>
-                  <span class="text-xs font-semibold px-2 py-1 rounded-full" 
-                      :class="getStatusClass(pond.status)">
-                    {{ getStatusLabel(pond.status) }}
-                  </span>
-                </div>
-              </div>
-              <div class="p-4">
-                <div class="grid grid-cols-2 gap-3">
-                  <div class="col-span-1">
-                    <div class="text-xs text-gray-500 mb-1">Zona</div>
-                    <div class="text-sm font-medium">{{ getZoneName(pond.zoneId) }}</div>
-                  </div>
-                  <div class="col-span-1">
-                    <div class="text-xs text-gray-500 mb-1">Peces</div>
-                    <div class="text-sm font-medium">{{ pond.count }}</div>
-                  </div>
-                  <div class="col-span-1">
-                    <div class="text-xs text-gray-500 mb-1">Temperatura</div>
-                    <div class="text-sm font-medium">{{ pond.temperature }}°C</div>
-                  </div>
-                  <div class="col-span-1">
-                    <div class="text-xs text-gray-500 mb-1">Oxígeno</div>
-                    <div class="text-sm font-medium" :class="getTextColorClass(pond.oxygen)">
-                      {{ pond.oxygenLabel }}
-                    </div>
+                    <div class="font-medium text-gray-800">{{ warning.title }}</div>
+                    <div class="text-xs text-gray-500">{{ warning.message }}</div>
                   </div>
                 </div>
               </div>
@@ -500,14 +246,14 @@
         
         <!-- Zonas de estanques -->
         <div v-if="!selectedZone && !selectedPond" class="mb-6">
-          <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Zonas de Estanques</h2>
+          <h2 class="text-lg font-semibold text-gray-800 mb-4">Zonas de Estanques</h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div v-for="zoneId in [1, 2, 3]" :key="zoneId" 
-                class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
+                class="bg-white rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
                 @click="showZoneDetails(zoneId)">
               <div class="p-4 border-b border-gray-100">
                 <div class="flex justify-between items-center">
-                  <h3 class="font-medium text-gray-800 dark:text-gray-200">
+                  <h3 class="font-medium text-gray-800">
                     {{ zoneId === 1 ? 'Zona Norte' : zoneId === 2 ? 'Zona Central' : 'Zona Sur' }}
                   </h3>
                   <span class="text-xs font-semibold px-2 py-1 rounded-full" 
@@ -518,15 +264,15 @@
               </div>
               <div class="p-4">
                 <div class="flex justify-between mb-2">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Estanques</span>
+                  <span class="text-sm text-gray-500">Estanques</span>
                   <span class="text-sm font-medium">{{ getPondsByZone(zoneId).length }}</span>
                 </div>
                 <div class="flex justify-between mb-2">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Peces</span>
+                  <span class="text-sm text-gray-500">Peces</span>
                   <span class="text-sm font-medium">{{ getTotalFishByZone(zoneId) }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-sm text-gray-500 dark:text-gray-400">Temp. Prom.</span>
+                  <span class="text-sm text-gray-500">Temp. Prom.</span>
                   <span class="text-sm font-medium">{{ getAvgTempByZone(zoneId) }}°C</span>
                 </div>
               </div>
@@ -547,7 +293,7 @@
         <!-- Detalle de Zona Seleccionada -->
         <div v-if="selectedZone && !selectedPond" class="mb-6">
           <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800">
               {{ selectedZone === 1 ? 'Zona Norte' : selectedZone === 2 ? 'Zona Central' : 'Zona Sur' }}
             </h2>
             <button 
@@ -563,11 +309,11 @@
           
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div v-for="pond in getPondsByZone(selectedZone)" :key="pond.id" 
-                class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
+                class="bg-white rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
                 @click="selectPond(pond)">
               <div class="p-4 border-b border-gray-100">
                 <div class="flex justify-between items-center">
-                  <h3 class="font-medium text-gray-800 dark:text-gray-200">{{ pond.name }}</h3>
+                  <h3 class="font-medium text-gray-800">{{ pond.name }}</h3>
                   <span class="w-3 h-3 rounded-full" :class="getStatusDotClass(pond.status)"></span>
                 </div>
               </div>
@@ -610,7 +356,7 @@
         <!-- Detalle de Estanque Seleccionado -->
         <div v-if="selectedPond" class="mb-6">
           <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ selectedPond.name }}</h2>
+            <h2 class="text-lg font-semibold text-gray-800">{{ selectedPond.name }}</h2>
             <button 
               @click="backFromPondDetail" 
               class="flex items-center text-sm text-blue-600 hover:text-blue-800"
@@ -624,7 +370,7 @@
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <!-- Tarjeta principal -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+            <div class="bg-white rounded-lg shadow">
               <div class="p-4 border-b border-gray-200">
                 <div class="flex justify-between items-center">
                   <div class="flex items-center">
@@ -633,8 +379,8 @@
                       {{ selectedPond.name.substring(0, 1) }}
                     </div>
                     <div>
-                      <h3 class="font-medium text-gray-800 dark:text-gray-200">{{ selectedPond.name }}</h3>
-                      <div class="text-xs text-gray-500 dark:text-gray-400">
+                      <h3 class="font-medium text-gray-800">{{ selectedPond.name }}</h3>
+                      <div class="text-xs text-gray-500">
                         Zona {{ selectedPond.zoneId === 1 ? 'Norte' : selectedPond.zoneId === 2 ? 'Central' : 'Sur' }}
                       </div>
                     </div>
@@ -650,12 +396,12 @@
                   <div class="bg-blue-50 rounded-lg p-3">
                     <div class="text-xs text-gray-500 mb-1">Población</div>
                     <div class="text-xl font-medium text-blue-700">{{ selectedPond.count }}</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400">peces</div>
+                    <div class="text-xs text-gray-500">peces</div>
                   </div>
                   <div class="bg-green-50 rounded-lg p-3">
                     <div class="text-xs text-gray-500 mb-1">Biomasa</div>
                     <div class="text-xl font-medium text-green-700">{{ selectedPond.biomass }}</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400">kg</div>
+                    <div class="text-xs text-gray-500">kg</div>
                   </div>
                 </div>
                 
@@ -757,20 +503,20 @@
             
             <!-- Tarjeta de webcam y corriente -->
             <div class="space-y-6">
-              <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+              <div class="bg-white rounded-lg shadow">
                 <div class="p-4 border-b border-gray-200">
-                  <h3 class="font-medium text-gray-800 dark:text-gray-200">Corriente y flujo</h3>
+                  <h3 class="font-medium text-gray-800">Corriente y flujo</h3>
                 </div>
                 <div class="p-4">
                   <div class="flex justify-between mb-4">
                     <div>
-                      <div class="text-sm text-gray-500 dark:text-gray-400">Corriente</div>
+                      <div class="text-sm text-gray-500">Corriente</div>
                       <div class="text-lg font-medium" :class="getCurrentClass(selectedPond.current)">
                         {{ selectedPond.currentLabel }}
                       </div>
                     </div>
                     <div>
-                      <div class="text-sm text-gray-500 dark:text-gray-400">Estado flujo</div>
+                      <div class="text-sm text-gray-500">Estado flujo</div>
                       <div class="flex items-center">
                         <span class="w-3 h-3 rounded-full mr-2" 
                             :class="getFlowStatusClass(selectedPond.flowStatus)"></span>
@@ -786,15 +532,15 @@
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
-                      <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">Visualización de corriente</div>
+                      <div class="mt-2 text-sm text-gray-500">Visualización de corriente</div>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+              <div class="bg-white rounded-lg shadow">
                 <div class="p-4 border-b border-gray-200">
-                  <h3 class="font-medium text-gray-800 dark:text-gray-200">Webcam en vivo</h3>
+                  <h3 class="font-medium text-gray-800">Webcam en vivo</h3>
                 </div>
                 <div class="p-4">
                   <div class="bg-gray-900 rounded-lg overflow-hidden h-48 flex items-center justify-center">
@@ -822,26 +568,17 @@
 </template>
 
 <script>
-import { useNuxtApp } from '#app'
-
 export default {
-  name: 'Dashboard',
+  name: 'Dasboard',
   data() {
     return {
       username: 'Admin',
-      userRole: 'Supervisor',
       selectedZone: null,
       selectedPond: null,
-      showNotificationsDropdown: false,
-      showStatistics: false,
+      isSidebarCollapsed: true,
       searchQuery: '',
       searchResults: [],
       showSearchResults: false,
-      statisticsFilters: {
-        zone: 'all',
-        period: 'month',
-        metric: 'temperature'
-      },
       ponds: [
         {
           id: 1,
@@ -1009,80 +746,7 @@ export default {
       ]
     }
   },
-  computed: {
-    userInitials() {
-      if (!this.username) return 'U';
-      return this.username.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-    },
-    unreadNotifications() {
-      const nuxtApp = useNuxtApp();
-      return nuxtApp.$notifications?.unreadCount?.value || 0;
-    },
-    notifications() {
-      const nuxtApp = useNuxtApp();
-      return nuxtApp.$notifications?.headerNotifications?.value || [];
-    },
-    filteredStatisticsPonds() {
-      let result = [...this.ponds];
-      
-      // Filtrar por zona
-      if (this.statisticsFilters.zone !== 'all') {
-        result = result.filter(pond => pond.zoneId === parseInt(this.statisticsFilters.zone));
-      }
-      
-      return result;
-    }
-  },
-  mounted() {
-    // Cargar datos del usuario
-    this.loadUserData();
-    
-    // Cargar advertencias como notificaciones
-    this.loadWarningsAsNotifications();
-    
-    // Cerrar el dropdown de notificaciones al hacer clic fuera de él
-    document.addEventListener('click', this.handleClickOutside);
-  },
-  beforeUnmount() {
-    document.removeEventListener('click', this.handleClickOutside);
-  },
   methods: {
-    loadUserData() {
-      // Cargar datos del usuario desde localStorage
-      const savedUser = localStorage.getItem('user');
-      if (savedUser) {
-        try {
-          const parsedUser = JSON.parse(savedUser);
-          if (parsedUser.name) {
-            this.username = parsedUser.name;
-          }
-          if (parsedUser.role) {
-            this.userRole = parsedUser.role;
-          }
-        } catch (e) {
-          console.error('Error al cargar datos del usuario:', e);
-        }
-      }
-    },
-    loadWarningsAsNotifications() {
-      // Obtener todas las advertencias
-      const warnings = this.getWarnings();
-      
-      // Convertirlas en notificaciones
-      if (warnings.length > 0) {
-        const nuxtApp = useNuxtApp();
-        if (nuxtApp.$notifications) {
-          warnings.forEach(warning => {
-            nuxtApp.$notifications.notify({
-              title: warning.title,
-              message: warning.message,
-              type: warning.status === 'danger' ? 'danger' : 'warning',
-              showToast: false // No mostrar toast, solo añadir a la campanita
-            });
-          });
-        }
-      }
-    },
     toggleSidebar() {
       this.isSidebarCollapsed = !this.isSidebarCollapsed;
     },
@@ -1219,11 +883,11 @@ export default {
     },
     getStatusClass(status) {
       if (status === 'danger') {
-        return 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
+        return 'bg-red-100 text-red-700';
       } else if (status === 'warning') {
-        return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300';
+        return 'bg-yellow-100 text-yellow-700';
       } else {
-        return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+        return 'bg-green-100 text-green-700';
       }
     },
     getStatusLabel(status) {
@@ -1287,194 +951,13 @@ export default {
         this.selectedZone = null;
       }
     },
-    showWarningNotifications() {
-      // Obtener advertencias
-      const warnings = this.getWarnings();
-      
-      // Si hay advertencias, mostrarlas como notificaciones
-      if (warnings.length > 0) {
-        const nuxtApp = useNuxtApp();
-        
-        // Mostrar solo las primeras 3 advertencias para no saturar
-        warnings.slice(0, 3).forEach(warning => {
-          nuxtApp.$notifications?.showWarning(
-            warning.message,
-            warning.title
-          );
-        });
-        
-        // Si hay más advertencias, mostrar una notificación adicional
-        if (warnings.length > 3) {
-          nuxtApp.$notifications?.showInfo(
-            `Hay ${warnings.length - 3} advertencias adicionales`,
-            'Más advertencias'
-          );
-        }
-      }
-    },
-    handleClickOutside(event) {
-      if (!this.$el.contains(event.target)) {
-        this.showNotificationsDropdown = false;
-      }
-    },
-    toggleNotifications() {
-      this.showNotificationsDropdown = !this.showNotificationsDropdown;
-    },
-    
-    handleNotificationClick(notification) {
-      const nuxtApp = useNuxtApp();
-      
-      // Marcar como leída
-      if (nuxtApp.$notifications) {
-        nuxtApp.$notifications.markAsRead(notification.id);
-      }
-      
-      // Navegar a la página relevante o mostrar el estanque específico
-      if (notification.link) {
-        const url = new URL(notification.link, window.location.origin);
-        const pondId = url.searchParams.get('pond');
-        
-        if (pondId) {
-          // Buscar el estanque por ID
-          const pondIdNum = parseInt(pondId, 10);
-          const pond = this.ponds.find(p => p.id === pondIdNum);
-          
-          // Si se encuentra, mostrar sus detalles
-          if (pond) {
-            this.selectedZone = null;
-            this.selectedPond = pond;
-          }
-        }
-      } else if (notification.type === 'danger' || notification.type === 'warning') {
-        this.$router.push('/statistics');
-      }
-      
-      this.showNotificationsDropdown = false;
-    },
-    
-    markAllAsRead() {
-      const nuxtApp = useNuxtApp();
-      if (nuxtApp.$notifications) {
-        nuxtApp.$notifications.markAllAsRead();
-      }
-    },
-    
-    viewAllNotifications() {
-      // Aquí podrías navegar a una página de todas las notificaciones
-      // o expandir el panel actual
-      console.log('Ver todas las notificaciones');
-      this.showNotificationsDropdown = false;
-    },
-    
-    formatTime(timestamp) {
-      if (!timestamp) return '';
-      
-      const now = new Date();
-      const date = new Date(timestamp);
-      const diff = Math.floor((now - date) / 60000); // diferencia en minutos
-      
-      if (diff < 1) return 'Justo ahora';
-      if (diff < 60) return `Hace ${diff} minutos`;
-      
-      const hours = Math.floor(diff / 60);
-      if (hours < 24) return `Hace ${hours} horas`;
-      
-      const days = Math.floor(hours / 24);
-      return `Hace ${days} días`;
-    },
-    
-    getNotificationIconClass(type) {
-      switch (type) {
-        case 'danger':
-          return 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400';
-        case 'warning':
-          return 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400';
-        default:
-          return 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400';
-      }
-    },
-    showStatisticsSection() {
-      this.showStatistics = true;
+    resetDashboard() {
       this.selectedZone = null;
       this.selectedPond = null;
+      this.searchQuery = '';
+      this.searchResults = [];
+      this.showSearchResults = false;
     },
-    
-    applyStatisticsFilters() {
-      // Aquí iría la lógica para aplicar los filtros de estadísticas
-      const nuxtApp = useNuxtApp();
-      nuxtApp.$notifications?.showSuccess('Filtros aplicados correctamente');
-    },
-    
-    getOxygenTextClass(oxygen) {
-      if (oxygen === 'Alto') return 'text-green-600 dark:text-green-400';
-      if (oxygen === 'Normal') return 'text-blue-600 dark:text-blue-400';
-      if (oxygen === 'Bajo') return 'text-red-600 dark:text-red-400';
-      return 'text-gray-600 dark:text-gray-400';
-    },
-    
-    viewPondDetails(pond) {
-      this.selectedPond = pond;
-      
-      // Si el estanque tiene alertas, mostrar notificación
-      if (pond.status === 'warning' || pond.status === 'danger') {
-        this.sendPondAlert(pond);
-      }
-    },
-    
-    // Método para enviar alertas al sistema de notificaciones
-    sendPondAlert(pond) {
-      const nuxtApp = useNuxtApp();
-      if (!nuxtApp.$notifications) return;
-      
-      let alertType, alertTitle, alertMessage;
-      
-      // Determinar el tipo de alerta basado en el estado del estanque
-      if (pond.status === 'danger') {
-        alertType = 'danger';
-        alertTitle = 'Alerta crítica';
-        
-        // Determinar el mensaje específico basado en los valores del estanque
-        if (pond.temperature > 20.5) {
-          alertMessage = `${pond.name}: Temperatura crítica (${pond.temperature}°C)`;
-        } else if (pond.oxygen === 'Bajo') {
-          alertMessage = `${pond.name}: Nivel de oxígeno peligrosamente bajo`;
-        } else if (pond.waterLevel < 50) {
-          alertMessage = `${pond.name}: Nivel de agua crítico (${pond.waterLevel}%)`;
-        } else if (pond.pelletWaste > 50) {
-          alertMessage = `${pond.name}: Desperdicio de pellet crítico (${pond.pelletWaste}%)`;
-        } else {
-          alertMessage = `${pond.name}: Estado crítico detectado`;
-        }
-      } else if (pond.status === 'warning') {
-        alertType = 'warning';
-        alertTitle = 'Advertencia';
-        
-        // Determinar el mensaje específico basado en los valores del estanque
-        if (pond.temperature > 19.5) {
-          alertMessage = `${pond.name}: Temperatura elevada (${pond.temperature}°C)`;
-        } else if (pond.oxygen === 'Bajo') {
-          alertMessage = `${pond.name}: Nivel de oxígeno bajo`;
-        } else if (pond.waterLevel < 70) {
-          alertMessage = `${pond.name}: Nivel de agua bajo (${pond.waterLevel}%)`;
-        } else if (pond.pelletWaste > 30) {
-          alertMessage = `${pond.name}: Desperdicio de pellet alto (${pond.pelletWaste}%)`;
-        } else {
-          alertMessage = `${pond.name}: Advertencia detectada`;
-        }
-      } else {
-        return; // No hay alerta para estanques normales
-      }
-      
-      // Enviar la notificación usando el sistema global
-      nuxtApp.$notifications.notify({
-        title: alertTitle,
-        message: alertMessage,
-        type: alertType,
-        link: `#pond-${pond.id}`,
-        showToast: true
-      });
-    },
-    // Método para buscar estanques
     searchPonds() {
       if (!this.searchQuery.trim()) {
         this.showSearchResults = false;
@@ -1491,15 +974,6 @@ export default {
         // Si solo hay un resultado, mostrar directamente ese estanque
         this.selectPond(this.searchResults[0]);
         this.showSearchResults = false;
-        
-        // Mostrar notificación de búsqueda exitosa
-        const nuxtApp = useNuxtApp();
-        if (nuxtApp.$notifications) {
-          nuxtApp.$notifications.showSuccess(
-            `Estanque "${this.searchResults[0].name}" encontrado`,
-            'Búsqueda exitosa'
-          );
-        }
       } else if (this.searchResults.length > 0) {
         // Si hay múltiples resultados, mostrarlos
         this.showSearchResults = true;
@@ -1519,49 +993,33 @@ export default {
       } else {
         // Si no hay resultados
         this.showSearchResults = false;
-        
-        // Mostrar notificación de no encontrado
-        const nuxtApp = useNuxtApp();
-        if (nuxtApp.$notifications) {
-          nuxtApp.$notifications.showWarning(
-            `No se encontraron estanques con "${this.searchQuery}"`,
-            'Sin resultados'
-          );
-        }
       }
     },
-    
-    // Método para eliminar una notificación
-    deleteNotification(notificationId) {
-      const nuxtApp = useNuxtApp();
-      if (nuxtApp.$notifications) {
-        nuxtApp.$notifications.deleteNotification(notificationId);
-      }
-    },
-    
-    // Método para marcar una notificación como leída
-    markNotificationAsRead(notificationId) {
-      const nuxtApp = useNuxtApp();
-      if (nuxtApp.$notifications) {
-        nuxtApp.$notifications.markAsRead(notificationId);
-      }
-    },
-    
     getZoneName(zoneId) {
       return zoneId === 1 ? 'Zona Norte' : zoneId === 2 ? 'Zona Central' : 'Zona Sur';
     },
-    resetDashboard() {
-      this.selectedZone = null;
-      this.selectedPond = null;
-      this.showStatistics = false;
-      this.searchQuery = '';
-      this.searchResults = [];
-      this.showSearchResults = false;
-      this.statisticsFilters = {
-        zone: 'all',
-        period: 'month',
-        metric: 'temperature'
-      };
+    mounted() {
+      // Cargar advertencias como notificaciones
+      this.loadWarningsAsNotifications();
+    },
+    loadWarningsAsNotifications() {
+      // Obtener todas las advertencias
+      const warnings = this.getWarnings();
+      
+      // Convertirlas en notificaciones
+      if (warnings.length > 0) {
+        const nuxtApp = useNuxtApp();
+        if (nuxtApp.$notifications) {
+          warnings.forEach(warning => {
+            nuxtApp.$notifications.notify({
+              title: warning.title,
+              message: warning.message,
+              type: warning.status === 'danger' ? 'danger' : 'warning',
+              showToast: false // No mostrar toast, solo añadir a la campanita
+            });
+          });
+        }
+      }
     }
   }
 }
