@@ -89,13 +89,13 @@ export default {
     getNotificationClass(type) {
       switch (type) {
         case 'success':
-          return 'bg-green-500';
+          return 'bg-green-600 dark:bg-green-700 shadow-green-200 dark:shadow-green-900/20';
         case 'error':
-          return 'bg-red-500';
+          return 'bg-red-600 dark:bg-red-700 shadow-red-200 dark:shadow-red-900/20';
         case 'warning':
-          return 'bg-yellow-500';
+          return 'bg-yellow-600 dark:bg-yellow-700 shadow-yellow-200 dark:shadow-yellow-900/20';
         default:
-          return 'bg-blue-500';
+          return 'bg-blue-600 dark:bg-blue-700 shadow-blue-200 dark:shadow-blue-900/20';
       }
     },
     

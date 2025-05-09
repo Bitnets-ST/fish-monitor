@@ -1,29 +1,18 @@
-// Plugin para manejar el modo oscuro en la aplicación
+// Plugin para manejar el modo oscuro
 export default defineNuxtPlugin((nuxtApp) => {
-  const darkMode = useState('darkMode', () => {
-    // Verificar si hay una preferencia guardada en localStorage
-    if (process.client) {
-      const savedMode = localStorage.getItem('darkMode');
-      if (savedMode !== null) {
-        return savedMode === 'true';
-      }
-      // Si no hay preferencia, usar la preferencia del sistema
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return false;
-  });
-
-  // Función para cambiar entre modo claro y oscuro
+  // Crear un objeto reactivo para el estado del modo oscuro
+  const darkMode = ref(false);
+  
+  // Función para alternar el modo oscuro
   const toggleDarkMode = () => {
     darkMode.value = !darkMode.value;
+    
+    // Guardar preferencia en localStorage
     if (process.client) {
-      localStorage.setItem('darkMode', darkMode.value.toString());
-      applyDarkMode();
+      localStorage.setItem('darkMode', darkMode.value ? 'true' : 'false');
     }
-  };
-
-  // Función para aplicar el modo oscuro al DOM
-  const applyDarkMode = () => {
+    
+    // Aplicar clase al elemento html
     if (process.client) {
       if (darkMode.value) {
         document.documentElement.classList.add('dark');
@@ -32,22 +21,39 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     }
   };
-
-  // Aplicar el modo oscuro al cargar la página
+  
+  // Inicializar el modo oscuro basado en la preferencia guardada
   if (process.client) {
-    nuxtApp.hook('app:mounted', () => {
-      applyDarkMode();
+    // Verificar si hay una preferencia guardada
+    const savedPreference = localStorage.getItem('darkMode');
+    
+    if (savedPreference === 'true') {
+      darkMode.value = true;
+      document.documentElement.classList.add('dark');
+    } else if (savedPreference === null) {
+      // Si no hay preferencia guardada, usar la preferencia del sistema
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      darkMode.value = prefersDark;
+      
+      if (prefersDark) {
+        document.documentElement.classList.add('dark');
+      }
+    }
+    
+    // Escuchar cambios en la preferencia del sistema
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (localStorage.getItem('darkMode') === null) {
+        darkMode.value = e.matches;
+        if (e.matches) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
     });
   }
-
-  // Exponer funciones y estado globalmente
-  nuxtApp.$darkMode = darkMode;
-  nuxtApp.$toggleDarkMode = toggleDarkMode;
-
-  return {
-    provide: {
-      darkMode,
-      toggleDarkMode
-    }
-  };
+  
+  // Proporcionar el estado y la función de alternar
+  nuxtApp.provide('darkMode', darkMode);
+  nuxtApp.provide('toggleDarkMode', toggleDarkMode);
 }); 
