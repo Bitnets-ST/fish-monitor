@@ -1,8 +1,9 @@
 <template>
-  <div>
+  <div :class="{ 'dark': isDarkMode }">
     <BitnetsSplashScreen v-if="isLoading" />
-    <div v-else class="page-content" :class="{ 'fade-in': !isLoading }">
+    <div v-else class="page-content dark:bg-gray-900 dark:text-white min-h-screen transition-colors duration-300" :class="{ 'fade-in': !isLoading }">
       <AppHeader v-if="!isLoginPage" />
+      <NotificationSystem ref="notificationSystem" />
       <div :class="{ 'pt-16': !isLoginPage }">
         <NuxtPage />
       </div>
@@ -13,12 +14,15 @@
 <script>
 import BitnetsSplashScreen from '~/components/BitnetsSplashScreen.vue'
 import AppHeader from '~/components/AppHeader.vue'
+import NotificationSystem from '~/components/NotificationSystem.vue'
+import { useNuxtApp } from '#app'
 
 export default {
   name: 'DefaultLayout',
   components: {
     BitnetsSplashScreen,
-    AppHeader
+    AppHeader,
+    NotificationSystem
   },
   data() {
     return {
@@ -28,9 +32,19 @@ export default {
   computed: {
     isLoginPage() {
       return this.$route.path === '/login' || this.$route.path === '/register';
+    },
+    isDarkMode() {
+      const nuxtApp = useNuxtApp();
+      return nuxtApp.$darkMode?.value || false;
     }
   },
   mounted() {
+    // Registrar el sistema de notificaciones
+    const nuxtApp = useNuxtApp();
+    if (nuxtApp.$notifications) {
+      nuxtApp.$notifications.setNotificationSystem(this.$refs.notificationSystem);
+    }
+    
     // Preload assets before hiding splash screen
     window.addEventListener('load', this.startAppTransition);
     
