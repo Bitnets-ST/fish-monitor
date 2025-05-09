@@ -25,7 +25,7 @@
       <nav class="flex-1 py-4">
         <ul class="space-y-1">
           <li>
-            <a href="#" class="flex items-center px-4 py-3 text-blue-600 bg-blue-50 border-l-4 border-blue-600">
+            <a href="#" @click.prevent="resetDashboard" class="flex items-center px-4 py-3 text-blue-600 bg-blue-50 border-l-4 border-blue-600">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </svg>
@@ -59,23 +59,34 @@
       <header class="bg-white border-b border-gray-200 shadow-sm">
         <div class="p-4">
           <div class="flex justify-between items-center mb-4">
-            <div class="text-xl font-semibold text-gray-800">BITNETS Fish Monitor</div>
             <div class="flex items-center">
               <div class="relative mr-4">
-                <input type="text" placeholder="Buscar estanque..." class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 absolute left-2.5 top-2.5" viewBox="0 0 20 20" fill="currentColor">
+                <input 
+                  v-model="searchQuery" 
+                  type="text" 
+                  placeholder="Buscar estanque..." 
+                  class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  @keyup.enter="searchPonds" 
+                />
+                <svg 
+                  @click="searchPonds"
+                  xmlns="http://www.w3.org/2000/svg" 
+                  class="h-4 w-4 text-gray-400 absolute left-2.5 top-2.5 cursor-pointer" 
+                  viewBox="0 0 20 20" 
+                  fill="currentColor"
+                >
                   <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                 </svg>
               </div>
-              <button class="relative bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-                </svg>
-                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                  {{ getWarnings().length }}
-                </span>
-              </button>
             </div>
+            <button class="relative bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+              </svg>
+              <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                {{ getWarnings().length }}
+              </span>
+            </button>
           </div>
           
           <!-- Estadísticas generales -->
@@ -565,6 +576,9 @@ export default {
       selectedZone: null,
       selectedPond: null,
       isSidebarCollapsed: true,
+      searchQuery: '',
+      searchResults: [],
+      showSearchResults: false,
       ponds: [
         {
           id: 1,
@@ -935,6 +949,76 @@ export default {
         // Si no hay zona seleccionada, volvemos al dashboard principal
         this.selectedPond = null;
         this.selectedZone = null;
+      }
+    },
+    resetDashboard() {
+      this.selectedZone = null;
+      this.selectedPond = null;
+      this.searchQuery = '';
+      this.searchResults = [];
+      this.showSearchResults = false;
+    },
+    searchPonds() {
+      if (!this.searchQuery.trim()) {
+        this.showSearchResults = false;
+        return;
+      }
+      
+      const query = this.searchQuery.toLowerCase().trim();
+      this.searchResults = this.ponds.filter(pond => {
+        return pond.name.toLowerCase().includes(query) || 
+               this.getZoneName(pond.zoneId).toLowerCase().includes(query);
+      });
+      
+      if (this.searchResults.length === 1) {
+        // Si solo hay un resultado, mostrar directamente ese estanque
+        this.selectPond(this.searchResults[0]);
+        this.showSearchResults = false;
+      } else if (this.searchResults.length > 0) {
+        // Si hay múltiples resultados, mostrarlos
+        this.showSearchResults = true;
+        
+        // Mostrar la zona con más resultados
+        const zoneCount = {};
+        this.searchResults.forEach(pond => {
+          zoneCount[pond.zoneId] = (zoneCount[pond.zoneId] || 0) + 1;
+        });
+        
+        const maxZone = Object.keys(zoneCount).reduce((a, b) => 
+          zoneCount[a] > zoneCount[b] ? a : b
+        );
+        
+        this.selectedZone = parseInt(maxZone);
+        this.selectedPond = null;
+      } else {
+        // Si no hay resultados
+        this.showSearchResults = false;
+      }
+    },
+    getZoneName(zoneId) {
+      return zoneId === 1 ? 'Zona Norte' : zoneId === 2 ? 'Zona Central' : 'Zona Sur';
+    },
+    mounted() {
+      // Cargar advertencias como notificaciones
+      this.loadWarningsAsNotifications();
+    },
+    loadWarningsAsNotifications() {
+      // Obtener todas las advertencias
+      const warnings = this.getWarnings();
+      
+      // Convertirlas en notificaciones
+      if (warnings.length > 0) {
+        const nuxtApp = useNuxtApp();
+        if (nuxtApp.$notifications) {
+          warnings.forEach(warning => {
+            nuxtApp.$notifications.notify({
+              title: warning.title,
+              message: warning.message,
+              type: warning.status === 'danger' ? 'danger' : 'warning',
+              showToast: false // No mostrar toast, solo añadir a la campanita
+            });
+          });
+        }
       }
     }
   }
