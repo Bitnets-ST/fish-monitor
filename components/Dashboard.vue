@@ -5,7 +5,12 @@
       <!-- Logo -->
       <div class="sidebar-header p-4 border-b border-gray-200 dark:border-gray-700">
         <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">B</div>
+          <div v-if="userProfileImage" class="w-8 h-8 rounded-full overflow-hidden">
+            <img :src="userProfileImage" alt="Foto de perfil" class="w-full h-full object-cover" />
+          </div>
+          <div v-else class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+            {{ getUserInitials() }}
+          </div>
           <!-- Usuario -->
           <div class="hidden md:block">
             <div class="text-lg font-semibold text-blue-600 dark:text-blue-400">{{ username }}</div>
@@ -18,7 +23,9 @@
       <nav class="flex-1 py-4">
         <ul class="space-y-1">
           <li>
-            <a href="#" @click.prevent="resetDashboard" class="flex items-center px-4 py-3 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 dark:border-blue-400">
+            <a href="#" @click.prevent="resetDashboard" 
+              class="flex items-center px-4 py-3 transition-colors duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+              :class="{'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 dark:border-blue-400': !selectedZone && !selectedPond}">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </svg>
@@ -26,15 +33,18 @@
             </a>
           </li>
           <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30">
+            <a href="#" @click.prevent="showCamerasView" 
+              class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-200">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.001 7.002V11.002C14.001 11.5542 14.4488 12.002 15.001 12.002H19.001C19.5532 12.002 20.001 11.5542 20.001 11.002V7.002C20.001 6.44979 19.5532 6.002 19.001 6.002H15.001C14.4488 6.002 14.001 6.44979 14.001 7.002Z" />
               </svg>
-              <span class="hidden md:inline">Estanques</span>
+              <span class="hidden md:inline">Cámaras</span>
             </a>
           </li>
           <li>
-            <a href="#" @click.prevent="showStatistics" class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30">
+            <a href="#" @click.prevent="showStatistics" 
+              class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-200">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
                 <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
@@ -43,7 +53,8 @@
             </a>
           </li>
           <li>
-            <a href="#" @click.prevent="showUserProfile" class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30">
+            <a href="#" @click.prevent="showUserProfile" 
+              class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-200">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
               </svg>
@@ -105,7 +116,7 @@
                   <h3 class="font-medium text-gray-800 dark:text-white">Notificaciones</h3>
                   <button 
                     v-if="$notifications && $notifications.headerNotifications.length > 0" 
-                    @click="$notifications.markAllAsRead()" 
+                    @click="markAllAsRead()" 
                     class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                   >
                     Marcar todas como leídas
@@ -122,14 +133,14 @@
                     :key="notification.id" 
                     class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                     :class="{ 'bg-blue-50 dark:bg-blue-900/20': !notification.read }"
-                    @click="$notifications.markAsRead(notification.id)"
+                    @click="markAsRead(notification.id)"
                   >
                     <div class="flex justify-between">
                       <div class="font-medium text-gray-800 dark:text-white" :class="{ 'text-blue-600 dark:text-blue-400': !notification.read }">
                         {{ notification.title }}
                       </div>
                       <button 
-                        @click.stop="$notifications.deleteNotification(notification.id)" 
+                        @click.stop="deleteNotification(notification.id)" 
                         class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -336,7 +347,7 @@
           <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Zonas de Estanques</h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div v-for="zoneId in [1, 2, 3]" :key="zoneId" 
-                class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
+                class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden"
                 @click="showZoneDetails(zoneId)">
               <div class="p-4 border-b border-gray-100 dark:border-gray-700">
                 <div class="flex justify-between items-center">
@@ -371,7 +382,7 @@
                     {{ pond.name.substring(0, 1) }}
                   </div>
                 </div>
-                <button class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Detalles</button>
+                <button class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">Detalles</button>
               </div>
             </div>
           </div>
@@ -385,7 +396,7 @@
             </h2>
             <button 
               @click="selectedZone = null" 
-              class="flex items-center text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+              class="flex items-center text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
@@ -396,7 +407,7 @@
           
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div v-for="pond in getPondsByZone(selectedZone)" :key="pond.id" 
-                class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
+                class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden"
                 @click="selectPond(pond)">
               <div class="p-4 border-b border-gray-100 dark:border-gray-700">
                 <div class="flex justify-between items-center">
@@ -434,7 +445,7 @@
                     {{ getStatusLabel(pond.status) }}
                   </span>
                 </div>
-                <button class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Ver completo</button>
+                <button class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">Ver completo</button>
               </div>
             </div>
           </div>
@@ -443,10 +454,10 @@
         <!-- Detalle de Estanque Seleccionado -->
         <div v-if="selectedPond" class="mb-6">
           <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-800">{{ selectedPond.name }}</h2>
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">{{ selectedPond.name }}</h2>
             <button 
               @click="backFromPondDetail" 
-              class="flex items-center text-sm text-blue-600 hover:text-blue-800"
+              class="flex items-center text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md ml-auto"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
@@ -669,6 +680,7 @@ export default {
       searchResults: [],
       showSearchResults: false,
       showNotifications: false,
+      profileImage: null,
       ponds: [
         {
           id: 1,
@@ -844,11 +856,18 @@ export default {
     notifications() {
       const nuxtApp = useNuxtApp();
       return nuxtApp.$notifications || null;
+    },
+    userProfileImage() {
+      const nuxtApp = useNuxtApp();
+      return nuxtApp.$profileImage?.value || this.profileImage;
     }
   },
   mounted() {
     // Cargar datos del usuario
     this.loadUserData();
+    
+    // Cargar la foto de perfil
+    this.loadProfileImage();
     
     // Cargar advertencias como notificaciones después de que el componente esté montado
     this.$nextTick(() => {
@@ -872,6 +891,19 @@ export default {
           console.error('Error al cargar datos del usuario:', e);
         }
       }
+    },
+    loadProfileImage() {
+      // Cargar la imagen de perfil desde localStorage
+      if (process.client) {
+        const savedProfileImage = localStorage.getItem('profileImage');
+        if (savedProfileImage) {
+          this.profileImage = savedProfileImage;
+        }
+      }
+    },
+    getUserInitials() {
+      if (!this.username) return 'A';
+      return this.username.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
     },
     toggleSidebar() {
       this.isSidebarCollapsed = !this.isSidebarCollapsed;
@@ -1199,6 +1231,10 @@ export default {
       // Navegar a la página de perfil
       this.$router.push('/profile');
     },
+    showCamerasView() {
+      // Navegar a la página de cámaras
+      this.$router.push('/cameras');
+    },
     uploadProfilePhoto() {
       // Activar el input de archivo oculto
       this.$refs.photoInput.click();
@@ -1222,6 +1258,27 @@ export default {
         message: 'La foto se ha actualizado correctamente',
         type: 'success'
       });
+    },
+    markAllAsRead() {
+      // Marcar todas las notificaciones como leídas
+      const nuxtApp = useNuxtApp();
+      if (nuxtApp.$notifications) {
+        nuxtApp.$notifications.markAllAsRead();
+      }
+    },
+    markAsRead(notificationId) {
+      // Marcar una notificación específica como leída
+      const nuxtApp = useNuxtApp();
+      if (nuxtApp.$notifications) {
+        nuxtApp.$notifications.markAsRead(notificationId);
+      }
+    },
+    deleteNotification(notificationId) {
+      // Eliminar una notificación específica
+      const nuxtApp = useNuxtApp();
+      if (nuxtApp.$notifications) {
+        nuxtApp.$notifications.deleteNotification(notificationId);
+      }
     }
   }
 }

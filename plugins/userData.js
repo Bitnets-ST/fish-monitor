@@ -8,6 +8,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     phone: ''
   });
   
+  // Variable reactiva para la foto de perfil
+  const profileImage = ref(null);
+  
   // Función para actualizar los datos del usuario
   const updateUserData = (newUserData) => {
     userData.value = { ...userData.value, ...newUserData };
@@ -15,6 +18,16 @@ export default defineNuxtPlugin((nuxtApp) => {
     // Guardar en localStorage
     if (process.client) {
       localStorage.setItem('user', JSON.stringify(userData.value));
+    }
+  };
+  
+  // Función para actualizar la foto de perfil
+  const updateProfileImage = (imageData) => {
+    profileImage.value = imageData;
+    
+    // Guardar en localStorage
+    if (process.client) {
+      localStorage.setItem('profileImage', imageData);
     }
   };
   
@@ -26,12 +39,20 @@ export default defineNuxtPlugin((nuxtApp) => {
         const parsedUser = JSON.parse(savedUser);
         userData.value = { ...userData.value, ...parsedUser };
       }
+      
+      // Cargar foto de perfil
+      const savedProfileImage = localStorage.getItem('profileImage');
+      if (savedProfileImage) {
+        profileImage.value = savedProfileImage;
+      }
     } catch (e) {
       console.error('Error al cargar datos del usuario:', e);
     }
   }
   
-  // Proporcionar el estado y la función de actualizar
+  // Proporcionar el estado y las funciones de actualización
   nuxtApp.provide('userData', userData);
   nuxtApp.provide('updateUserData', updateUserData);
+  nuxtApp.provide('profileImage', profileImage);
+  nuxtApp.provide('updateProfileImage', updateProfileImage);
 }); 
