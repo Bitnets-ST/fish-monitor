@@ -63,6 +63,19 @@
           </li>
         </ul>
       </nav>
+      
+      <!-- Botón de cierre de sesión al final del sidebar -->
+      <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+        <button 
+          @click="logout" 
+          class="flex items-center justify-center md:justify-start w-full px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 rounded-lg"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V3a1 1 0 00-1-1H3zm9.5 11a.5.5 0 01-.5-.5v-6a.5.5 0 01.5-.5h1a.5.5 0 01.5.5v6a.5.5 0 01-.5.5h-1zm-3-7a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5h1a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-1zm-.5 2a.5.5 0 00.5.5h1a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-1a.5.5 0 00-.5.5v1z" clip-rule="evenodd" />
+          </svg>
+          <span class="hidden md:inline">Cerrar sesión</span>
+        </button>
+      </div>
     </aside>
 
     <!-- Contenido principal -->
@@ -666,7 +679,9 @@
 </template>
 
 <script>
-import { useNuxtApp } from '#app'
+import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { useNuxtApp } from '#app';
+import { User } from '~/models/User';
 
 export default {
   name: 'Dashboard',
@@ -1274,11 +1289,19 @@ export default {
       }
     },
     deleteNotification(notificationId) {
-      // Eliminar una notificación específica
       const nuxtApp = useNuxtApp();
       if (nuxtApp.$notifications) {
         nuxtApp.$notifications.deleteNotification(notificationId);
       }
+    },
+    logout() {
+      // Limpiar datos del usuario en localStorage
+      if (process.client) {
+        localStorage.removeItem('user');
+      }
+      
+      User.logout();
+      this.$router.push('/login');
     }
   }
 }

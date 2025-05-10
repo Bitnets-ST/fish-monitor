@@ -11,9 +11,9 @@
         <div class="bg-green-500 rounded-full w-2 h-2 mr-1" />
         <span class="text-sm mr-4">API Conectada</span>
         
-        <!-- Menú de navegación -->
+        <!-- Menú de navegación (Dashboard eliminado) -->
         <nav class="hidden md:flex space-x-4">
-          <NuxtLink to="/" class="hover:text-cyan-300 transition">Dashboard</NuxtLink>
+          <!-- Enlaces adicionales pueden ir aquí -->
         </nav>
 
         <!-- Botón de modo oscuro -->
@@ -28,14 +28,6 @@
           <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
           </svg>
-        </button>
-
-        <!-- Botón de cierre de sesión -->
-        <button 
-          class="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded text-sm transition"
-          @click="logout"
-        >
-          Cerrar sesión
         </button>
       </div>
     </div>
