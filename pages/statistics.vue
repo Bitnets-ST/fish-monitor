@@ -1,9 +1,20 @@
 <template>
   <div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-6 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Estadísticas de Estanques</h1>
-        <p class="text-sm text-gray-600 dark:text-gray-400">Análisis detallado del rendimiento y métricas clave</p>
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Estadísticas de Estanques</h1>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Análisis detallado del rendimiento y métricas clave</p>
+        </div>
+        <button 
+          @click="goBack" 
+          class="flex items-center text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          Volver al Dashboard
+        </button>
       </div>
       
       <!-- Filtros -->
@@ -469,9 +480,6 @@ export default {
     }
   },
   mounted() {
-    // Verificar alertas al cargar la página
-    this.checkForAlerts();
-    
     // Verificar si hay un parámetro de estanque en la URL
     this.checkPondParam();
   },
@@ -486,11 +494,6 @@ export default {
     },
     viewPondDetails(pond) {
       this.selectedPond = pond;
-      
-      // Si el estanque tiene alertas, mostrar notificación
-      if (pond.status === 'warning' || pond.status === 'danger') {
-        this.sendPondAlert(pond);
-      }
     },
     getZoneName(zoneId) {
       return zoneId === 1 ? 'Zona Norte' : zoneId === 2 ? 'Zona Central' : 'Zona Sur';
@@ -574,87 +577,6 @@ export default {
     getTotalValue(property) {
       return this.filteredPonds.reduce((acc, pond) => acc + pond[property], 0);
     },
-    // Método para enviar alertas al sistema de notificaciones
-    sendPondAlert(pond) {
-      const nuxtApp = useNuxtApp();
-      if (!nuxtApp.$notifications) return;
-      
-      let alertType, alertTitle, alertMessage;
-      
-      // Determinar el tipo de alerta basado en el estado del estanque
-      if (pond.status === 'danger') {
-        alertType = 'danger';
-        alertTitle = 'Alerta crítica';
-        
-        // Determinar el mensaje específico basado en los valores del estanque
-        if (pond.temperature > 20.5) {
-          alertMessage = `${pond.name}: Temperatura crítica (${pond.temperature}°C)`;
-        } else if (pond.oxygen === 'Bajo') {
-          alertMessage = `${pond.name}: Nivel de oxígeno peligrosamente bajo`;
-        } else if (pond.waterLevel < 50) {
-          alertMessage = `${pond.name}: Nivel de agua crítico (${pond.waterLevel}%)`;
-        } else if (pond.pelletWaste > 50) {
-          alertMessage = `${pond.name}: Desperdicio de pellet crítico (${pond.pelletWaste}%)`;
-        } else {
-          alertMessage = `${pond.name}: Estado crítico detectado`;
-        }
-      } else if (pond.status === 'warning') {
-        alertType = 'warning';
-        alertTitle = 'Advertencia';
-        
-        // Determinar el mensaje específico basado en los valores del estanque
-        if (pond.temperature > 19.5) {
-          alertMessage = `${pond.name}: Temperatura elevada (${pond.temperature}°C)`;
-        } else if (pond.oxygen === 'Bajo') {
-          alertMessage = `${pond.name}: Nivel de oxígeno bajo`;
-        } else if (pond.waterLevel < 70) {
-          alertMessage = `${pond.name}: Nivel de agua bajo (${pond.waterLevel}%)`;
-        } else if (pond.pelletWaste > 30) {
-          alertMessage = `${pond.name}: Desperdicio de pellet alto (${pond.pelletWaste}%)`;
-        } else {
-          alertMessage = `${pond.name}: Advertencia detectada`;
-        }
-      } else {
-        return; // No hay alerta para estanques normales
-      }
-      
-      // Enviar la notificación usando el nuevo sistema
-      nuxtApp.$notifications.notify({
-        title: alertTitle,
-        message: alertMessage,
-        type: alertType,
-        link: `/statistics?pond=${pond.id}`,
-        showToast: true
-      });
-    },
-    // Método para verificar alertas al cargar la página
-    checkForAlerts() {
-      // Buscar estanques con alertas
-      const pondsWithAlerts = this.ponds.filter(pond => 
-        pond.status === 'danger' || pond.status === 'warning'
-      );
-      
-      // Mostrar notificaciones para estanques con alertas críticas primero
-      const criticalPonds = pondsWithAlerts.filter(pond => pond.status === 'danger');
-      criticalPonds.forEach(pond => this.sendPondAlert(pond));
-      
-      // Luego mostrar advertencias (limitamos a 3 para no saturar)
-      const warningPonds = pondsWithAlerts.filter(pond => pond.status === 'warning');
-      warningPonds.slice(0, 3).forEach(pond => this.sendPondAlert(pond));
-      
-      // Si hay más advertencias, mostrar una notificación resumen
-      if (warningPonds.length > 3) {
-        const nuxtApp = useNuxtApp();
-        if (nuxtApp.$notifications) {
-          nuxtApp.$notifications.notify({
-            title: 'Más advertencias',
-            message: `Hay ${warningPonds.length - 3} advertencias adicionales`,
-            type: 'info',
-            link: '/statistics'
-          });
-        }
-      }
-    },
     // Verificar si hay un parámetro de estanque en la URL
     checkPondParam() {
       const pondId = this.$route.query.pond;
@@ -668,6 +590,9 @@ export default {
           this.selectedPond = pond;
         }
       }
+    },
+    goBack() {
+      this.$router.push('/');
     }
   }
 }

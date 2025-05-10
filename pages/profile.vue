@@ -1,12 +1,28 @@
 <template>
   <div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-12">
+    <!-- Botón para volver al dashboard -->
+    <div class="max-w-3xl mx-auto mb-4">
+      <button 
+        @click="goBack" 
+        class="flex items-center text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+        Volver al Dashboard
+      </button>
+    </div>
+    
     <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
       <div class="md:flex">
         <!-- Sidebar con foto y menú -->
         <div class="md:w-1/3 bg-gray-50 dark:bg-gray-700 p-6">
           <div class="text-center mb-8">
             <div class="relative inline-block">
-              <div class="w-32 h-32 rounded-full bg-blue-500 mx-auto flex items-center justify-center text-white text-4xl font-bold">
+              <div v-if="profileImage" class="w-32 h-32 rounded-full mx-auto overflow-hidden">
+                <img :src="profileImage" alt="Foto de perfil" class="w-full h-full object-cover" />
+              </div>
+              <div v-else class="w-32 h-32 rounded-full bg-blue-500 mx-auto flex items-center justify-center text-white text-4xl font-bold">
                 {{ userInitials }}
               </div>
               <button @click="triggerFileInput" class="absolute bottom-0 right-0 bg-white dark:bg-gray-800 rounded-full p-2 shadow-md hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -309,7 +325,8 @@ export default {
         weeklyReports: true,
         email: false,
         push: true
-      }
+      },
+      profileImage: null
     }
   },
   computed: {
@@ -383,8 +400,14 @@ export default {
       }
     },
     loadUserData() {
-      // Cargar datos del usuario desde localStorage
-      if (process.client) {
+      // Cargar datos del usuario desde localStorage o plugin
+      const nuxtApp = useNuxtApp();
+      
+      if (nuxtApp.$userData) {
+        // Usar datos del plugin
+        this.user = { ...this.user, ...nuxtApp.$userData.value };
+      } else if (process.client) {
+        // Respaldo: cargar desde localStorage
         const savedUser = localStorage.getItem('user');
         if (savedUser) {
           try {
@@ -393,6 +416,17 @@ export default {
           } catch (e) {
             console.error('Error al cargar datos del usuario:', e);
           }
+        }
+      }
+      
+      // Cargar imagen de perfil
+      if (nuxtApp.$profileImage && nuxtApp.$profileImage.value) {
+        this.profileImage = nuxtApp.$profileImage.value;
+      } else if (process.client) {
+        // Respaldo: cargar desde localStorage
+        const savedProfileImage = localStorage.getItem('profileImage');
+        if (savedProfileImage) {
+          this.profileImage = savedProfileImage;
         }
       }
     },
@@ -404,15 +438,34 @@ export default {
       const file = event.target.files[0];
       if (!file) return;
       
-      // Aquí se podría implementar la lógica para subir la imagen a un servidor
-      // Por ahora, solo mostramos una notificación
-      const nuxtApp = useNuxtApp();
-      if (nuxtApp.$notifications) {
-        nuxtApp.$notifications.success('Foto de perfil actualizada correctamente');
-      }
+      // Leer la imagen y mostrarla
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.profileImage = e.target.result;
+        
+        // Actualizar la foto de perfil usando el plugin
+        const nuxtApp = useNuxtApp();
+        if (nuxtApp.$updateProfileImage) {
+          nuxtApp.$updateProfileImage(this.profileImage);
+        } else {
+          // Guardar en localStorage como respaldo
+          if (process.client) {
+            localStorage.setItem('profileImage', this.profileImage);
+          }
+        }
+        
+        // Mostrar notificación
+        if (nuxtApp.$notifications) {
+          nuxtApp.$notifications.success('Foto de perfil actualizada correctamente');
+        }
+      };
+      reader.readAsDataURL(file);
       
       // Resetear el input para permitir seleccionar el mismo archivo nuevamente
       event.target.value = '';
+    },
+    goBack() {
+      this.$router.push('/');
     }
   }
 }
