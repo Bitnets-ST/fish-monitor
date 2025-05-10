@@ -140,7 +140,11 @@
         <!-- Secciones destacadas y advertencias -->
         <div v-if="!selectedZone && !selectedPond" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <!-- Destacadas -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border-l-4 border-blue-500">
+          <div class="featured-card bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border-l-4 border-blue-500"
+               @mouseenter="featuredHovered = true"
+               @mouseleave="featuredHovered = false"
+               @mousemove="updateFeaturedGlowPosition($event)">
+            <div class="glow-cursor glow-cursor-featured" v-if="featuredHovered"></div>
             <div class="p-4 border-b border-gray-100 dark:border-gray-700">
               <h3 class="font-medium text-gray-800 dark:text-white">Destacadas</h3>
             </div>
@@ -198,7 +202,11 @@
           </div>
 
           <!-- Advertencias -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border-l-4 border-red-500">
+          <div class="warning-card bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border-l-4 border-red-500"
+               @mouseenter="warningHovered = true"
+               @mouseleave="warningHovered = false"
+               @mousemove="updateWarningGlowPosition($event)">
+            <div class="glow-cursor glow-cursor-warning" v-if="warningHovered"></div>
             <div class="p-4 border-b border-gray-100 dark:border-gray-700">
               <h3 class="font-medium text-gray-800 dark:text-white">Advertencias</h3>
             </div>
@@ -261,8 +269,18 @@
           <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Zonas de Estanques</h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div v-for="zoneId in [1, 2, 3]" :key="zoneId" 
-                class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden"
-                @click="showZoneDetails(zoneId)">
+                class="zone-card bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden"
+                :class="{
+                  'pulsing-glow': zoneGlowing === zoneId,
+                  'zone-glow-1': zoneId === 1,
+                  'zone-glow-2': zoneId === 2,
+                  'zone-glow-3': zoneId === 3
+                }"
+                @click="showZoneDetails(zoneId); pulseZoneGlow(zoneId)"
+                @mouseenter="zoneHovered = zoneId"
+                @mouseleave="zoneHovered = null"
+                @mousemove="updateGlowPosition($event)">
+              <div :class="`glow-cursor glow-cursor-zone-${zoneId}`" v-if="zoneHovered === zoneId" ref="glowCursor"></div>
               <div class="p-4 border-b border-gray-100 dark:border-gray-700">
                 <div class="flex justify-between items-center">
                   <h3 class="font-medium text-gray-800 dark:text-white">
@@ -321,8 +339,18 @@
           
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div v-for="pond in getPondsByZone(selectedZone)" :key="pond.id" 
-                class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden"
-                @click="selectPond(pond)">
+                class="pond-card bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden"
+                :class="{
+                  'pulsing-glow': pondGlowing === pond.id,
+                  'pond-glow-1': selectedZone === 1,
+                  'pond-glow-2': selectedZone === 2,
+                  'pond-glow-3': selectedZone === 3
+                }"
+                @click="selectPond(pond); pulsePondGlow(pond.id)"
+                @mouseenter="pondHovered = pond.id"
+                @mouseleave="pondHovered = null"
+                @mousemove="updatePondGlowPosition($event)">
+              <div :class="`glow-cursor glow-cursor-pond-${selectedZone}`" v-if="pondHovered === pond.id"></div>
               <div class="p-4 border-b border-gray-100 dark:border-gray-700">
                 <div class="flex justify-between items-center">
                   <h3 class="font-medium text-gray-800 dark:text-white">{{ pond.name }}</h3>
@@ -601,6 +629,12 @@ export default {
       showSearchResults: false,
       showNotifications: false,
       profileImage: null,
+      zoneGlowing: null,
+      zoneHovered: null,
+      pondGlowing: null,
+      pondHovered: null,
+      featuredHovered: false,
+      warningHovered: false,
       ponds: [
         {
           id: 1,
@@ -809,6 +843,9 @@ export default {
         this.handleSearch(event.detail);
       });
     }
+    
+    // Add event listeners for mouse movements
+    document.addEventListener('mousemove', this.handleMouseMove);
   },
   beforeUnmount() {
     // Limpiar listeners al desmontar el componente
@@ -820,6 +857,10 @@ export default {
     if (process.client) {
       window.removeEventListener('search-ponds', this.handleSearch);
     }
+  },
+  unmounted() {
+    // Clean up event listeners
+    document.removeEventListener('mousemove', this.handleMouseMove);
   },
   methods: {
     loadUserData() {
@@ -1289,6 +1330,98 @@ export default {
     handleSearch(query) {
       this.searchQuery = query;
       this.searchPonds();
+    },
+    pulseZoneGlow(zoneId) {
+      this.zoneGlowing = zoneId;
+      setTimeout(() => {
+        this.zoneGlowing = null;
+      }, 800);
+    },
+    
+    pulsePondGlow(pondId) {
+      this.pondGlowing = pondId;
+      setTimeout(() => {
+        this.pondGlowing = null;
+      }, 800);
+    },
+    
+    handleMouseMove(event) {
+      // Update all glow cursors
+      if (this.zoneHovered || this.pondHovered) {
+        const glowCursors = document.querySelectorAll('.glow-cursor');
+        glowCursors.forEach(cursor => {
+          const parent = cursor.parentElement;
+          const rect = parent.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          cursor.style.left = `${x}px`;
+          cursor.style.top = `${y}px`;
+        });
+      }
+    },
+    
+    updateGlowPosition(event) {
+      if (this.zoneHovered) {
+        // Get all glow cursors
+        const glowCursors = document.querySelectorAll('.glow-cursor');
+        if (glowCursors.length > 0) {
+          // Find the one in the current hovered zone
+          const currentGlowCursor = glowCursors[0];
+          const rect = event.currentTarget.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          
+          // Update position
+          currentGlowCursor.style.left = `${x}px`;
+          currentGlowCursor.style.top = `${y}px`;
+        }
+      }
+    },
+    
+    updatePondGlowPosition(event) {
+      if (this.pondHovered) {
+        // Get all glow cursors
+        const glowCursors = document.querySelectorAll('.glow-cursor');
+        if (glowCursors.length > 0) {
+          // Find the one in the current hovered pond
+          const currentGlowCursor = glowCursors[0];
+          const rect = event.currentTarget.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          
+          // Update position
+          currentGlowCursor.style.left = `${x}px`;
+          currentGlowCursor.style.top = `${y}px`;
+        }
+      }
+    },
+    
+    updateFeaturedGlowPosition(event) {
+      if (this.featuredHovered) {
+        const glowCursor = document.querySelector('.glow-cursor-featured');
+        if (glowCursor) {
+          const rect = event.currentTarget.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          
+          glowCursor.style.left = `${x}px`;
+          glowCursor.style.top = `${y}px`;
+        }
+      }
+    },
+    
+    updateWarningGlowPosition(event) {
+      if (this.warningHovered) {
+        const glowCursor = document.querySelector('.glow-cursor-warning');
+        if (glowCursor) {
+          const rect = event.currentTarget.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          
+          glowCursor.style.left = `${x}px`;
+          glowCursor.style.top = `${y}px`;
+        }
+      }
     }
   }
 }
@@ -1296,4 +1429,288 @@ export default {
 
 <style scoped>
 /* Solo agregar estilos específicos si es necesario */
+
+/* Glow effects for zone and pond cards */
+.zone-card, .pond-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Zone specific glow effects when hovered */
+.zone-card:hover.zone-glow-1 {
+  box-shadow: 0 0 15px rgba(0, 120, 255, 0.6);
+}
+
+.zone-card:hover.zone-glow-2 {
+  box-shadow: 0 0 15px rgba(120, 80, 255, 0.6);
+}
+
+.zone-card:hover.zone-glow-3 {
+  box-shadow: 0 0 15px rgba(80, 200, 255, 0.6);
+}
+
+/* Pond specific glow effects when hovered */
+.pond-card:hover.pond-glow-1 {
+  box-shadow: 0 0 15px rgba(50, 180, 120, 0.6);
+}
+
+.pond-card:hover.pond-glow-2 {
+  box-shadow: 0 0 15px rgba(100, 150, 50, 0.6);
+}
+
+.pond-card:hover.pond-glow-3 {
+  box-shadow: 0 0 15px rgba(200, 180, 40, 0.6);
+}
+
+/* Zone specific glow effects when clicked */
+.zone-card.pulsing-glow.zone-glow-1 {
+  animation: pulse-glow-blue 0.8s ease-in-out;
+}
+
+.zone-card.pulsing-glow.zone-glow-2 {
+  animation: pulse-glow-purple 0.8s ease-in-out;
+}
+
+.zone-card.pulsing-glow.zone-glow-3 {
+  animation: pulse-glow-cyan 0.8s ease-in-out;
+}
+
+/* Pond specific glow effects when clicked */
+.pond-card.pulsing-glow.pond-glow-1 {
+  animation: pulse-glow-green 0.8s ease-in-out;
+}
+
+.pond-card.pulsing-glow.pond-glow-2 {
+  animation: pulse-glow-lime 0.8s ease-in-out;
+}
+
+.pond-card.pulsing-glow.pond-glow-3 {
+  animation: pulse-glow-yellow 0.8s ease-in-out;
+}
+
+/* Custom cursor glows for each zone */
+.glow-cursor-zone-1 {
+  background: radial-gradient(circle, 
+    rgba(0, 140, 255, 0.7) 0%, 
+    rgba(0, 120, 255, 0.5) 30%, 
+    rgba(0, 80, 200, 0.3) 60%, 
+    transparent 70%);
+  animation: none !important;
+}
+
+.glow-cursor-zone-2 {
+  background: radial-gradient(circle, 
+    rgba(120, 80, 255, 0.7) 0%, 
+    rgba(100, 60, 220, 0.5) 30%, 
+    rgba(80, 40, 200, 0.3) 60%, 
+    transparent 70%);
+  animation: none !important;
+}
+
+.glow-cursor-zone-3 {
+  background: radial-gradient(circle, 
+    rgba(80, 200, 255, 0.7) 0%, 
+    rgba(60, 180, 220, 0.5) 30%, 
+    rgba(40, 160, 200, 0.3) 60%, 
+    transparent 70%);
+  animation: none !important;
+}
+
+/* Custom cursor glows for each pond zone */
+.glow-cursor-pond-1 {
+  background: radial-gradient(circle, 
+    rgba(50, 180, 120, 0.7) 0%, 
+    rgba(30, 160, 100, 0.5) 30%, 
+    rgba(20, 140, 80, 0.3) 60%, 
+    transparent 70%);
+  animation: none !important;
+}
+
+.glow-cursor-pond-2 {
+  background: radial-gradient(circle, 
+    rgba(100, 150, 50, 0.7) 0%, 
+    rgba(80, 130, 30, 0.5) 30%, 
+    rgba(60, 110, 20, 0.3) 60%, 
+    transparent 70%);
+  animation: none !important;
+}
+
+.glow-cursor-pond-3 {
+  background: radial-gradient(circle, 
+    rgba(200, 180, 40, 0.7) 0%, 
+    rgba(180, 160, 30, 0.5) 30%, 
+    rgba(160, 140, 20, 0.3) 60%, 
+    transparent 70%);
+  animation: none !important;
+}
+
+/* Destacadas and warning cards styles */
+.featured-card, .warning-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.featured-card:hover {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+}
+
+.warning-card:hover {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+}
+
+/* Custom cursor glows for featured and warning cards */
+.glow-cursor-featured {
+  background: radial-gradient(circle, 
+    rgba(59, 130, 246, 0.7) 0%, 
+    rgba(37, 99, 235, 0.5) 30%, 
+    rgba(29, 78, 216, 0.3) 60%, 
+    transparent 70%);
+  animation: none !important;
+  width: 140px;
+  height: 140px;
+}
+
+.glow-cursor-warning {
+  background: radial-gradient(circle, 
+    rgba(239, 68, 68, 0.7) 0%, 
+    rgba(220, 38, 38, 0.5) 30%, 
+    rgba(185, 28, 28, 0.3) 60%, 
+    transparent 70%);
+  animation: none !important;
+  width: 140px;
+  height: 140px;
+}
+
+/* Animations for warning items */
+.warning-card :deep(.avatars .w-8) {
+  transition: all 0.3s ease;
+}
+
+.warning-card:hover :deep(.avatars .w-8) {
+  transform: scale(1.1);
+}
+
+/* Make the highlighted zone in featured card pulse */
+.featured-card:hover :deep(.w-10.h-10.rounded-full.bg-blue-500) {
+  animation: featured-pulse 2s infinite;
+}
+
+@keyframes featured-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+/* Make the warning icons pulse */
+.warning-card:hover :deep(svg) {
+  animation: warning-pulse 1.5s infinite;
+}
+
+@keyframes warning-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Pulse animations for different colors */
+@keyframes pulse-glow-blue {
+  0% {
+    box-shadow: 0 0 5px rgba(0, 120, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 120, 255, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(0, 120, 255, 0.4);
+  }
+}
+
+@keyframes pulse-glow-purple {
+  0% {
+    box-shadow: 0 0 5px rgba(120, 80, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(120, 80, 255, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(120, 80, 255, 0.4);
+  }
+}
+
+@keyframes pulse-glow-cyan {
+  0% {
+    box-shadow: 0 0 5px rgba(80, 200, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(80, 200, 255, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(80, 200, 255, 0.4);
+  }
+}
+
+@keyframes pulse-glow-green {
+  0% {
+    box-shadow: 0 0 5px rgba(50, 180, 120, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(50, 180, 120, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(50, 180, 120, 0.4);
+  }
+}
+
+@keyframes pulse-glow-lime {
+  0% {
+    box-shadow: 0 0 5px rgba(100, 150, 50, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(100, 150, 50, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(100, 150, 50, 0.4);
+  }
+}
+
+@keyframes pulse-glow-yellow {
+  0% {
+    box-shadow: 0 0 5px rgba(200, 180, 40, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(200, 180, 40, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(200, 180, 40, 0.4);
+  }
+}
+
+.glow-cursor {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  mix-blend-mode: screen;
+  opacity: 0.8;
+  filter: blur(8px);
+}
 </style>
