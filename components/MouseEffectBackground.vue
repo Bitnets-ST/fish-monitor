@@ -1,5 +1,5 @@
 <template>
-  <ParticleEffect canvasClass="fixed top-0 left-0 w-full h-full z-[-1]" />
+  <ParticleEffect canvasClass="fixed top-0 left-0 w-full h-full z-0" />
 </template>
 
 <script>
@@ -14,7 +14,9 @@ export default {
 </script>
 
 <style scoped>
-canvas {
+/* Aseguramos que el canvas tenga prioridad visual */
+:deep(canvas) {
   pointer-events: none;
+  z-index: 0 !important;
 }
 </style> 
