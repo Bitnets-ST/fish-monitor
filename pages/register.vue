@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-[#01374a] min-h-screen">
     <MouseEffectBackground />
     <div class="min-h-screen flex items-center justify-center relative px-4 py-6">
       <div class="flex flex-col md:flex-row w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden">
@@ -49,17 +49,17 @@
 </template>
 
 <script>
-import MouseEffectBackground from '~/components/MouseEffectBackground.vue'
 import PasswordField from '~/components/PasswordField.vue'
 import TextField from '~/components/TextField.vue'
+import MouseEffectBackground from '~/components/MouseEffectBackground.vue'
 import { User } from '~/models/User'
 
 export default {
   name: 'RegisterPage',
   components: {
-    MouseEffectBackground,
     PasswordField,
-    TextField
+    TextField,
+    MouseEffectBackground
   },
   data() {
     return {

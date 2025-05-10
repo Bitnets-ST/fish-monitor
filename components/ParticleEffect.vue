@@ -8,7 +8,7 @@ export default {
   props: {
     canvasClass: {
       type: String,
-      default: 'fixed top-0 left-0 w-full h-full z-[-1]'
+      default: 'fixed top-0 left-0 w-full h-full z-0'
     }
   },
   data() {
@@ -28,8 +28,7 @@ export default {
     this.canvas = this.$refs.canvas;
     this.ctx = this.canvas.getContext('2d');
     
-    // Usar color de fondo predeterminado en lugar de buscar una variable CSS
-    // que podría no existir
+    // Color de fondo acorde al diseño
     this.backgroundColor = '#01374a';
     
     // Set canvas dimensions
@@ -39,11 +38,23 @@ export default {
     window.addEventListener('resize', this.resize);
     window.addEventListener('mousemove', this.handleMouseMove);
     
+    // Si no detectamos movimiento de mouse, simulamos uno para mostrar las partículas
+    if (this.mouseX === 0 && this.mouseY === 0) {
+      this.mouseX = window.innerWidth / 2;
+      this.mouseY = window.innerHeight / 2;
+    }
+    
     // Initialize particles
     this.initParticles();
     
     // Start animation
     this.animate();
+    
+    // Asegurarnos que el canvas esté visible
+    if (this.canvas) {
+      this.canvas.style.zIndex = "0";
+      this.canvas.style.opacity = "1";
+    }
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.resize);
@@ -68,14 +79,14 @@ export default {
     
     initParticles() {
       this.particles = [];
-      // Reducir el número de partículas para mejor rendimiento
-      const particlesCount = Math.min(Math.floor(this.width / 20), 80);
+      // Aumentar el número de partículas para un efecto más visible
+      const particlesCount = Math.min(Math.floor(this.width / 10), 150);
       
       for (let i = 0; i < particlesCount; i++) {
         this.particles.push({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          size: Math.random() * 3 + 1,
+          size: Math.random() * 3 + 1.5, // Partículas ligeramente más grandes
           speedX: Math.random() * 2 - 1,
           speedY: Math.random() * 2 - 1,
           color: this.getRandomBlueShade()
@@ -84,23 +95,25 @@ export default {
     },
     
     getRandomBlueShade() {
+      // Colores más brillantes para mayor visibilidad
       const r = Math.floor(Math.random() * 30);
-      const g = Math.floor(Math.random() * 150 + 100);
-      const b = Math.floor(Math.random() * 100 + 155);
+      const g = Math.floor(Math.random() * 180 + 100);
+      const b = Math.floor(Math.random() * 100 + 175);
       return `rgb(${r},${g},${b})`;
     },
     
     drawLight() {
       if (this.mouseX === 0 && this.mouseY === 0) return;
       
-      // Create radial gradient for light effect
+      // Create radial gradient for light effect - más brillante y visible
       const gradient = this.ctx.createRadialGradient(
-        this.mouseX, this.mouseY, 10,
-        this.mouseX, this.mouseY, 300
+        this.mouseX, this.mouseY, 5,
+        this.mouseX, this.mouseY, 350
       );
       
-      gradient.addColorStop(0, 'rgba(30, 144, 255, 0.6)');
-      gradient.addColorStop(0.2, 'rgba(30, 144, 255, 0.3)');
+      // Colores más brillantes y visibles para el efecto de luz
+      gradient.addColorStop(0, 'rgba(80, 180, 255, 0.9)');
+      gradient.addColorStop(0.2, 'rgba(60, 160, 255, 0.5)');
       gradient.addColorStop(1, 'rgba(30, 144, 255, 0)');
       
       this.ctx.fillStyle = gradient;
@@ -124,9 +137,9 @@ export default {
         const dy = this.mouseY - particle.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        // Move particles slightly towards mouse when close
-        if (distance < 300) {
-          const force = 5 / distance;
+        // Move particles more slowly towards mouse when close
+        if (distance < 300) { // Reduced influence radius (was 350)
+          const force = 3 / distance; // Reduced force factor (was 10)
           particle.x += dx * force;
           particle.y += dy * force;
         }
@@ -139,11 +152,15 @@ export default {
         if (particle.x < 0 || particle.x > this.width) particle.speedX *= -1;
         if (particle.y < 0 || particle.y > this.height) particle.speedY *= -1;
         
-        // Draw particle
+        // Draw particle with glow
         this.ctx.beginPath();
         this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         this.ctx.fillStyle = particle.color;
         this.ctx.fill();
+        
+        // Añadir un pequeño resplandor a las partículas
+        this.ctx.shadowBlur = 5;
+        this.ctx.shadowColor = particle.color;
       });
       
       this.animationFrameId = requestAnimationFrame(this.animate);
@@ -155,5 +172,7 @@ export default {
 <style scoped>
 .effect-canvas {
   pointer-events: none;
+  opacity: 1 !important;
+  z-index: 0 !important;
 }
 </style> 

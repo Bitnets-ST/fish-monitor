@@ -1,6 +1,6 @@
 <template>
   <div :class="{ 'dark': isDarkMode }">
-    <div class="page-content bg-skin-base dark:bg-gray-900 dark:text-white min-h-screen">
+    <div class="page-content bg-transparent dark:bg-gray-900 dark:text-white min-h-screen">
       <AppHeader v-if="!isLoginPage" />
       <NotificationSystem ref="notificationSystem" />
       <div :class="{ 'pt-16': !isLoginPage }">
@@ -43,5 +43,6 @@ export default {
 <style scoped>
 .page-content {
   opacity: 1;
+  position: relative;
 }
 </style> 
