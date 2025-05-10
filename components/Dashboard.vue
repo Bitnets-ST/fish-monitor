@@ -1,163 +1,21 @@
 <template>
   <div class="dashboard-layout min-h-screen flex bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
     <!-- Barra lateral -->
-    <aside class="sidebar w-16 md:w-64 bg-white dark:bg-gray-800 shadow-lg flex flex-col">
-      <!-- Logo -->
-      <div class="sidebar-header p-4 border-b border-gray-200 dark:border-gray-700">
-        <div class="flex items-center space-x-3">
-          <div v-if="userProfileImage" class="w-8 h-8 rounded-full overflow-hidden">
-            <img :src="userProfileImage" alt="Foto de perfil" class="w-full h-full object-cover" />
-          </div>
-          <div v-else class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-            {{ getUserInitials() }}
-          </div>
-          <!-- Usuario -->
-          <div class="hidden md:block">
-            <div class="text-lg font-semibold text-blue-600 dark:text-blue-400">{{ username }}</div>
-            <div class="text-xs text-gray-500 dark:text-gray-400">Supervisor</div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Menú principal -->
-      <nav class="flex-1 py-4">
-        <ul class="space-y-1">
-          <li>
-            <a href="#" @click.prevent="resetDashboard" 
-              class="flex items-center px-4 py-3 transition-colors duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-              :class="{'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 dark:border-blue-400': !selectedZone && !selectedPond}">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-              </svg>
-              <span class="hidden md:inline">Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" @click.prevent="showCamerasView" 
-              class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-200">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
-                <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.001 7.002V11.002C14.001 11.5542 14.4488 12.002 15.001 12.002H19.001C19.5532 12.002 20.001 11.5542 20.001 11.002V7.002C20.001 6.44979 19.5532 6.002 19.001 6.002H15.001C14.4488 6.002 14.001 6.44979 14.001 7.002Z" />
-              </svg>
-              <span class="hidden md:inline">Cámaras</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" @click.prevent="showStatistics" 
-              class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-200">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
-                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
-              </svg>
-              <span class="hidden md:inline">Estadísticas</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" @click.prevent="showUserProfile" 
-              class="flex items-center px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-200">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-              </svg>
-              <span class="hidden md:inline">Perfil</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </aside>
+    <DashboardSidebar 
+      :username="username" 
+      :userImage="userProfileImage"
+      @reset-dashboard="resetDashboard"
+      @show-cameras="showCamerasView"
+      @show-statistics="showStatistics"
+      @show-user-profile="showUserProfile"
+      @logout="logout"
+    />
 
     <!-- Contenido principal -->
     <div class="flex-1 flex flex-col overflow-hidden">
       <!-- Cabecera mejorada -->
       <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div class="p-4">
-          <div class="flex justify-between items-center mb-4">
-            <div class="flex items-center">
-              <div class="relative mr-4">
-                <input 
-                  v-model="searchQuery" 
-                  type="text" 
-                  placeholder="Buscar estanque..." 
-                  class="pl-8 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  @keyup.enter="searchPonds" 
-                />
-                <svg 
-                  @click="searchPonds"
-                  xmlns="http://www.w3.org/2000/svg" 
-                  class="h-4 w-4 text-gray-400 dark:text-gray-500 absolute left-2.5 top-2.5 cursor-pointer" 
-                  viewBox="0 0 20 20" 
-                  fill="currentColor"
-                >
-                  <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                </svg>
-              </div>
-            </div>
-            <div class="relative">
-              <button 
-                @click="toggleNotifications" 
-                class="relative bg-gray-100 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-300" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-                </svg>
-                <span 
-                  v-if="$notifications && $notifications.unreadCount > 0" 
-                  class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"
-                >
-                  {{ $notifications.unreadCount }}
-                </span>
-              </button>
-              
-              <!-- Menú desplegable de notificaciones -->
-              <div 
-                v-if="showNotifications" 
-                class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto notifications-menu"
-              >
-                <div class="p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                  <h3 class="font-medium text-gray-800 dark:text-white">Notificaciones</h3>
-                  <button 
-                    v-if="$notifications && $notifications.headerNotifications.length > 0" 
-                    @click="markAllAsRead()" 
-                    class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
-                  >
-                    Marcar todas como leídas
-                  </button>
-                </div>
-                
-                <div v-if="!$notifications || $notifications.headerNotifications.length === 0" class="p-4 text-center text-gray-500 dark:text-gray-400">
-                  No hay notificaciones
-                </div>
-                
-                <div v-else class="divide-y divide-gray-100 dark:divide-gray-700">
-                  <div 
-                    v-for="notification in $notifications.headerNotifications" 
-                    :key="notification.id" 
-                    class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-                    :class="{ 'bg-blue-50 dark:bg-blue-900/20': !notification.read }"
-                    @click="markAsRead(notification.id)"
-                  >
-                    <div class="flex justify-between">
-                      <div class="font-medium text-gray-800 dark:text-white" :class="{ 'text-blue-600 dark:text-blue-400': !notification.read }">
-                        {{ notification.title }}
-                      </div>
-                      <button 
-                        @click.stop="deleteNotification(notification.id)" 
-                        class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ notification.message }}</div>
-                    <div class="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                      {{ formatTimestamp(notification.timestamp) }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
           <!-- Estadísticas generales -->
           <div class="grid grid-cols-4 gap-4">
             <div class="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-3 rounded-lg">
@@ -223,6 +81,62 @@
 
       <!-- Contenido -->
       <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 p-6">
+        <!-- Resultados de búsqueda -->
+        <div v-if="showSearchResults && searchResults.length > 0" class="mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+              Resultados de búsqueda: "{{ searchQuery }}"
+            </h2>
+            <button 
+              @click="resetSearch" 
+              class="flex items-center text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+              Cerrar búsqueda
+            </button>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div v-for="pond in searchResults" :key="pond.id" 
+                class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden search-result"
+                @click="selectPond(pond)">
+              <div class="p-4 border-b border-gray-100 dark:border-gray-700">
+                <div class="flex justify-between items-center">
+                  <h3 class="font-medium text-gray-800 dark:text-white">{{ pond.name }}</h3>
+                  <span class="w-3 h-3 rounded-full" :class="getStatusDotClass(pond.status)"></span>
+                </div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  {{ getZoneName(pond.zoneId) }}
+                </div>
+              </div>
+              
+              <div class="p-4">
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="col-span-1">
+                    <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Peces</div>
+                    <div class="text-sm font-medium dark:text-gray-200">{{ pond.count }}</div>
+                  </div>
+                  <div class="col-span-1">
+                    <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Temperatura</div>
+                    <div class="text-sm font-medium dark:text-gray-200">{{ pond.temperature }}°C</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700 flex justify-between items-center">
+                <div class="flex items-center">
+                  <span class="px-2 py-1 text-xs rounded-full" :class="getStatusClass(pond.status)">
+                    {{ getStatusLabel(pond.status) }}
+                  </span>
+                </div>
+                <button class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">Ver detalle</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <!-- Secciones destacadas y advertencias -->
         <div v-if="!selectedZone && !selectedPond" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <!-- Destacadas -->
@@ -666,10 +580,16 @@
 </template>
 
 <script>
-import { useNuxtApp } from '#app'
+import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { useNuxtApp } from '#app';
+import { User } from '~/models/User';
+import DashboardSidebar from './dashboard/sidebar/DashboardSidebar.vue';
 
 export default {
   name: 'Dashboard',
+  components: {
+    DashboardSidebar
+  },
   data() {
     return {
       username: 'Admin',
@@ -876,6 +796,30 @@ export default {
         this.loadWarningsAsNotifications();
       }, 500);
     });
+
+    // Escuchar eventos de búsqueda desde el AppHeader
+    const nuxtApp = useNuxtApp();
+    if (nuxtApp.$emitter) {
+      nuxtApp.$emitter.on('search-ponds', this.handleSearch);
+    }
+    
+    // Alternativa usando window para eventos globales
+    if (process.client) {
+      window.addEventListener('search-ponds', (event) => {
+        this.handleSearch(event.detail);
+      });
+    }
+  },
+  beforeUnmount() {
+    // Limpiar listeners al desmontar el componente
+    const nuxtApp = useNuxtApp();
+    if (nuxtApp.$emitter) {
+      nuxtApp.$emitter.off('search-ponds', this.handleSearch);
+    }
+    
+    if (process.client) {
+      window.removeEventListener('search-ponds', this.handleSearch);
+    }
   },
   methods: {
     loadUserData() {
@@ -1116,42 +1060,96 @@ export default {
       this.searchResults = [];
       this.showSearchResults = false;
     },
+    resetSearch() {
+      this.searchQuery = '';
+      this.searchResults = [];
+      this.showSearchResults = false;
+    },
     searchPonds() {
       if (!this.searchQuery.trim()) {
         this.showSearchResults = false;
+        this.searchResults = [];
         return;
       }
       
       const query = this.searchQuery.toLowerCase().trim();
-      this.searchResults = this.ponds.filter(pond => {
-        return pond.name.toLowerCase().includes(query) || 
-               this.getZoneName(pond.zoneId).toLowerCase().includes(query);
-      });
+      
+      // Buscar estanques por nombre o ID
+      const directPondMatches = this.ponds.filter(pond => 
+        pond.name.toLowerCase().includes(query) || 
+        pond.id.toString() === query
+      );
+      
+      // Buscar también por zonas
+      const zoneNames = {
+        1: 'zona norte',
+        2: 'zona central',
+        3: 'zona sur'
+      };
+      
+      const zoneMatches = Object.entries(zoneNames).filter(([_, name]) => 
+        name.includes(query)
+      ).map(([zoneId]) => parseInt(zoneId));
+      
+      // Estanques que pertenecen a las zonas encontradas
+      const zoneBasedPondMatches = zoneMatches.length > 0 
+        ? this.ponds.filter(pond => zoneMatches.includes(pond.zoneId))
+        : [];
+      
+      // Combinar resultados y eliminar duplicados
+      this.searchResults = [...new Set([...directPondMatches, ...zoneBasedPondMatches])];
+      
+      if (this.searchResults.length === 0) {
+        // No hay resultados
+        this.showSearchResults = false;
+        
+        // Notificar al usuario que no se encontraron resultados
+        const nuxtApp = useNuxtApp();
+        if (nuxtApp.$notifications) {
+          nuxtApp.$notifications.notify({
+            title: 'Búsqueda',
+            message: `No se encontraron resultados para "${this.searchQuery}"`,
+            type: 'info',
+            duration: 3000
+          });
+        }
+        
+        return;
+      }
       
       if (this.searchResults.length === 1) {
-        // Si solo hay un resultado, mostrar directamente ese estanque
+        // Si solo hay un resultado, ir directamente a ese estanque
         this.selectPond(this.searchResults[0]);
         this.showSearchResults = false;
-      } else if (this.searchResults.length > 0) {
-        // Si hay múltiples resultados, mostrarlos
+      } else if (zoneMatches.length === 1) {
+        // Si corresponde a una zona específica, mostrar esa zona
+        this.selectedZone = zoneMatches[0];
+        this.selectedPond = null;
+        this.showSearchResults = false;
+      } else {
+        // Múltiples resultados - puede ser de diferentes zonas
         this.showSearchResults = true;
         
-        // Mostrar la zona con más resultados
+        // Si los resultados son mayoritariamente de una zona, mostrar esa zona
         const zoneCount = {};
         this.searchResults.forEach(pond => {
           zoneCount[pond.zoneId] = (zoneCount[pond.zoneId] || 0) + 1;
         });
         
-        const maxZone = Object.keys(zoneCount).reduce((a, b) => 
-          zoneCount[a] > zoneCount[b] ? a : b
-        );
+        const maxZoneId = Object.entries(zoneCount)
+          .sort((a, b) => b[1] - a[1])[0][0];
         
-        this.selectedZone = parseInt(maxZone);
+        this.selectedZone = parseInt(maxZoneId);
         this.selectedPond = null;
-      } else {
-        // Si no hay resultados
-        this.showSearchResults = false;
       }
+      
+      // Centrar la vista en los resultados si hay alguno
+      this.$nextTick(() => {
+        const resultElement = document.querySelector('.search-result');
+        if (resultElement) {
+          resultElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
     },
     getZoneName(zoneId) {
       return zoneId === 1 ? 'Zona Norte' : zoneId === 2 ? 'Zona Central' : 'Zona Sur';
@@ -1274,11 +1272,23 @@ export default {
       }
     },
     deleteNotification(notificationId) {
-      // Eliminar una notificación específica
       const nuxtApp = useNuxtApp();
       if (nuxtApp.$notifications) {
         nuxtApp.$notifications.deleteNotification(notificationId);
       }
+    },
+    logout() {
+      // Limpiar datos del usuario en localStorage
+      if (process.client) {
+        localStorage.removeItem('user');
+      }
+      
+      User.logout();
+      this.$router.push('/login');
+    },
+    handleSearch(query) {
+      this.searchQuery = query;
+      this.searchPonds();
     }
   }
 }
