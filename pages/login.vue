@@ -9,7 +9,7 @@
             <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white shadow-lg flex items-center justify-center p-1 mb-3">
               <img src="/images/Logo1.png" alt="FishCount Logo" class="w-16 h-16 md:w-20 md:h-20 object-contain rounded-full">
             </div>
-            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Bienvenido</h2>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Bienvenido 2</h2>
           </div>
           <form class="space-y-4" @submit.prevent="handleLogin">
             <TextField v-model="username" placeholder="Usuario" />
