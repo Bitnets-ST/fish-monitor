@@ -38,6 +38,13 @@ jobs:
         # Si tienes archivos .env de producción, descomenta la siguiente línea:
         # cp .env deploy/.env
 
+      - name: Debug .output contents
+        run: |
+          echo 'Contenido de .output:'
+          ls -lR .output
+          echo 'Contenido de .output/public:'
+          ls -lR .output/public || true
+
       - name: Zip artifact for deployment
         run: cd deploy && zip -r ../release.zip .
 
