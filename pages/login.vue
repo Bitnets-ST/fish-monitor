@@ -91,7 +91,8 @@ export default {
         this.errorMessage = '';
         
         // Llamar a la API de login
-        const response = await fetch('/api/auth/login', {
+        const apiBaseUrl = import.meta.env.API_BASE_URL || '';
+        const response = await fetch(`${apiBaseUrl}/api/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
