@@ -1,5 +1,4 @@
 <template>
-  <video ref="video" controls autoplay muted style="width: 100%; max-width: 800px;" />
   <div class="dashboard-layout min-h-screen flex bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
     <!-- Barra lateral -->
     <DashboardSidebar 
@@ -2033,24 +2032,6 @@ export default {
   }
 }
 
-</script>
-
-<script setup>
-import { ref, onMounted } from 'vue'
-import Hls from 'hls.js'
-
-const video = ref(null)
-const streamUrl = 'http://localhost:8888/cam1/index.m3u8' // URL del stream
-
-onMounted(() => {
-  if (Hls.isSupported()) {
-    const hls = new Hls()
-    hls.loadSource(streamUrl)
-    hls.attachMedia(video.value)
-  } else if (video.value.canPlayType('application/vnd.apple.mpegurl')) {
-    video.value.src = streamUrl
-  }
-})
 </script>
 
 <style scoped>

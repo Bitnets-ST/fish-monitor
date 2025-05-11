@@ -238,10 +238,79 @@ v-for="camera in zone.cameras" :key="camera.id"
                 Desactivar cámara
               </button>
               <button 
+                class="bg-gray-300 text-gray-800 dark:bg-gray-600 dark:text-white px-4 py-2 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2" 
+                @click="showCameraSettings = true"
+              >
+                Configurar
+              </button>
+              <button 
                 class="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2" 
                 @click="selectedCamera = null"
               >
                 Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Modal de configuración de cámara -->
+      <div v-if="showCameraSettings" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full shadow-lg">
+          <div class="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Configuración de cámara</h3>
+            <button class="text-gray-400 hover:text-gray-500" @click="showCameraSettings = false">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <div class="p-4">
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre</label>
+              <input 
+                v-model="selectedCamera.name" 
+                type="text" 
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              >
+            </div>
+            
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Estanque asociado</label>
+              <input 
+                v-model="selectedCamera.pondName" 
+                type="text" 
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              >
+            </div>
+            
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descripción</label>
+              <textarea 
+                v-model="selectedCamera.description" 
+                rows="2"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              />
+            </div>
+            
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL de RTSP</label>
+              <input 
+                v-model="selectedCamera.rtspUrl" 
+                type="text" 
+                placeholder="rtsp://usuario:contraseña@dirección:puerto/ruta"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              >
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">URL completa del stream RTSP de la cámara</p>
+            </div>
+            
+            <div class="flex justify-between mt-6">
+              <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700" @click="showCameraSettings = false">
+                Cancelar
+              </button>
+              <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" @click="saveCameraSettings">
+                Guardar cambios
               </button>
             </div>
           </div>
@@ -262,6 +331,7 @@ export default {
       selectedCamera: null,
       webcamActive: false,
       webcamStream: null,
+      showCameraSettings: false,
       // Servidor de streameo simulado que usaríamos en producción
       streamServer: 'https://demo.mediamtx.com/streams',
       zones: [
@@ -271,6 +341,17 @@ export default {
           cameras: [
             {
               id: 1,
+              name: 'Cámara Principal (MediaMTX)',
+              pondName: 'Estanque Central',
+              description: 'Cámara RTSP implementada por el profesor para monitoreo principal',
+              status: 'online',
+              isActive: true,
+              rtspUrl: 'rtsp://localhost:8554/live', // URL RTSP local que usaba el profesor
+              streamKey: 'main-camera', // Clave para MediaMTX
+              thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Principal+MediaMTX'
+            },
+            {
+              id: 2,
               name: 'Cámara Alao Oeste',
               pondName: 'Alao Oeste',
               description: 'Vista principal del estanque Alao Oeste',
@@ -278,16 +359,6 @@ export default {
               isActive: true,
               rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Alao+Oeste'
-            },
-            {
-              id: 2,
-              name: 'Cámara Puerto Varas',
-              pondName: 'Estanque Puerto Varas',
-              description: 'Monitoreo de alimentación y comportamiento',
-              status: 'online',
-              isActive: false,
-              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:sample.mp4',
-              thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Puerto+Varas'
             },
             {
               id: 3,
@@ -438,21 +509,31 @@ export default {
     async startRtspStream() {
       try {
         if (this.selectedCamera && this.selectedCamera.rtspUrl) {
-          // Implementación directa como lo hizo el profesor
-          // MediaMTX debe estar instalado y corriendo en la máquina local
-          // El stream se conecta directamente a la cámara RTSP a través de MediaMTX
-
-          // En el próximo ciclo de renderizado
+          // Implementación mejorada que funciona con la configuración del profesor
           this.$nextTick(() => {
             if (this.$refs.rtspVideo) {
-              // Esta es la URL de MediaMTX que transforma el RTSP
-              // Asumiendo que MediaMTX está corriendo en localhost:8000
-              const streamName = `camera${this.selectedCamera.id}`;
-              const mediaServerUrl = `http://localhost:8000/${streamName}/index.m3u8`;
+              // Configuramos la URL según la cámara
+              let mediaUrl;
               
-              this.$refs.rtspVideo.src = mediaServerUrl;
+              // Si es la cámara principal del profesor (ID 1)
+              if (this.selectedCamera.id === 1) {
+                // URL directa a MediaMTX como configuró el profesor
+                mediaUrl = 'http://localhost:8000/live/index.m3u8';
+              } else {
+                // Para el resto de cámaras, usamos su streamKey o ID
+                const streamKey = this.selectedCamera.streamKey || `camera${this.selectedCamera.id}`;
+                mediaUrl = `http://localhost:8000/${streamKey}/index.m3u8`;
+              }
+              
+              // Asignamos la URL al reproductor de video
+              this.$refs.rtspVideo.src = mediaUrl;
               this.$refs.rtspVideo.play().catch(err => {
                 console.error('Error al reproducir stream:', err);
+                // Fallback a mostrar un mensaje de error
+                const nuxtApp = useNuxtApp();
+                if (nuxtApp.$notifications) {
+                  nuxtApp.$notifications.warning(`El servidor MediaMTX no está disponible. Consulte con el administrador.`);
+                }
               });
             }
           });
@@ -581,6 +662,24 @@ export default {
       // return `${this.streamServer}/${this.selectedCamera.streamKey}/index.m3u8`;
       
       return null;
+    },
+    saveCameraSettings() {
+      // Aquí puedes implementar la lógica para guardar los cambios
+      // Por ejemplo, hacer una petición API o actualizar el estado
+      
+      // Mostrar una notificación
+      const nuxtApp = useNuxtApp();
+      if (nuxtApp.$notifications) {
+        nuxtApp.$notifications.success('Configuración guardada correctamente');
+      }
+      
+      // Cerrar el modal
+      this.showCameraSettings = false;
+      
+      // Reiniciar la transmisión si es necesario
+      if (this.selectedCamera.rtspUrl) {
+        this.startRtspStream();
+      }
     }
   }
 }
