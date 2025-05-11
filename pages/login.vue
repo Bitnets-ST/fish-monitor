@@ -56,6 +56,7 @@ import PasswordField from '~/components/PasswordField.vue'
 import TextField from '~/components/TextField.vue'
 import MouseEffectBackground from '~/components/MouseEffectBackground.vue'
 import { User } from '~/models/User'
+import { useRuntimeConfig } from '#app'
 
 export default {
   name: 'LoginPage',
@@ -76,6 +77,19 @@ export default {
     // Si el usuario ya está autenticado, redirigir al dashboard
     if (User.isAuthenticated()) {
       this.$router.push('/');
+      return;
+    }
+    // Si es móvil (APK), saltar login y simular usuario demo
+    const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || window?.Capacitor;
+    if (isMobile) {
+      User.login({
+        id: 'demo',
+        username: 'demo',
+        name: 'Demo User',
+        email: 'demo@demo.com',
+        isAdmin: false
+      }, 'demo-token');
+      this.$router.push('/');
     }
   },
   methods: {
@@ -86,12 +100,13 @@ export default {
           this.errorMessage = 'Por favor, completa todos los campos';
           return;
         }
-        
         this.isLoading = true;
         this.errorMessage = '';
-        
+        // Obtener la URL base de la API desde la config pública
+        const config = useRuntimeConfig();
+        const apiBaseUrl = config.public.apiBaseUrl || '/api';
         // Llamar a la API de login
-        const response = await fetch('/api/auth/login', {
+        const response = await fetch(`${apiBaseUrl}/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -101,17 +116,13 @@ export default {
             password: this.password
           })
         });
-        
         const data = await response.json();
-        
         // Verificar el statusCode en la respuesta
         if (data.statusCode !== 200) {
           throw new Error(data.body?.error || 'Error al iniciar sesión');
         }
-        
         // Guardar token y datos del usuario
         User.login(data.body.user, data.body.token);
-        
         // Redirigir al dashboard
         this.$router.push('/');
       } catch (error) {
@@ -128,5 +139,17 @@ export default {
 <style scoped>
 body {
   font-family: 'Roboto', Arial, sans-serif;
+}
+/* Mejorar responsividad del formulario */
+@media (max-width: 640px) {
+  .min-h-screen.flex.items-center.justify-center.relative.px-4.py-6 > div {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    min-height: 100vh;
+    padding: 0 !important;
+  }
+  .w-full.md\:w-1\/2.bg-white.p-6.md\:p-10.flex.flex-col.justify-center {
+    padding: 1rem !important;
+  }
 }
 </style>
