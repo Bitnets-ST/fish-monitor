@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="canvas" :class="['effect-canvas', canvasClass]" />
+  <canvas v-if="isDarkMode" ref="canvas" :class="['effect-canvas', canvasClass]" />
 </template>
 
 <script>
@@ -21,48 +21,93 @@ export default {
       width: 0,
       height: 0,
       animationFrameId: null,
-      backgroundColor: '#01374a' // Valor por defecto
+      backgroundColor: '#01374a', // Valor por defecto
+      isDarkMode: false
     }
   },
   mounted() {
-    this.canvas = this.$refs.canvas;
-    this.ctx = this.canvas.getContext('2d');
+    // Detectar modo oscuro
+    this.checkDarkMode();
     
-    // Color de fondo acorde al diseño
-    this.backgroundColor = '#01374a';
+    // Observar cambios en el modo oscuro
+    const darkModeObserver = new MutationObserver(this.checkDarkMode);
+    darkModeObserver.observe(document.documentElement, { 
+      attributes: true, 
+      attributeFilter: ['class'] 
+    });
     
-    // Set canvas dimensions
-    this.resize();
-    
-    // Event listeners
-    window.addEventListener('resize', this.resize);
-    window.addEventListener('mousemove', this.handleMouseMove);
-    
-    // Si no detectamos movimiento de mouse, simulamos uno para mostrar las partículas
-    if (this.mouseX === 0 && this.mouseY === 0) {
-      this.mouseX = window.innerWidth / 2;
-      this.mouseY = window.innerHeight / 2;
-    }
-    
-    // Initialize particles
-    this.initParticles();
-    
-    // Start animation
-    this.animate();
-    
-    // Asegurarnos que el canvas esté visible
-    if (this.canvas) {
-      this.canvas.style.zIndex = "0";
-      this.canvas.style.opacity = "1";
+    if (this.isDarkMode) {
+      this.initCanvas();
     }
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.resize);
-    window.removeEventListener('mousemove', this.handleMouseMove);
-    cancelAnimationFrame(this.animationFrameId);
+    this.cleanup();
   },
   methods: {
+    checkDarkMode() {
+      const wasDarkMode = this.isDarkMode;
+      this.isDarkMode = document.documentElement.classList.contains('dark');
+      
+      // Si cambia el modo, actualizar el canvas
+      if (wasDarkMode !== this.isDarkMode) {
+        if (this.isDarkMode) {
+          this.$nextTick(() => {
+            this.initCanvas();
+          });
+        } else {
+          this.cleanup();
+        }
+      }
+    },
+    
+    initCanvas() {
+      this.canvas = this.$refs.canvas;
+      if (!this.canvas) return;
+      
+      this.ctx = this.canvas.getContext('2d');
+      
+      // Color de fondo acorde al diseño
+      this.backgroundColor = '#01374a';
+      
+      // Set canvas dimensions
+      this.resize();
+      
+      // Event listeners
+      window.addEventListener('resize', this.resize);
+      window.addEventListener('mousemove', this.handleMouseMove);
+      
+      // Si no detectamos movimiento de mouse, simulamos uno para mostrar las partículas
+      if (this.mouseX === 0 && this.mouseY === 0) {
+        this.mouseX = window.innerWidth / 2;
+        this.mouseY = window.innerHeight / 2;
+      }
+      
+      // Initialize particles
+      this.initParticles();
+      
+      // Start animation
+      this.animate();
+      
+      // Asegurarnos que el canvas esté visible
+      if (this.canvas) {
+        this.canvas.style.zIndex = "0";
+        this.canvas.style.opacity = "1";
+      }
+    },
+    
+    cleanup() {
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+      }
+      
+      window.removeEventListener('resize', this.resize);
+      window.removeEventListener('mousemove', this.handleMouseMove);
+    },
+    
     resize() {
+      if (!this.canvas) return;
+      
       this.width = window.innerWidth;
       this.height = window.innerHeight;
       this.canvas.width = this.width;
@@ -75,23 +120,6 @@ export default {
     handleMouseMove(e) {
       this.mouseX = e.clientX;
       this.mouseY = e.clientY;
-    },
-    
-    initParticles() {
-      this.particles = [];
-      // Aumentar el número de partículas para un efecto más visible
-      const particlesCount = Math.min(Math.floor(this.width / 10), 150);
-      
-      for (let i = 0; i < particlesCount; i++) {
-        this.particles.push({
-          x: Math.random() * this.width,
-          y: Math.random() * this.height,
-          size: Math.random() * 3 + 1.5, // Partículas ligeramente más grandes
-          speedX: Math.random() * 2 - 1,
-          speedY: Math.random() * 2 - 1,
-          color: this.getRandomBlueShade()
-        });
-      }
     },
     
     getRandomBlueShade() {
@@ -120,7 +148,26 @@ export default {
       this.ctx.fillRect(0, 0, this.width, this.height);
     },
     
+    initParticles() {
+      this.particles = [];
+      // Aumentar el número de partículas para un efecto más visible
+      const particlesCount = Math.min(Math.floor(this.width / 10), 150);
+      
+      for (let i = 0; i < particlesCount; i++) {
+        this.particles.push({
+          x: Math.random() * this.width,
+          y: Math.random() * this.height,
+          size: Math.random() * 3 + 1.5, // Partículas ligeramente más grandes
+          speedX: Math.random() * 2 - 1,
+          speedY: Math.random() * 2 - 1,
+          color: this.getRandomBlueShade()
+        });
+      }
+    },
+    
     animate() {
+      if (!this.canvas || !this.ctx) return;
+      
       this.ctx.clearRect(0, 0, this.width, this.height);
       
       // Draw background
