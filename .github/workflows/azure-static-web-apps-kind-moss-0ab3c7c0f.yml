@@ -25,6 +25,11 @@ jobs:
         with:
           node-version: '22.15'
           
+      # Forzar Azure SWA a usar la versión de Node que configuramos
+      - name: Create node version file
+        run: |
+          echo "22.15.0" > .nvmrc
+          
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -32,9 +37,12 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_KIND_MOSS_0AB3C7C0F }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
+          # Asegúrate de que la configuración de app_location, api_location y output_location sean correctas
           app_location: "/"
           api_location: ".output/server"
           output_location: ".output/public"
+          # Añadir variable de entorno para forzar versión de Node
+          app_build_command: "export NODE_VERSION=22.15.0 && npm run build"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
