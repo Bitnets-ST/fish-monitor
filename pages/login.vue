@@ -122,9 +122,10 @@ export default {
         this.$router.push('/');
       } catch (error) {
         console.error('Error al iniciar sesión:', error);
-        // Si es móvil, fallback a usuario demo
+        // Si es móvil, fallback a usuario demo SIN mostrar error
         const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || window?.Capacitor;
         if (isMobile) {
+          this.errorMessage = '';
           User.login({
             id: 'demo',
             username: 'demo',
@@ -135,6 +136,7 @@ export default {
           this.$router.push('/');
           return;
         }
+        // Solo muestra el error en web
         this.errorMessage = error.message || 'Error al iniciar sesión';
       } finally {
         this.isLoading = false;
