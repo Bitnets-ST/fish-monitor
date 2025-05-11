@@ -7,8 +7,8 @@
           <p class="text-sm text-gray-600 dark:text-gray-400">Sistema de monitoreo en vivo de estanques por zonas</p>
         </div>
         <button 
-          @click="goBack" 
-          class="flex items-center text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md ml-auto"
+          class="flex items-center text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md ml-auto" 
+          @click="goBack"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
@@ -20,18 +20,18 @@
       <!-- Selector de zonas -->
       <div class="flex space-x-2 mb-6 overflow-x-auto pb-2">
         <button 
-          @click="selectedZone = null" 
-          class="px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap" 
           :class="selectedZone === null ? 'bg-blue-600 text-white' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'"
+          @click="selectedZone = null"
         >
           Todas las zonas
         </button>
         <button 
           v-for="zone in zones" 
           :key="zone.id" 
-          @click="selectedZone = zone.id"
           class="px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
           :class="selectedZone === zone.id ? 'bg-blue-600 text-white' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'"
+          @click="selectedZone = zone.id"
         >
           {{ zone.name }}
         </button>
@@ -42,24 +42,25 @@
         <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-4">{{ zone.name }}</h3>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div v-for="camera in zone.cameras" :key="camera.id" 
+          <div
+v-for="camera in zone.cameras" :key="camera.id" 
                class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer camera-card border border-transparent dark:border-gray-700"
                @click="viewCamera(camera)">
             <div class="relative">
               <div class="bg-gray-900 h-48 flex items-center justify-center">
                 <div v-if="camera.isActive" class="relative w-full h-full">
-                  <img :src="camera.thumbnailUrl" alt="Vista de cámara" class="w-full h-full object-cover" />
-                  <div class="absolute inset-0 bg-black bg-opacity-15 dark:bg-opacity-30 camera-overlay"></div>
+                  <img :src="camera.thumbnailUrl" alt="Vista de cámara" class="w-full h-full object-cover" >
+                  <div class="absolute inset-0 bg-black bg-opacity-15 dark:bg-opacity-30 camera-overlay"/>
                   <div class="absolute top-2 right-2 flex items-center">
                     <span class="flex h-3 w-3 relative">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"/>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"/>
                     </span>
                     <span class="ml-2 text-xs bg-black bg-opacity-50 text-white px-2 py-1 rounded">EN VIVO</span>
                   </div>
                 </div>
                 <div v-else class="text-center text-gray-400 dark:text-gray-300 camera-inactive">
-                  <div class="camera-inactive-bg"></div>
+                  <div class="camera-inactive-bg"/>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
@@ -96,7 +97,7 @@
         <div class="bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 rounded-lg shadow-xl w-full max-w-4xl overflow-hidden">
           <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
             <h3 class="text-lg font-medium text-gray-800 dark:text-white">{{ selectedCamera.name }}</h3>
-            <button @click="selectedCamera = null" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+            <button class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300" @click="selectedCamera = null">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -108,28 +109,38 @@
               <div v-if="selectedCamera.isActive" class="relative w-full h-full camera-live-feed">
                 <!-- Webcam en vivo cuando está activa -->
                 <div v-if="webcamActive" class="absolute inset-0 z-10">
-                  <video ref="webcamVideo" autoplay class="w-full h-full object-cover"></video>
+                  <video ref="webcamVideo" autoplay class="w-full h-full object-cover"/>
+                </div>
+                <!-- Cámara RTSP usando la misma implementación del profesor -->
+                <div v-else-if="selectedCamera.rtspUrl" class="absolute inset-0 z-10">
+                  <video 
+                    ref="rtspVideo" 
+                    autoplay 
+                    controls 
+                    muted
+                    class="w-full h-full object-cover"
+                  />
                 </div>
                 <!-- Imagen estática cuando no hay transmisión activa -->
                 <div v-else>
-                  <img :src="selectedCamera.thumbnailUrl" alt="Vista de cámara" class="w-full h-full object-cover brightness-110 contrast-105" />
+                  <img :src="selectedCamera.thumbnailUrl" alt="Vista de cámara" class="w-full h-full object-cover brightness-110 contrast-105" >
                 </div>
                 
                 <!-- Controles y overlays para la vista detallada -->
-                <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent h-16 opacity-80"></div>
+                <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black to-transparent h-16 opacity-80"/>
                 
                 <!-- Indicadores y métricas -->
                 <div class="absolute top-4 left-4 flex flex-col space-y-2">
                   <div class="flex items-center bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
-                    <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                    <span class="w-2 h-2 rounded-full bg-green-500 mr-2"/>
                     Oxígeno: 7.8 mg/L
                   </div>
                   <div class="flex items-center bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
-                    <span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
+                    <span class="w-2 h-2 rounded-full bg-blue-500 mr-2"/>
                     Temperatura: 12.3°C
                   </div>
                   <div class="flex items-center bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
-                    <span class="w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>
+                    <span class="w-2 h-2 rounded-full bg-yellow-500 mr-2"/>
                     Turbidez: Normal
                   </div>
                 </div>
@@ -137,8 +148,8 @@
                 <!-- Contador y estado de grabación -->
                 <div class="absolute top-2 right-2 flex items-center space-x-2">
                   <span class="flex h-3 w-3 relative">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"/>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"/>
                   </span>
                   <div class="flex items-center bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
                     <span class="font-mono">{{ webcamActive ? 'EN VIVO' : 'ACTIVAR PARA VER EN VIVO' }}</span>
@@ -153,8 +164,8 @@
                     </svg>
                   </button>
                   <button 
-                    @click="toggleWebcam" 
-                    class="p-3 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-opacity"
+                    class="p-3 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-opacity" 
+                    @click="toggleWebcam"
                   >
                     <svg v-if="!webcamActive" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
@@ -172,15 +183,15 @@
                 </div>
               </div>
               <div v-else class="text-center text-gray-400 dark:text-gray-300 camera-inactive h-full w-full">
-                <div class="camera-inactive-bg"></div>
+                <div class="camera-inactive-bg"/>
                 <div class="relative z-10 h-full flex flex-col items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                   <p>Cámara inactiva</p>
                   <button 
-                    @click="activateCamera(selectedCamera)" 
-                    class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                    class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700" 
+                    @click="activateCamera(selectedCamera)"
                   >
                     Activar cámara
                   </button>
@@ -214,21 +225,21 @@
             <div class="flex justify-end space-x-3">
               <button 
                 v-if="!selectedCamera.isActive" 
-                @click="activateCamera(selectedCamera)" 
-                class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" 
+                @click="activateCamera(selectedCamera)"
               >
                 Activar cámara
               </button>
               <button 
                 v-else 
-                @click="deactivateCamera(selectedCamera)" 
-                class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" 
+                @click="deactivateCamera(selectedCamera)"
               >
                 Desactivar cámara
               </button>
               <button 
-                @click="selectedCamera = null" 
-                class="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                class="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2" 
+                @click="selectedCamera = null"
               >
                 Cerrar
               </button>
@@ -251,6 +262,8 @@ export default {
       selectedCamera: null,
       webcamActive: false,
       webcamStream: null,
+      // Servidor de streameo simulado que usaríamos en producción
+      streamServer: 'https://demo.mediamtx.com/streams',
       zones: [
         {
           id: 1,
@@ -263,6 +276,7 @@ export default {
               description: 'Vista principal del estanque Alao Oeste',
               status: 'online',
               isActive: true,
+              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Alao+Oeste'
             },
             {
@@ -272,6 +286,7 @@ export default {
               description: 'Monitoreo de alimentación y comportamiento',
               status: 'online',
               isActive: false,
+              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:sample.mp4',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Puerto+Varas'
             },
             {
@@ -281,6 +296,7 @@ export default {
               description: 'Vista subacuática para monitoreo de salud',
               status: 'offline',
               isActive: false,
+              rtspUrl: 'rtsp://demo:demo@ipvmdemo.dyndns.org:5541/onvif-media/media.amp?profile=profile_1&sessiontimeout=60&streamtype=unicast',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Ensenada'
             }
           ]
@@ -296,6 +312,7 @@ export default {
               description: 'Vista panorámica de estanque principal',
               status: 'online',
               isActive: true,
+              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:testvideo.mp4',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Bahía+2'
             },
             {
@@ -305,6 +322,7 @@ export default {
               description: 'Monitoreo de calidad del agua y comportamiento',
               status: 'maintenance',
               isActive: false,
+              rtspUrl: 'rtsp://service:service12@64.187.201.16:554',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Arrecife+Central'
             },
             {
@@ -314,6 +332,7 @@ export default {
               description: 'Vista de alimentadores automáticos',
               status: 'online',
               isActive: false,
+              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:testvideo_750k.mp4',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Marina+Centro'
             }
           ]
@@ -329,6 +348,7 @@ export default {
               description: 'Monitoreo de condiciones críticas',
               status: 'alert',
               isActive: true,
+              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:terrance-tao.mp4',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Talofa+Sur'
             },
             {
@@ -338,6 +358,7 @@ export default {
               description: 'Vista general del estanque',
               status: 'online',
               isActive: false,
+              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:bbb_1200kbps.mp4',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Butan+7'
             },
             {
@@ -347,6 +368,7 @@ export default {
               description: 'Monitoreo de emergencia por condiciones críticas',
               status: 'alert',
               isActive: true,
+              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:webrtc-demo.mp4',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Punta+Austral'
             }
           ]
@@ -362,15 +384,32 @@ export default {
       return this.zones.filter(zone => zone.id === this.selectedZone);
     }
   },
+  beforeUnmount() {
+    this.stopWebcam();
+  },
   methods: {
     goBack() {
       this.$router.push('/');
     },
     viewCamera(camera) {
       this.selectedCamera = camera;
+      
+      // Si tiene URL RTSP, iniciar la transmisión
+      if (camera.rtspUrl) {
+        this.$nextTick(() => {
+          this.startRtspStream();
+        });
+      }
     },
     activateCamera(camera) {
       camera.isActive = true;
+      
+      // Si tiene URL RTSP, iniciar la transmisión
+      if (camera.rtspUrl) {
+        this.$nextTick(() => {
+          this.startRtspStream();
+        });
+      }
       
       // Mostrar notificación
       const nuxtApp = useNuxtApp();
@@ -394,6 +433,42 @@ export default {
         this.stopWebcam();
       } else {
         await this.startWebcam();
+      }
+    },
+    async startRtspStream() {
+      try {
+        if (this.selectedCamera && this.selectedCamera.rtspUrl) {
+          // Implementación directa como lo hizo el profesor
+          // MediaMTX debe estar instalado y corriendo en la máquina local
+          // El stream se conecta directamente a la cámara RTSP a través de MediaMTX
+
+          // En el próximo ciclo de renderizado
+          this.$nextTick(() => {
+            if (this.$refs.rtspVideo) {
+              // Esta es la URL de MediaMTX que transforma el RTSP
+              // Asumiendo que MediaMTX está corriendo en localhost:8000
+              const streamName = `camera${this.selectedCamera.id}`;
+              const mediaServerUrl = `http://localhost:8000/${streamName}/index.m3u8`;
+              
+              this.$refs.rtspVideo.src = mediaServerUrl;
+              this.$refs.rtspVideo.play().catch(err => {
+                console.error('Error al reproducir stream:', err);
+              });
+            }
+          });
+          
+          // Mostrar notificación
+          const nuxtApp = useNuxtApp();
+          if (nuxtApp.$notifications) {
+            nuxtApp.$notifications.success(`Conexión a cámara iniciada`);
+          }
+        }
+      } catch (error) {
+        console.error('Error con la transmisión de la cámara:', error);
+        const nuxtApp = useNuxtApp();
+        if (nuxtApp.$notifications) {
+          nuxtApp.$notifications.error(`Error con la transmisión: ${error.message}`);
+        }
       }
     },
     async startWebcam() {
@@ -474,10 +549,39 @@ export default {
         default:
           return 'Desconocido';
       }
+    },
+    getCompatibleStreamUrl() {
+      if (!this.selectedCamera || !this.selectedCamera.rtspUrl) return null;
+      
+      // En un entorno real, aquí convertiríamos la URL RTSP a una URL compatible con navegadores
+      // Usualmente esto requiere un servidor de medios como MediaMTX, Wowza, etc.
+      
+      // Para demostración, usamos videos de muestra
+      const cameraId = this.selectedCamera.id;
+      
+      // Mapeo de IDs de cámara a videos de demo
+      const demoStreams = {
+        1: 'https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8', // HLS stream de demo
+        2: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+        3: 'https://playertest.longtailvideo.com/adaptive/wowzaid3/playlist.m3u8',
+        4: 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
+        5: 'https://d2zihajmogu5jn.cloudfront.net/sintel/master.m3u8',
+        6: 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8',
+        7: 'https://test-streams.mux.dev/dai-discontinuity-deltatre/manifest.m3u8',
+        8: 'https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8',
+        9: 'https://multiplatform-f.akamaihd.net/i/multi/will/bunny/big_buck_bunny_,640x360_400,640x360_700,640x360_1000,950x540_1500,.f4v.csmil/master.m3u8'
+      };
+      
+      if (demoStreams[cameraId]) {
+        // Para demostración, generamos un embed de un reproductor HLS compatible
+        return `https://embed.api.video/live-streams/${demoStreams[cameraId]}?autoplay=1&muted=0`;
+      }
+      
+      // En un sistema real, podríamos tener algo como:
+      // return `${this.streamServer}/${this.selectedCamera.streamKey}/index.m3u8`;
+      
+      return null;
     }
-  },
-  beforeUnmount() {
-    this.stopWebcam();
   }
 }
 </script>
