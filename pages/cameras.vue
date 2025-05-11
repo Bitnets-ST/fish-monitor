@@ -244,6 +244,12 @@ v-for="camera in zone.cameras" :key="camera.id"
                 Configurar
               </button>
               <button 
+                class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2" 
+                @click="checkMediaMTXConnection"
+              >
+                Diagnosticar
+              </button>
+              <button 
                 class="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2" 
                 @click="selectedCamera = null"
               >
@@ -346,8 +352,8 @@ export default {
               description: 'Cámara RTSP implementada por el profesor para monitoreo principal',
               status: 'online',
               isActive: true,
-              rtspUrl: 'rtsp://localhost:8554/live', // URL RTSP local que usaba el profesor
-              streamKey: 'main-camera', // Clave para MediaMTX
+              rtspUrl: 'rtsp://localhost:8554/cam1',
+              streamKey: 'cam1',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Principal+MediaMTX'
             },
             {
@@ -357,7 +363,8 @@ export default {
               description: 'Vista principal del estanque Alao Oeste',
               status: 'online',
               isActive: true,
-              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4',
+              rtspUrl: 'rtsp://localhost:8554/cam2',
+              streamKey: 'cam2',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Alao+Oeste'
             },
             {
@@ -367,7 +374,8 @@ export default {
               description: 'Vista subacuática para monitoreo de salud',
               status: 'offline',
               isActive: false,
-              rtspUrl: 'rtsp://demo:demo@ipvmdemo.dyndns.org:5541/onvif-media/media.amp?profile=profile_1&sessiontimeout=60&streamtype=unicast',
+              rtspUrl: 'rtsp://localhost:8554/cam3',
+              streamKey: 'cam3',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Ensenada'
             }
           ]
@@ -383,7 +391,8 @@ export default {
               description: 'Vista panorámica de estanque principal',
               status: 'online',
               isActive: true,
-              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:testvideo.mp4',
+              rtspUrl: 'rtsp://localhost:8554/cam4',
+              streamKey: 'cam4',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Bahía+2'
             },
             {
@@ -393,7 +402,8 @@ export default {
               description: 'Monitoreo de calidad del agua y comportamiento',
               status: 'maintenance',
               isActive: false,
-              rtspUrl: 'rtsp://service:service12@64.187.201.16:554',
+              rtspUrl: 'rtsp://localhost:8554/cam5',
+              streamKey: 'cam5',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Arrecife+Central'
             },
             {
@@ -403,7 +413,8 @@ export default {
               description: 'Vista de alimentadores automáticos',
               status: 'online',
               isActive: false,
-              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:testvideo_750k.mp4',
+              rtspUrl: 'rtsp://localhost:8554/cam6',
+              streamKey: 'cam6',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Marina+Centro'
             }
           ]
@@ -419,7 +430,8 @@ export default {
               description: 'Monitoreo de condiciones críticas',
               status: 'alert',
               isActive: true,
-              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:terrance-tao.mp4',
+              rtspUrl: 'rtsp://localhost:8554/cam7',
+              streamKey: 'cam7',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Talofa+Sur'
             },
             {
@@ -429,7 +441,8 @@ export default {
               description: 'Vista general del estanque',
               status: 'online',
               isActive: false,
-              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:bbb_1200kbps.mp4',
+              rtspUrl: 'rtsp://localhost:8554/cam8',
+              streamKey: 'cam8',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Butan+7'
             },
             {
@@ -439,7 +452,8 @@ export default {
               description: 'Monitoreo de emergencia por condiciones críticas',
               status: 'alert',
               isActive: true,
-              rtspUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:webrtc-demo.mp4',
+              rtspUrl: 'rtsp://localhost:8554/cam9',
+              streamKey: 'cam9',
               thumbnailUrl: 'https://via.placeholder.com/640x360.png?text=Cámara+Punta+Austral'
             }
           ]
@@ -465,11 +479,26 @@ export default {
     viewCamera(camera) {
       this.selectedCamera = camera;
       
-      // Si tiene URL RTSP, iniciar la transmisión
-      if (camera.rtspUrl) {
-        this.$nextTick(() => {
-          this.startRtspStream();
-        });
+      // Si tiene URL RTSP, intentamos iniciar automáticamente la transmisión
+      if (camera.rtspUrl && camera.isActive) {
+        // Primero verificamos si MediaMTX está disponible
+        const testUrl = 'http://localhost:8889/';
+        
+        fetch(testUrl, { method: 'HEAD', mode: 'no-cors' })
+          .then(_ => {
+            console.log('MediaMTX está disponible, iniciando stream...');
+            // Si está disponible, iniciamos el stream
+            this.$nextTick(() => {
+              this.startRtspStream();
+            });
+          })
+          .catch(error => {
+            console.error('Error de conexión a MediaMTX:', error);
+            const nuxtApp = useNuxtApp();
+            if (nuxtApp.$notifications) {
+              nuxtApp.$notifications.warning(`No se pudo conectar automáticamente a MediaMTX. Use el botón Diagnosticar para verificar la conexión.`);
+            }
+          });
       }
     },
     activateCamera(camera) {
@@ -509,30 +538,32 @@ export default {
     async startRtspStream() {
       try {
         if (this.selectedCamera && this.selectedCamera.rtspUrl) {
-          // Implementación mejorada que funciona con la configuración del profesor
+          // Implementación ajustada para usar exactamente la misma configuración que el profesor
           this.$nextTick(() => {
             if (this.$refs.rtspVideo) {
-              // Configuramos la URL según la cámara
-              let mediaUrl;
-              
-              // Si es la cámara principal del profesor (ID 1)
+              // Configuración específica para MediaMTX según lo que muestra la terminal del profesor
+              // Cambiamos para usar cam1/index.m3u8 que es el formato que está usando en su servidor
+              let streamKey = 'cam1';
               if (this.selectedCamera.id === 1) {
-                // URL directa a MediaMTX como configuró el profesor
-                mediaUrl = 'http://localhost:8000/live/index.m3u8';
+                // Primera cámara usa el mismo stream que configuró el profesor
+                streamKey = 'cam1';
               } else {
-                // Para el resto de cámaras, usamos su streamKey o ID
-                const streamKey = this.selectedCamera.streamKey || `camera${this.selectedCamera.id}`;
-                mediaUrl = `http://localhost:8000/${streamKey}/index.m3u8`;
+                // Las demás cámaras usan cam2, cam3, etc.
+                streamKey = `cam${this.selectedCamera.id}`;
               }
               
-              // Asignamos la URL al reproductor de video
+              // El servidor HTTP de MediaMTX parece estar en puerto 8889 según la salida
+              const mediaUrl = `http://localhost:8889/${streamKey}/index.m3u8`;
+              
+              console.log(`Intentando conectar a: ${mediaUrl}`);
+              
               this.$refs.rtspVideo.src = mediaUrl;
               this.$refs.rtspVideo.play().catch(err => {
                 console.error('Error al reproducir stream:', err);
-                // Fallback a mostrar un mensaje de error
+                // Mensaje de error más específico
                 const nuxtApp = useNuxtApp();
                 if (nuxtApp.$notifications) {
-                  nuxtApp.$notifications.warning(`El servidor MediaMTX no está disponible. Consulte con el administrador.`);
+                  nuxtApp.$notifications.warning(`No se pudo conectar al stream de la cámara. Verifique que la cámara esté transmitiendo al servidor MediaMTX en el puerto correcto.`);
                 }
               });
             }
@@ -680,6 +711,26 @@ export default {
       if (this.selectedCamera.rtspUrl) {
         this.startRtspStream();
       }
+    },
+    checkMediaMTXConnection() {
+      // Función de diagnóstico para verificar conexión con MediaMTX
+      const testUrl = 'http://localhost:8889/';
+      
+      fetch(testUrl, { method: 'HEAD', mode: 'no-cors' })
+        .then(_ => {
+          console.log('MediaMTX está disponible');
+          const nuxtApp = useNuxtApp();
+          if (nuxtApp.$notifications) {
+            nuxtApp.$notifications.success('Conexión a MediaMTX establecida');
+          }
+        })
+        .catch(error => {
+          console.error('Error de conexión a MediaMTX:', error);
+          const nuxtApp = useNuxtApp();
+          if (nuxtApp.$notifications) {
+            nuxtApp.$notifications.error(`No se pudo conectar a MediaMTX en ${testUrl}. Verifique que el servidor esté en ejecución.`);
+          }
+        });
     }
   }
 }
