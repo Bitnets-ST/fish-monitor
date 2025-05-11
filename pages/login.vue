@@ -73,7 +73,6 @@ export default {
     };
   },
   mounted() {
-    // Si el usuario ya está autenticado, redirigir al dashboard
     if (User.isAuthenticated()) {
       this.$router.push('/');
     }
@@ -81,17 +80,20 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        // Validar entrada
         if (!this.username || !this.password) {
           this.errorMessage = 'Por favor, completa todos los campos';
           return;
         }
-        
+
         this.isLoading = true;
         this.errorMessage = '';
-        
-        // Llamar a la API de login
-        const response = await fetch('/api/auth/login', {
+
+        const isLocalhost = window.location.hostname === 'localhost';
+        const apiUrl = isLocalhost
+          ? '/api/auth/login'
+          : 'https://kind-moss-0ab3c7c0f.6.azurestaticapps.net/api/auth/login';
+
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -101,18 +103,14 @@ export default {
             password: this.password
           })
         });
-        
+
         const data = await response.json();
-        
-        // Verificar el statusCode en la respuesta
+
         if (data.statusCode !== 200) {
           throw new Error(data.body?.error || 'Error al iniciar sesión');
         }
-        
-        // Guardar token y datos del usuario
+
         User.login(data.body.user, data.body.token);
-        
-        // Redirigir al dashboard
         this.$router.push('/');
       } catch (error) {
         console.error('Error al iniciar sesión:', error);
@@ -124,6 +122,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 body {
