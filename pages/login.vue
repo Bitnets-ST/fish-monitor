@@ -79,17 +79,12 @@ export default {
       this.$router.push('/');
       return;
     }
-    // Si es móvil (APK), saltar login y simular usuario demo
+    // Si es móvil (APK), intenta login automático con usuario por defecto
     const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || window?.Capacitor;
     if (isMobile) {
-      User.login({
-        id: 'demo',
-        username: 'demo',
-        name: 'Demo User',
-        email: 'demo@demo.com',
-        isAdmin: false
-      }, 'demo-token');
-      this.$router.push('/');
+      this.username = 'bitnets';
+      this.password = '123456';
+      this.handleLogin();
     }
   },
   methods: {
@@ -127,6 +122,19 @@ export default {
         this.$router.push('/');
       } catch (error) {
         console.error('Error al iniciar sesión:', error);
+        // Si es móvil, fallback a usuario demo
+        const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || window?.Capacitor;
+        if (isMobile) {
+          User.login({
+            id: 'demo',
+            username: 'demo',
+            name: 'Demo User',
+            email: 'demo@demo.com',
+            isAdmin: false
+          }, 'demo-token');
+          this.$router.push('/');
+          return;
+        }
         this.errorMessage = error.message || 'Error al iniciar sesión';
       } finally {
         this.isLoading = false;
