@@ -1,22 +1,33 @@
 {
   "navigationFallback": {
-    "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif}", "/css/*"]
+    "rewrite": "/",
+    "exclude": ["/images/*.{png,jpg,gif}", "/css/*", "/_nuxt/*"]
   },
   "platform": {
     "apiRuntime": "node:22"
   },
   "routes": [
     {
-      "route": "/login",
-      "rewrite": "/login"
-    },
-    {
-      "route": "/api/*",
-      "methods": ["GET", "POST", "PUT", "DELETE"]
+      "route": "/*",
+      "serve": "/",
+      "statusCode": 200
     }
   ],
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/",
+      "statusCode": 200
+    }
+  },
   "globalHeaders": {
-    "content-security-policy": "default-src 'self' 'unsafe-inline' *.azurestaticapps.net; connect-src 'self' *.azurestaticapps.net;"
+    "content-security-policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval' *.azurestaticapps.net; img-src 'self' data: blob: *.azurestaticapps.net; connect-src 'self' *.azurestaticapps.net;",
+    "cache-control": "must-revalidate, max-age=0"
+  },
+  "mimeTypes": {
+    ".json": "application/json",
+    ".js": "text/javascript",
+    ".css": "text/css",
+    ".html": "text/html",
+    ".svg": "image/svg+xml"
   }
 }
