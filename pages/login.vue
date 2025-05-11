@@ -79,28 +79,38 @@ export default {
       this.$router.push('/');
       return;
     }
-    // Si es móvil (APK), intenta login automático con usuario por defecto
+    // Si es móvil, saltar login SIEMPRE y simular usuario demo
     const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || window?.Capacitor;
     if (isMobile) {
-      this.username = 'bitnets';
-      this.password = '123456';
-      this.handleLogin();
+      User.login({
+        id: 'demo',
+        username: 'demo',
+        name: 'Demo User',
+        email: 'demo@demo.com',
+        isAdmin: false
+      }, 'demo-token');
+      this.$router.push('/');
+      return;
     }
   },
   methods: {
     async handleLogin() {
+      // En móvil, nunca mostrar error ni intentar login real
+      const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || window?.Capacitor;
+      if (isMobile) {
+        this.errorMessage = '';
+        return;
+      }
+      // --- Tu código normal de login para web aquí ---
       try {
-        // Validar entrada
         if (!this.username || !this.password) {
           this.errorMessage = 'Por favor, completa todos los campos';
           return;
         }
         this.isLoading = true;
         this.errorMessage = '';
-        // Obtener la URL base de la API desde la config pública
         const config = useRuntimeConfig();
         const apiBaseUrl = config.public.apiBaseUrl || '/api';
-        // Llamar a la API de login
         const response = await fetch(`${apiBaseUrl}/auth/login`, {
           method: 'POST',
           headers: {
@@ -112,31 +122,12 @@ export default {
           })
         });
         const data = await response.json();
-        // Verificar el statusCode en la respuesta
         if (data.statusCode !== 200) {
           throw new Error(data.body?.error || 'Error al iniciar sesión');
         }
-        // Guardar token y datos del usuario
         User.login(data.body.user, data.body.token);
-        // Redirigir al dashboard
         this.$router.push('/');
       } catch (error) {
-        console.error('Error al iniciar sesión:', error);
-        // Si es móvil, fallback a usuario demo SIN mostrar error
-        const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || window?.Capacitor;
-        if (isMobile) {
-          this.errorMessage = '';
-          User.login({
-            id: 'demo',
-            username: 'demo',
-            name: 'Demo User',
-            email: 'demo@demo.com',
-            isAdmin: false
-          }, 'demo-token');
-          this.$router.push('/');
-          return;
-        }
-        // Solo muestra el error en web
         this.errorMessage = error.message || 'Error al iniciar sesión';
       } finally {
         this.isLoading = false;
