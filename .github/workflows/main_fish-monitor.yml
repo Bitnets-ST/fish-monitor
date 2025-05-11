@@ -29,24 +29,9 @@ jobs:
       - name: Build Nuxt app
         run: npm run build
 
-      - name: Prepare deployment artifact
-        run: |
-          mkdir deploy
-          cp -r .output deploy/.output
-          cp package.json deploy/
-          cp package-lock.json deploy/ || true
-        # Si tienes archivos .env de producción, descomenta la siguiente línea:
-        # cp .env deploy/.env
-
-      - name: Debug .output contents
-        run: |
-          echo 'Contenido de .output:'
-          ls -lR .output
-          echo 'Contenido de .output/public:'
-          ls -lR .output/public || true
-
+      # Crear un zip con TODO el proyecto completo, incluyendo el .output generado
       - name: Zip artifact for deployment
-        run: cd deploy && zip -r ../release.zip .
+        run: zip -r release.zip . -x "node_modules/*" "dist/*" "android/*" ".git/*" "*.zip"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
