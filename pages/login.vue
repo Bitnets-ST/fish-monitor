@@ -73,6 +73,21 @@ export default {
     };
   },
   mounted() {
+    // Si estamos en móvil, saltar el login SIEMPRE
+    const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || window?.Capacitor;
+    if (isMobile) {
+      console.log('Dispositivo móvil detectado, saltando login...');
+      User.login({
+        id: 'demo',
+        username: 'bitnets',
+        name: 'Usuario Demo',
+        email: 'demo@bitnets.com',
+        isAdmin: false
+      }, 'demo-token');
+      this.$router.push('/');
+      return;
+    }
+    
     // Si el usuario ya está autenticado, redirigir al dashboard
     if (User.isAuthenticated()) {
       this.$router.push('/');
@@ -80,6 +95,20 @@ export default {
   },
   methods: {
     async handleLogin() {
+      // En móvil, nunca intentar login real
+      const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent) || window?.Capacitor;
+      if (isMobile) {
+        User.login({
+          id: 'demo',
+          username: 'bitnets',
+          name: 'Usuario Demo',
+          email: 'demo@bitnets.com',
+          isAdmin: false
+        }, 'demo-token');
+        this.$router.push('/');
+        return;
+      }
+      
       try {
         // Validar entrada
         if (!this.username || !this.password) {
