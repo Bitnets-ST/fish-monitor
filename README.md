@@ -54,16 +54,16 @@ npm run build
 ```
 
 ## Credenciales de prueba
-
 Para probar la aplicación, utiliza estas credenciales:
 
 - **Usuario**: bitnets
 - **Contraseña**: 123
 
 ## Licencia
-
 [MIT](LICENSE)
 
 ## Contacto
-
 Para más información, contactar al equipo de BITNETS.
+
+
+
