@@ -9,9 +9,9 @@
         <span class="text-xl font-bold text-white">Bitnets Fish Monitor</span>
       </div>
       
-      <!-- Buscador centrado -->
+      <!-- Buscador centrado con tooltip -->
       <div class="flex-grow mx-8 max-w-xl">
-        <div class="relative">
+        <div class="relative group">
           <input 
             v-model="searchQuery" 
             type="text" 
@@ -23,6 +23,11 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
             </svg>
+          </div>
+          <!-- Tooltip añadido -->
+          <div class="absolute left-1/2 -translate-x-1/2 -bottom-10 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+            Busque por estanque
+            <div class="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
           </div>
         </div>
       </div>
@@ -368,4 +373,3 @@ export default {
   transform: translateY(-10px);
 }
 </style>
-  
