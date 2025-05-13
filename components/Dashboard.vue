@@ -4,6 +4,7 @@
     <DashboardSidebar 
       :username="username" 
       :userImage="userProfileImage"
+      :active-section="selectedView || 'dashboard'"
       @reset-dashboard="resetDashboard"
       @show-cameras="showCamerasView"
       @show-statistics="showStatistics"
@@ -588,277 +589,6 @@
           </div>
         </div>
         
-        <!-- Vista detallada de Destacados -->
-        <div v-if="selectedView === 'featured'" class="mb-6">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
-              Destacados - {{ getBestZone().name }}
-            </h2>
-            <button 
-              @click="backToMainView" 
-              class="flex items-center text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md ml-auto"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-              </svg>
-              Volver al dashboard
-            </button>
-          </div>
-          
-          <!-- Información de por qué es una zona destacada -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6">
-            <div class="p-4 border-b border-gray-100 dark:border-gray-700">
-              <h3 class="font-medium text-gray-800 dark:text-white">Análisis de rendimiento</h3>
-            </div>
-            <div class="p-6">
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h4 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Factores de éxito</h4>
-                  <ul class="space-y-3">
-                    <li class="flex items-start">
-                      <div class="flex-shrink-0 w-5 h-5 rounded-full bg-green-500 mt-1 mr-3 flex items-center justify-center text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p class="font-medium text-gray-800 dark:text-white">Distribución óptima de peces</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">{{ getBestZone().fishCount }} peces distribuidos en {{ getBestZone().pondCount }} estanques, manteniendo una densidad ideal por estanque.</p>
-                      </div>
-                    </li>
-                    <li class="flex items-start">
-                      <div class="flex-shrink-0 w-5 h-5 rounded-full bg-green-500 mt-1 mr-3 flex items-center justify-center text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p class="font-medium text-gray-800 dark:text-white">Control de temperatura preciso</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Mantiene una temperatura estable de {{ getBestZone().temperature }}°C, ideal para el crecimiento y metabolismo de los peces.</p>
-                      </div>
-                    </li>
-                    <li class="flex items-start">
-                      <div class="flex-shrink-0 w-5 h-5 rounded-full bg-green-500 mt-1 mr-3 flex items-center justify-center text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p class="font-medium text-gray-800 dark:text-white">Oxigenación superior</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Sistema de oxigenación automático que mantiene niveles óptimos en todos los estanques.</p>
-                      </div>
-                    </li>
-                    <li class="flex items-start">
-                      <div class="flex-shrink-0 w-5 h-5 rounded-full bg-green-500 mt-1 mr-3 flex items-center justify-center text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p class="font-medium text-gray-800 dark:text-white">Alimentación eficiente</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Sistema de alimentación programado con menor desperdicio de pellet y mejor conversión alimenticia.</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <h4 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Estrategias transferibles</h4>
-                  <ul class="space-y-3">
-                    <li class="flex items-start">
-                      <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 mt-1 mr-3 flex items-center justify-center text-white">
-                        <span class="text-xs">1</span>
-                      </div>
-                      <div>
-                        <p class="font-medium text-gray-800 dark:text-white">Sistema de oxigenación por tiempo</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Implementar ciclos de oxigenación cada 3 horas durante 20 minutos, como en {{ getBestZone().name }}.</p>
-                      </div>
-                    </li>
-                    <li class="flex items-start">
-                      <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 mt-1 mr-3 flex items-center justify-center text-white">
-                        <span class="text-xs">2</span>
-                      </div>
-                      <div>
-                        <p class="font-medium text-gray-800 dark:text-white">Redistribución de biomasa</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Limitar la densidad a máximo {{ Math.round(getBestZone().fishCount / getBestZone().pondCount * 1.1) }} peces por estanque para óptima circulación.</p>
-                      </div>
-                    </li>
-                    <li class="flex items-start">
-                      <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 mt-1 mr-3 flex items-center justify-center text-white">
-                        <span class="text-xs">3</span>
-                      </div>
-                      <div>
-                        <p class="font-medium text-gray-800 dark:text-white">Monitoreo preventivo</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Implementar sistema de alertas tempranas siguiendo los umbrales establecidos en {{ getBestZone().name }}.</p>
-                      </div>
-                    </li>
-                    <li class="flex items-start">
-                      <div class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 mt-1 mr-3 flex items-center justify-center text-white">
-                        <span class="text-xs">4</span>
-                      </div>
-                      <div>
-                        <p class="font-medium text-gray-800 dark:text-white">Sistema de alimentación optimizado</p>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Adaptar horarios de alimentación a 4 veces por día en cantidades menores para mejor absorción.</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Comparativa entre zonas -->
-          <div v-if="selectedView === 'featured'" class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6">
-            <div class="p-4 border-b border-gray-100 dark:border-gray-700">
-              <h3 class="font-medium text-gray-800 dark:text-white">Estado comparativo de zonas</h3>
-            </div>
-            <div class="p-6">
-              <div class="overflow-x-auto">
-                <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
-                  <thead class="bg-gray-50 dark:bg-gray-700">
-                    <tr>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Zona</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Estanques</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Salud General</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Temperatura</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Rendimiento</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    <tr v-for="zoneId in [1, 2, 3]" :key="zoneId" :class="zoneId === getBestZone().zoneId ? 'bg-blue-50 dark:bg-blue-900/20' : ''">
-                      <td class="px-4 py-3 whitespace-nowrap">
-                        <div class="flex items-center">
-                          <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3 text-white font-medium"
-                              :class="zoneId === 1 ? 'bg-blue-500' : zoneId === 2 ? 'bg-purple-500' : 'bg-cyan-500'">
-                            {{ zoneId === 1 ? 'N' : zoneId === 2 ? 'C' : 'S' }}
-                          </div>
-                          <span class="font-medium text-gray-800 dark:text-white">{{ getZoneName(zoneId) }}</span>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                        {{ getPondsByZone(zoneId).length }}
-                      </td>
-                      <td class="px-4 py-3 whitespace-nowrap">
-                        <span class="px-2 py-1 text-xs rounded-full" :class="getZoneStatusClass(zoneId)">
-                          {{ getZoneStatus(zoneId) }}
-                        </span>
-                      </td>
-                      <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                        {{ getAvgTempByZone(zoneId) }}°C
-                      </td>
-                      <td class="px-4 py-3 whitespace-nowrap">
-                        <div class="flex items-center">
-                          <div class="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
-                            <div class="h-2 rounded-full" 
-                                 :class="zoneId === getBestZone().zoneId ? 'bg-blue-500' : 'bg-gray-400 dark:bg-gray-500'"
-                                 :style="`width: ${getZonePerformanceScore(zoneId)}%`"></div>
-                          </div>
-                          <span class="text-sm font-medium" 
-                                :class="zoneId === getBestZone().zoneId ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'">
-                            {{ getZonePerformanceScore(zoneId) }}%
-                          </span>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                        <button v-if="zoneId !== getBestZone().zoneId" 
-                                class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-md text-xs"
-                                @click="showZoneDetails(zoneId)">
-                          Ver zona
-                        </button>
-                        <span v-else class="text-xs text-green-600 dark:text-green-400 font-medium">Zona destacada</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Métricas clave -->
-          <div v-if="selectedView === 'featured'" class="bg-white dark:bg-gray-800 rounded-lg shadow">
-            <div class="p-4 border-b border-gray-100 dark:border-gray-700">
-              <h3 class="font-medium text-gray-800 dark:text-white">Métricas clave por zona</h3>
-            </div>
-            <div class="p-6">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                  <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-3 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M3 3a1 1 0 000 2h10a1 1 0 100-2H3zm0 4a1 1 0 000 2h10a1 1 0 100-2H3zm0 4a1 1 0 100 2h10a1 1 0 100-2H3z" clip-rule="evenodd" />
-                      <path d="M15 8a1 1 0 100-2 1 1 0 000 2zm0 4a1 1 0 100-2 1 1 0 000 2z" />
-                    </svg>
-                    Población promedio por estanque
-                  </h5>
-                  <div class="space-y-3">
-                    <div v-for="zoneId in [1, 2, 3]" :key="`pop-${zoneId}`">
-                      <div class="flex justify-between text-xs mb-1">
-                        <span class="text-gray-500 dark:text-gray-400">{{ getZoneName(zoneId) }}</span>
-                        <span class="font-medium" :class="zoneId === getBestZone().zoneId ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'">
-                          {{ Math.round(getTotalFishByZone(zoneId) / getPondsByZone(zoneId).length) }}
-                        </span>
-                      </div>
-                      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                        <div class="h-1.5 rounded-full" 
-                            :class="zoneId === getBestZone().zoneId ? 'bg-blue-500' : 'bg-gray-400 dark:bg-gray-500'"
-                            :style="`width: ${Math.min(100, (getTotalFishByZone(zoneId) / getPondsByZone(zoneId).length) / 2)}%`"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                  <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-3 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
-                    </svg>
-                    Temperatura promedio
-                  </h5>
-                  <div class="space-y-3">
-                    <div v-for="zoneId in [1, 2, 3]" :key="`temp-${zoneId}`">
-                      <div class="flex justify-between text-xs mb-1">
-                        <span class="text-gray-500 dark:text-gray-400">{{ getZoneName(zoneId) }}</span>
-                        <span class="font-medium" :class="zoneId === getBestZone().zoneId ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'">
-                          {{ getAvgTempByZone(zoneId) }}°C
-                        </span>
-                      </div>
-                      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                        <div class="h-1.5 rounded-full" 
-                            :class="zoneId === getBestZone().zoneId ? 'bg-blue-500' : 'bg-gray-400 dark:bg-gray-500'"
-                            :style="`width: ${getTempPercentage(parseFloat(getAvgTempByZone(zoneId)))}%`"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-                  <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-3 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-green-500" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm9 4a1 1 0 10-2 0v6a1 1 0 102 0V7zm-3 2a1 1 0 10-2 0v4a1 1 0 102 0V9zm-3 3a1 1 0 10-2 0v1a1 1 0 102 0v-1z" clip-rule="evenodd" />
-                    </svg>
-                    Salud general
-                  </h5>
-                  <div class="space-y-3">
-                    <div v-for="zoneId in [1, 2, 3]" :key="`health-${zoneId}`">
-                      <div class="flex justify-between text-xs mb-1">
-                        <span class="text-gray-500 dark:text-gray-400">{{ getZoneName(zoneId) }}</span>
-                        <span class="font-medium" :class="zoneId === getBestZone().zoneId ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'">
-                          {{ getZoneHealthPercentage(zoneId) }}%
-                        </span>
-                      </div>
-                      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                        <div class="h-1.5 rounded-full" 
-                            :class="zoneId === getBestZone().zoneId ? 'bg-blue-500' : 'bg-gray-400 dark:bg-gray-500'"
-                            :style="`width: ${getZoneHealthPercentage(zoneId)}%`"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
         <!-- Vista detallada de Advertencias -->
         <div v-if="selectedView === 'warnings'" class="mb-6">
           <div class="flex justify-between items-center mb-4">
@@ -1127,6 +857,389 @@
             </div>
           </div>
         </div>
+        
+        <!-- Vista detallada de Destacados -->
+        <div v-if="selectedView === 'featured'" class="mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+              Destacados - {{ getBestZone().name }}
+            </h2>
+            <button 
+              @click="backToMainView" 
+              class="flex items-center text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md ml-auto"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+              </svg>
+              Volver al dashboard
+            </button>
+          </div>
+          
+          <!-- Tarjeta de rendimiento -->
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6">
+            <div class="p-4 border-b border-gray-100 dark:border-gray-700">
+              <h3 class="font-medium text-gray-800 dark:text-white">Rendimiento zona destacada</h3>
+            </div>
+            <div class="p-6">
+              <div class="flex items-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold mr-4">
+                  {{ getBestZone().icon }}
+                </div>
+                <div>
+                  <h4 class="text-xl font-medium text-gray-800 dark:text-white">{{ getBestZone().name }}</h4>
+                  <p class="text-gray-500 dark:text-gray-400">Zona con mejor rendimiento general</p>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div class="flex justify-between items-center mb-3">
+                    <h5 class="text-sm font-medium text-gray-800 dark:text-white">Población</h5>
+                    <span class="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full">
+                      {{ getBestZone().pondCount }} estanques
+                    </span>
+                  </div>
+                  <div class="text-2xl font-semibold text-gray-800 dark:text-white mb-1">{{ getBestZone().fishCount }}</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">peces</div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div class="flex justify-between items-center mb-3">
+                    <h5 class="text-sm font-medium text-gray-800 dark:text-white">Temperatura</h5>
+                    <span class="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full">
+                      Promedio
+                    </span>
+                  </div>
+                  <div class="text-2xl font-semibold text-gray-800 dark:text-white mb-1">{{ getBestZone().temperature }}°C</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">estable</div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div class="flex justify-between items-center mb-3">
+                    <h5 class="text-sm font-medium text-gray-800 dark:text-white">Estado general</h5>
+                    <span class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full">
+                      {{ getBestZone().health }}
+                    </span>
+                  </div>
+                  <div class="text-2xl font-semibold text-green-600 dark:text-green-400 mb-1">{{ getZoneHealthPercentage(getBestZone().zoneId) }}%</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">estanques en óptimas condiciones</div>
+                </div>
+              </div>
+              
+              <div class="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4">
+                <h4 class="text-sm font-medium text-gray-800 dark:text-white mb-4">Comparativa de rendimiento</h4>
+                <div class="space-y-4">
+                  <div v-for="zoneId in [1, 2, 3]" :key="zoneId">
+                    <div class="flex justify-between mb-1">
+                      <div class="text-sm font-medium text-gray-800 dark:text-white">
+                        {{ getZoneName(zoneId) }}
+                      </div>
+                      <div class="text-sm font-medium" 
+                          :class="zoneId === getBestZone().zoneId ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'">
+                        {{ getZonePerformanceScore(zoneId) }}%
+                      </div>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div class="h-2 rounded-full"
+                          :class="zoneId === getBestZone().zoneId ? 'bg-blue-500 dark:bg-blue-400' : 'bg-gray-400 dark:bg-gray-600'"
+                          :style="`width: ${getZonePerformanceScore(zoneId)}%`"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Detalles de estanques -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+              <div class="p-4 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="font-medium text-gray-800 dark:text-white">Estanques destacados</h3>
+              </div>
+              <div class="p-4">
+                <div class="space-y-4">
+                  <div v-for="pond in getPondsByZone(getBestZone().zoneId)" 
+                      :key="pond.id"
+                      class="border border-gray-100 dark:border-gray-700 rounded-lg p-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors"
+                      @click="selectPond(pond)">
+                    <div class="flex justify-between items-center mb-2">
+                      <div class="flex items-center">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3 text-white font-medium"
+                            :class="getPondAvatarClass(pond)">
+                          {{ pond.name.substring(0, 1) }}
+                        </div>
+                        <h4 class="font-medium text-gray-800 dark:text-white">{{ pond.name }}</h4>
+                      </div>
+                      <span class="w-3 h-3 rounded-full" :class="getStatusDotClass(pond.status)"></span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                      <div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Peces</div>
+                        <div class="text-sm font-medium text-gray-800 dark:text-white">{{ pond.count }}</div>
+                      </div>
+                      <div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Temp</div>
+                        <div class="text-sm font-medium text-gray-800 dark:text-white">{{ pond.temperature }}°C</div>
+                      </div>
+                      <div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Oxígeno</div>
+                        <div class="text-sm font-medium" :class="getTextColorClass(pond.oxygen)">
+                          {{ pond.oxygenLabel.split(' ')[0] }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Gráfico de crecimiento -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+              <div class="p-4 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="font-medium text-gray-800 dark:text-white">Crecimiento proyectado</h3>
+              </div>
+              <div class="p-4">
+                <div class="h-64 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+                  <p class="text-gray-500 dark:text-gray-400">Gráfico de crecimiento se cargaría aquí</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Vista de Cámaras -->
+        <div v-if="selectedView === 'cameras'" class="mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+              Cámaras - Monitoreo en vivo
+            </h2>
+            <button 
+              @click="backToMainView" 
+              class="flex items-center text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md ml-auto"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+              </svg>
+              Volver al dashboard
+            </button>
+          </div>
+          
+          <!-- Contenido de cámaras -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div v-for="camera in cameras" :key="camera.id" class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+              <div class="p-2 relative h-48 bg-black">
+                <img :src="camera.thumbnailUrl || '/images/camera-placeholder.jpg'" alt="Cámara" class="w-full h-full object-cover">
+                <div class="absolute top-2 right-2 px-2 py-1 text-xs rounded-full" :class="camera.isActive ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'">
+                  {{ camera.isActive ? 'En línea' : 'Inactiva' }}
+                </div>
+              </div>
+              <div class="p-4">
+                <h3 class="font-medium text-gray-800 dark:text-white mb-2">{{ camera.name }}</h3>
+                <div class="flex justify-between text-sm mb-3">
+                  <span class="text-gray-500 dark:text-gray-400">Estanque: {{ camera.pondName }}</span>
+                  <span class="text-gray-500 dark:text-gray-400">ID: {{ camera.id }}</span>
+                </div>
+                <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                  Ver en detalle
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Vista de Estadísticas -->
+        <div v-if="selectedView === 'statistics'" class="mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+              Estadísticas de Estanques
+            </h2>
+            <button 
+              @click="backToMainView" 
+              class="flex items-center text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md ml-auto"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+              </svg>
+              Volver al dashboard
+            </button>
+          </div>
+          
+          <!-- Contenido de estadísticas -->
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+            <h3 class="font-medium text-gray-800 dark:text-white mb-4">Resumen por zonas</h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead>
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Zona</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Estanques</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Peces</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Temperatura Prom.</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Estado</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  <tr v-for="zone in zones" :key="zone.id">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-white">{{ zone.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ zone.pondCount }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ zone.fishCount }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ zone.avgTemperature }}°C</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-2 py-1 text-xs rounded-full" :class="getZoneStatusClass(zone.status)">
+                        {{ getZoneStatusLabel(zone.status) }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Gráficos -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <h3 class="font-medium text-gray-800 dark:text-white mb-4">Crecimiento de biomasa</h3>
+              <div class="h-64 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+                <p class="text-gray-500 dark:text-gray-400">Gráfico de crecimiento se cargaría aquí</p>
+              </div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <h3 class="font-medium text-gray-800 dark:text-white mb-4">Condiciones ambientales</h3>
+              <div class="h-64 border border-gray-200 dark:border-gray-700 rounded-lg flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+                <p class="text-gray-500 dark:text-gray-400">Gráfico de condiciones se cargaría aquí</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Vista de Configuración -->
+        <div v-if="selectedView === 'profile'" class="mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+              Configuración de Usuario
+            </h2>
+            <button 
+              @click="backToMainView" 
+              class="flex items-center text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md ml-auto"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+              </svg>
+              Volver al dashboard
+            </button>
+          </div>
+          
+          <!-- Contenido de configuración -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-1">
+              <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+                <div class="p-6">
+                  <div class="flex flex-col items-center">
+                    <div class="relative">
+                      <div class="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 p-1">
+                        <div v-if="profileImage" class="w-full h-full rounded-full overflow-hidden">
+                          <img :src="profileImage" alt="Foto de perfil" class="w-full h-full object-cover">
+                        </div>
+                        <div v-else class="w-full h-full rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-3xl font-bold text-blue-600">
+                          {{ getUserInitials() }}
+                        </div>
+                      </div>
+                      <button @click="uploadProfilePhoto" class="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 shadow-lg hover:bg-blue-700 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                        </svg>
+                      </button>
+                    </div>
+                    <h3 class="mt-4 font-medium text-gray-800 dark:text-white">{{ username }}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Supervisor</p>
+                  </div>
+                  
+                  <div class="mt-6">
+                    <ul class="space-y-2">
+                      <li>
+                        <button class="w-full text-left px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                          Información Personal
+                        </button>
+                      </li>
+                      <li>
+                        <button class="w-full text-left px-4 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600/30">
+                          Seguridad
+                        </button>
+                      </li>
+                      <li>
+                        <button class="w-full text-left px-4 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600/30">
+                          Notificaciones
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="md:col-span-2">
+              <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+                <div class="p-6">
+                  <h3 class="font-medium text-gray-800 dark:text-white mb-4">Información Personal</h3>
+                  
+                  <form @submit.prevent="updateProfile">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Nombre
+                        </label>
+                        <input 
+                          type="text" 
+                          v-model="profileForm.name"
+                          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-white"
+                        >
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Correo Electrónico
+                        </label>
+                        <input 
+                          type="email" 
+                          v-model="profileForm.email"
+                          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-white"
+                        >
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Teléfono
+                        </label>
+                        <input 
+                          type="tel" 
+                          v-model="profileForm.phone"
+                          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-white"
+                        >
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Rol
+                        </label>
+                        <select 
+                          v-model="profileForm.role"
+                          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-white"
+                        >
+                          <option value="admin">Administrador</option>
+                          <option value="supervisor">Supervisor</option>
+                          <option value="operator">Operador</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-sm">
+                        Guardar Cambios
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   </div>
@@ -1327,7 +1440,27 @@ export default {
           flowStatus: 'red',
           showStats: true
         }
-      ]
+      ],
+      // Datos para las vistas nuevas
+      cameras: [
+        { id: 1, name: "Cámara Principal Zona 1", isActive: true, pondName: "Alao Oeste", thumbnailUrl: "/images/camera1.jpg" },
+        { id: 2, name: "Cámara Auxiliar Zona 1", isActive: true, pondName: "Puerto Varas", thumbnailUrl: "/images/camera2.jpg" },
+        { id: 3, name: "Cámara Principal Zona 2", isActive: false, pondName: "Punta Arenas", thumbnailUrl: "/images/camera3.jpg" },
+        { id: 4, name: "Cámara Nocturna", isActive: true, pondName: "Caleta Andrade", thumbnailUrl: "/images/camera4.jpg" },
+        { id: 5, name: "Cámara de Monitoreo", isActive: false, pondName: "Bahía Drake", thumbnailUrl: "/images/camera5.jpg" },
+        { id: 6, name: "Cámara Subacuática", isActive: true, pondName: "Talofa Sur", thumbnailUrl: "/images/camera6.jpg" }
+      ],
+      zones: [
+        { id: 1, name: "Zona Norte", pondCount: 3, fishCount: 420, avgTemperature: 18.1, status: "normal" },
+        { id: 2, name: "Zona Central", pondCount: 2, fishCount: 280, avgTemperature: 17.5, status: "warning" },
+        { id: 3, name: "Zona Sur", pondCount: 3, fishCount: 390, avgTemperature: 16.8, status: "normal" }
+      ],
+      profileForm: {
+        name: "Admin Usuario",
+        email: "admin@bitnets.com",
+        phone: "+56 9 1234 5678",
+        role: "supervisor"
+      }
     }
   },
   computed: {
@@ -1631,11 +1764,9 @@ export default {
       }
     },
     resetDashboard() {
+      this.selectedView = null;
       this.selectedZone = null;
       this.selectedPond = null;
-      this.searchQuery = '';
-      this.searchResults = [];
-      this.showSearchResults = false;
     },
     resetSearch() {
       this.searchQuery = '';
@@ -1799,16 +1930,37 @@ export default {
       }
     },
     showStatistics() {
-      // Navegar a la página de estadísticas
-      this.$router.push('/statistics');
+      // Mantener el comportamiento original - solo cambiar la navegación
+      this.selectedView = 'statistics';
+      this.selectedZone = null;
+      this.selectedPond = null;
+      
+      // Scroll al inicio de la vista
+      this.$nextTick(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     },
     showUserProfile() {
-      // Navegar a la página de perfil
-      this.$router.push('/profile');
+      // Mantener el comportamiento original - solo cambiar la navegación
+      this.selectedView = 'profile';
+      this.selectedZone = null;
+      this.selectedPond = null;
+      
+      // Scroll al inicio de la vista
+      this.$nextTick(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     },
     showCamerasView() {
-      // Navegar a la página de cámaras
-      this.$router.push('/cameras');
+      // Mantener el comportamiento original - solo cambiar la navegación
+      this.selectedView = 'cameras';
+      this.selectedZone = null;
+      this.selectedPond = null;
+      
+      // Scroll al inicio de la vista
+      this.$nextTick(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     },
     uploadProfilePhoto() {
       // Activar el input de archivo oculto
@@ -2028,6 +2180,38 @@ export default {
     },
     getPondsWithHighWaste() {
       return this.ponds.filter(pond => pond.pelletWaste > 40);
+    },
+    getZoneStatusClass(status) {
+      switch (status) {
+        case 'normal':
+          return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+        case 'warning':
+          return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300';
+        case 'critical':
+          return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+        default:
+          return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+      }
+    },
+    getZoneStatusLabel(status) {
+      switch (status) {
+        case 'normal':
+          return 'Normal';
+        case 'warning':
+          return 'Atención';
+        case 'critical':
+          return 'Crítico';
+        default:
+          return 'Desconocido';
+      }
+    },
+    updateProfile() {
+      console.log('Perfil actualizado:', this.profileForm);
+      this.$notifications.notify({
+        title: 'Perfil actualizado',
+        message: 'Los cambios han sido guardados correctamente',
+        type: 'success'
+      });
     }
   }
 }
