@@ -91,7 +91,19 @@ export default {
         this.errorMessage = '';
         
         // Llamar a la API de login
-        const response = await fetch('/api/auth/login', {
+        let apiBaseUrl = '';
+        // Detectar si está en entorno móvil (Capacitor o similar)
+        if (
+          typeof window !== 'undefined' &&
+          (window.Capacitor || window.cordova || window.location.protocol === 'file:' || window.location.protocol === 'capacitor:')
+        ) {
+          apiBaseUrl = 'https://kind-moss-0ab3c7c0f.6.azurestaticapps.net';
+        } else {
+          // Web normal (local o producción)
+          const config = useRuntimeConfig?.() || {};
+          apiBaseUrl = (config.public?.API_BASE_URL || import.meta.env.NUXT_PUBLIC_API_BASE_URL || '');
+        }
+        const response = await fetch(`${apiBaseUrl}/api/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

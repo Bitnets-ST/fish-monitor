@@ -575,14 +575,7 @@
                   <h3 class="font-medium text-gray-800 dark:text-white">Webcam en vivo</h3>
                 </div>
                 <div class="p-4">
-                  <div class="bg-gray-900 rounded-lg overflow-hidden h-48 flex items-center justify-center">
-                    <div class="text-center text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
-                      <div class="text-sm">Transmisión no disponible</div>
-                    </div>
-                  </div>
+                  
                   
                   <div class="mt-3 flex justify-end">
                     <button class="bg-blue-600 text-white text-sm py-2 px-4 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
@@ -1139,11 +1132,13 @@
   </div>
 </template>
 
-<script>
+<script >
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useNuxtApp } from '#app';
 import { User } from '~/models/User';
 import DashboardSidebar from './dashboard/sidebar/DashboardSidebar.vue';
+
+
 
 export default {
   name: 'Dashboard',
@@ -2036,6 +2031,7 @@ export default {
     }
   }
 }
+
 </script>
 
 <style scoped>
