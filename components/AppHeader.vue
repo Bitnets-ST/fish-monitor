@@ -40,6 +40,14 @@
           <span class="text-sm font-medium text-white">API Conectada</span>
         </div>
         
+        <!-- Botón de cerrar sesión -->
+        <button 
+          @click="logout" 
+          class="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded text-sm transition"
+        >
+          Cerrar sesión
+        </button>
+        
         <!-- Campanita -->
         <div class="relative">
           <button 

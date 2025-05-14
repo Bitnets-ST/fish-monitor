@@ -1011,7 +1011,7 @@
         <div v-if="selectedView === 'cameras'" class="mb-6">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
-              Cámaras - Monitoreo en vivo
+              Cámaras - Monitoreo en vivoo
             </h2>
             <button 
               @click="backToMainView" 
@@ -1260,7 +1260,7 @@ export default {
   },
   data() {
     return {
-      username: 'Admin',
+      username: 'Bitnets',
       selectedZone: null,
       selectedPond: null,
       selectedView: null, // Propiedad para controlar las vistas detalladas (featured, warnings)

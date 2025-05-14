@@ -20,8 +20,16 @@
         </div>
         
         <div class="role text-gray-500 dark:text-gray-400 text-sm mt-2">
-          Supervisor
+          {{ userRole }}
         </div>
+        
+        <!-- Botón para cambiar de rol (solo para demostración) -->
+        <button 
+          @click="toggleRole" 
+          class="mt-2 px-3 py-1 text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+        >
+          Cambiar a {{ userRole === 'ADMIN' ? 'USER' : 'ADMIN' }}
+        </button>
       </div>
     </div>
     
@@ -60,6 +68,17 @@
             <span class="menu-text">Estadísticas</span>
           </a>
         </li>
+        <!-- Nuevo botón de Maestros (solo visible para ADMIN) -->
+        <li v-if="userRole === 'ADMIN'">
+          <a href="#" @click.prevent="$emit('show-masters')" :class="['menu-item', { 'active': activeSection === 'masters' }]">
+            <div class="icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+              </svg>
+            </div>
+            <span class="menu-text">Maestros</span>
+          </a>
+        </li>
         <li>
           <a href="#" @click.prevent="$emit('show-user-profile')" :class="['menu-item', { 'active': activeSection === 'profile' }]">
             <div class="icon-wrapper">
@@ -73,21 +92,6 @@
         </li>
       </ul>
     </nav>
-    
-    <!-- Botón de cerrar sesión -->
-    <div class="mt-auto p-4 border-t border-gray-200 dark:border-gray-700">
-      <button 
-        @click="$emit('logout')" 
-        class="flex items-center justify-center md:justify-start w-full px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 rounded-lg"
-      >
-        <div class="icon-wrapper text-red-600 dark:text-red-500">
-          <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-          </svg>
-        </div>
-        <span class="hidden md:inline">Cerrar sesión</span>
-      </button>
-    </div>
   </aside>
 </template>
 
@@ -106,15 +110,33 @@ export default {
     activeSection: {
       type: String,
       default: 'dashboard'
+    },
+    role: {
+      type: String,
+      default: 'USER'
+    }
+  },
+  data() {
+    return {
+      userRole: this.role
     }
   },
   methods: {
     getUserInitials() {
       if (!this.username) return 'A';
       return this.username.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+    },
+    toggleRole() {
+      this.userRole = this.userRole === 'ADMIN' ? 'USER' : 'ADMIN';
+      this.$emit('role-changed', this.userRole);
     }
   },
-  emits: ['reset-dashboard', 'show-cameras', 'show-statistics', 'show-user-profile', 'logout']
+  watch: {
+    role(newRole) {
+      this.userRole = newRole;
+    }
+  },
+  emits: ['reset-dashboard', 'show-cameras', 'show-statistics', 'show-masters', 'show-user-profile', 'role-changed']
 }
 </script>
 
@@ -170,4 +192,4 @@ export default {
 .menu-text {
   @apply hidden md:inline;
 }
-</style> 
+</style>
