@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-[#01374a] min-h-screen">
-    <MouseEffectBackground />
-    <div class="min-h-screen flex items-center justify-center relative px-4 py-6">
-      <div class="flex flex-col md:flex-row w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden">
+  <ClientOnly>
+    <div class="bg-[#01374a] min-h-screen flex items-center justify-center relative">
+      <MouseEffectBackground class="absolute inset-0 -z-10" />
+      <div class="w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10">
         <!-- Columna izquierda: formulario -->
         <div class="w-full md:w-1/2 bg-white p-6 md:p-10 flex flex-col justify-center">
           <div class="flex flex-col items-center mb-6">
@@ -48,7 +48,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </ClientOnly>
 </template>
 
 <script>
@@ -140,5 +140,10 @@ export default {
 <style scoped>
 body {
   font-family: 'Roboto', Arial, sans-serif;
+}
+
+html, body, #__nuxt, #__layout {
+  height: 100%;
+  min-height: 100%;
 }
 </style>
