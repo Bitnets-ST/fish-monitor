@@ -53,12 +53,18 @@ export default defineEventHandler(async (event) => {
     
     // Generar token JWT
     const token = generateToken({
-      id: user._id.toString(),
+      id: user.id || user._id.toString(),
       username: user.username,
       email: user.email,
       name: user.name,
-      isAdmin: user.isAdmin
+      role: user.role || 'user'
     });
+    
+    // Actualizar la última fecha de inicio de sesión
+    await usersCollection.updateOne(
+      { _id: user._id },
+      { $set: { lastLogin: new Date() } }
+    );
     
     // Devolver respuesta
     return {
@@ -67,7 +73,7 @@ export default defineEventHandler(async (event) => {
         message: 'Inicio de sesión exitoso',
         token,
         user: {
-          id: user._id.toString(),
+          id: user.id || user._id.toString(),
           username: user.username,
           email: user.email,
           name: user.name,

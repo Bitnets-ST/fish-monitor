@@ -1,8 +1,9 @@
 <template>
-  <ClientOnly>
-    <div class="bg-[#01374a] min-h-screen flex items-center justify-center relative">
-      <MouseEffectBackground class="absolute inset-0 -z-10" />
-      <div class="w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10">
+  <div>
+    <ClientOnly>
+      <div class="bg-[#01374a] min-h-screen flex items-center justify-center relative">
+        <MouseEffectBackground class="absolute inset-0 -z-10" />
+        <div class="w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10">
         <!-- Columna izquierda: formulario -->
         <div class="w-full md:w-1/2 bg-white p-6 md:p-10 flex flex-col justify-center">
           <div class="flex flex-col items-center mb-6">
@@ -55,9 +56,10 @@
         <div class="hidden md:block md:w-1/2 relative">
           <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/Fondo_inicio.png')" />
         </div>
+        </div>
       </div>
-    </div>
-  </ClientOnly>
+    </ClientOnly>
+  </div>
 </template>
 
 <script>
@@ -65,6 +67,7 @@ import PasswordField from '~/components/PasswordField.vue'
 import TextField from '~/components/TextField.vue'
 import MouseEffectBackground from '~/components/MouseEffectBackground.vue'
 import { User } from '~/models/User'
+import { useUserStore } from '~/stores/user'
 
 export default {
   name: 'LoginPage',
@@ -83,7 +86,8 @@ export default {
   },
   mounted() {
     // Si el usuario ya está autenticado, redirigir al dashboard
-    if (User.isAuthenticated()) {
+    const userStore = useUserStore();
+    if (userStore.isAuthenticated || User.isAuthenticated()) {
       this.$router.push('/');
     }
   },
@@ -142,10 +146,27 @@ export default {
         // Verificar si la respuesta es exitosa (código 200)
         if (result.statusCode === 200 && result.body) {
           // Guardar token y datos del usuario
-          User.login(result.body.user, result.body.token);
-          
-          // Redirigir al dashboard
-          this.$router.push('/');
+          await new Promise((resolve) => {
+            // Guardar usando el modelo User (ahora usa cookies)
+            User.login(result.body.user, result.body.token);
+            
+            // Guardar en el store de Pinia (también usa cookies)
+            const userStore = useUserStore();
+            userStore.login(result.body.user, result.body.token);
+            
+            // Obtener utilidades de cookies
+            const { $cookieUtils } = useNuxtApp();
+            if ($cookieUtils) {
+              console.log('Cookies establecidas correctamente');
+            }
+            
+            // Esperar un pequeño retraso para asegurar que todo se haya guardado
+            setTimeout(() => {
+              // Redirigir al dashboard
+              this.$router.push('/');
+              resolve();
+            }, 100);
+          });
           return;
         }
         
