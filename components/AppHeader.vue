@@ -148,6 +148,7 @@
 <script>
 import { User } from '~/models/User'
 import { useNuxtApp } from '#app'
+import { useUserStore } from '~/stores/user'
 
 export default {
   name: 'AppHeader',
@@ -170,6 +171,9 @@ export default {
     notificationCount() {
       const nuxtApp = useNuxtApp();
       return nuxtApp.$notifications?.unreadCount || 0;
+    },
+    userStore() {
+      return useUserStore();
     }
   },
   mounted() {
@@ -194,28 +198,44 @@ export default {
   },
   methods: {
     loadUserData() {
+      // Prioridad 1: Usar el store de Pinia
+      if (this.userStore.isAuthenticated) {
+        this.username = this.userStore.name || 'Usuario';
+        return;
+      }
+      
+      // Prioridad 2: Usar el plugin userData (para compatibilidad)
       const nuxtApp = useNuxtApp();
       if (nuxtApp.$userData) {
-        this.username = nuxtApp.$userData.value.name || 'Admin';
-      } else {
-        // Fallback: Cargar datos del usuario desde localStorage
-        if (process.client) {
-          const savedUser = localStorage.getItem('user');
-          if (savedUser) {
-            try {
-              const parsedUser = JSON.parse(savedUser);
-              if (parsedUser.name) {
-                this.username = parsedUser.name;
+        this.username = nuxtApp.$userData.value.name || 'Usuario';
+        return;
+      }
+      
+      // Prioridad 3: Fallback a localStorage
+      if (process.client) {
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+          try {
+            const parsedUser = JSON.parse(savedUser);
+            if (parsedUser.name) {
+              this.username = parsedUser.name;
+              
+              // Actualizar el store si hay datos en localStorage pero no en Pinia
+              if (!this.userStore.isAuthenticated) {
+                const token = localStorage.getItem('token');
+                if (token) {
+                  this.userStore.login(parsedUser, token);
+                }
               }
-            } catch (e) {
-              console.error('Error al cargar datos del usuario:', e);
             }
-          } else {
-            // Intentar obtener el nombre de usuario desde User.getCurrentUser()
-            const currentUser = User.getCurrentUser();
-            if (currentUser && currentUser.username) {
-              this.username = currentUser.username;
-            }
+          } catch (e) {
+            console.error('Error al cargar datos del usuario:', e);
+          }
+        } else {
+          // Intentar obtener el nombre de usuario desde User.getCurrentUser()
+          const currentUser = User.getCurrentUser();
+          if (currentUser && currentUser.name) {
+            this.username = currentUser.name;
           }
         }
       }
@@ -227,12 +247,18 @@ export default {
       }
     },
     logout() {
-      // Limpiar datos del usuario en localStorage
+      // Limpiar datos del usuario en localStorage (para compatibilidad)
       if (process.client) {
         localStorage.removeItem('user');
       }
       
+      // Limpiar datos en el modelo User (para compatibilidad)
       User.logout();
+      
+      // Limpiar datos en el store de Pinia
+      this.userStore.logout();
+      
+      // Redirigir a la página de login
       this.$router.push('/login');
     },
     checkApiStatus() {

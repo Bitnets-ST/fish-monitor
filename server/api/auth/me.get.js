@@ -1,6 +1,7 @@
 // API para obtener el perfil del usuario autenticado
-import { container } from '../../utils/cosmos';
+import { connectToDatabase } from '../../utils/mongodb';
 import { verifyToken } from '../../utils/auth';
+import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   try {
@@ -24,8 +25,15 @@ export default defineEventHandler(async (event) => {
       };
     }
     
-    // Buscar usuario en Cosmos DB
-    const { resource: user } = await container.item(decoded.id).read();
+    // Conectar a MongoDB
+    const { db } = await connectToDatabase();
+    const usersCollection = db.collection('users');
+    
+    // Buscar usuario en MongoDB
+    const user = await usersCollection.findOne(
+      { _id: new ObjectId(decoded.id) },
+      { projection: { password: 0 } } // Excluir la contraseña
+    );
     
     if (!user) {
       return {
@@ -34,8 +42,13 @@ export default defineEventHandler(async (event) => {
       };
     }
     
-    // Devolver perfil de usuario (sin la contraseña)
-    const { password, ...userProfile } = user;
+    // Convertir _id a string para el cliente
+    const userProfile = {
+      ...user,
+      id: user._id.toString(),
+      isAdmin: (user.role === 'admin') || false
+    };
+    delete userProfile._id;
     
     return {
       statusCode: 200,

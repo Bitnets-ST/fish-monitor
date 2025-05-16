@@ -1,8 +1,9 @@
 <template>
-  <ClientOnly>
-    <div class="bg-[#01374a] min-h-screen flex items-center justify-center relative">
-      <MouseEffectBackground class="absolute inset-0 -z-10" />
-      <div class="w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10">
+  <div>
+    <ClientOnly>
+      <div class="bg-[#01374a] min-h-screen flex items-center justify-center relative">
+        <MouseEffectBackground class="absolute inset-0 -z-10" />
+        <div class="w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10">
         <!-- Columna izquierda: formulario -->
         <div class="w-full md:w-1/2 bg-white p-6 md:p-10 flex flex-col justify-center">
           <div class="flex flex-col items-center mb-6">
@@ -12,8 +13,17 @@
             <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Bienvenido</h2>
           </div>
           <form class="space-y-4" @submit.prevent="handleLogin">
-            <TextField v-model="username" placeholder="Usuario" />
-            <PasswordField v-model="password" placeholder="Contraseña" />
+            <TextField 
+              v-model="email" 
+              placeholder="Correo electrónico" 
+              type="email"
+              required
+            />
+            <PasswordField 
+              v-model="password" 
+              placeholder="Contraseña" 
+              required
+            />
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div class="flex items-center">
                 <input id="remember" type="checkbox" class="mr-2 w-4 h-4 accent-blue-500">
@@ -46,9 +56,10 @@
         <div class="hidden md:block md:w-1/2 relative">
           <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/Fondo_inicio.png')" />
         </div>
+        </div>
       </div>
-    </div>
-  </ClientOnly>
+    </ClientOnly>
+  </div>
 </template>
 
 <script>
@@ -56,6 +67,7 @@ import PasswordField from '~/components/PasswordField.vue'
 import TextField from '~/components/TextField.vue'
 import MouseEffectBackground from '~/components/MouseEffectBackground.vue'
 import { User } from '~/models/User'
+import { useUserStore } from '~/stores/user'
 
 export default {
   name: 'LoginPage',
@@ -66,7 +78,7 @@ export default {
   },
   data() {
     return {
-      username: '',
+      email: '',
       password: '',
       errorMessage: '',
       isLoading: false
@@ -74,7 +86,8 @@ export default {
   },
   mounted() {
     // Si el usuario ya está autenticado, redirigir al dashboard
-    if (User.isAuthenticated()) {
+    const userStore = useUserStore();
+    if (userStore.isAuthenticated || User.isAuthenticated()) {
       this.$router.push('/');
     }
   },
@@ -82,8 +95,15 @@ export default {
     async handleLogin() {
       try {
         // Validar entrada
-        if (!this.username || !this.password) {
+        if (!this.email || !this.password) {
           this.errorMessage = 'Por favor, completa todos los campos';
+          return;
+        }
+        
+        // Validar formato de correo electrónico
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(this.email)) {
+          this.errorMessage = 'Por favor, ingresa un correo electrónico válido';
           return;
         }
         
@@ -109,26 +129,58 @@ export default {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            username: this.username,
+            email: this.email,
             password: this.password
           })
         });
         
-        const data = await response.json();
+        const result = await response.json();
+        console.log('Server response:', result);
         
-        // Verificar el statusCode en la respuesta
-        if (data.statusCode !== 200) {
-          throw new Error(data.body?.error || 'Error al iniciar sesión');
+        // Verificar si hay un error en la respuesta
+        if (result.body?.error || result.statusCode >= 400) {
+          const errorMessage = result.body?.error || 'Error al iniciar sesión';
+          throw new Error(errorMessage);
         }
         
-        // Guardar token y datos del usuario
-        User.login(data.body.user, data.body.token);
+        // Verificar si la respuesta es exitosa (código 200)
+        if (result.statusCode === 200 && result.body) {
+          // Guardar token y datos del usuario
+          await new Promise((resolve) => {
+            // Guardar usando el modelo User (ahora usa cookies)
+            User.login(result.body.user, result.body.token);
+            
+            // Guardar en el store de Pinia (también usa cookies)
+            const userStore = useUserStore();
+            userStore.login(result.body.user, result.body.token);
+            
+            // Obtener utilidades de cookies
+            const { $cookieUtils } = useNuxtApp();
+            if ($cookieUtils) {
+              console.log('Cookies establecidas correctamente');
+            }
+            
+            // Esperar un pequeño retraso para asegurar que todo se haya guardado
+            setTimeout(() => {
+              // Redirigir al dashboard
+              this.$router.push('/');
+              resolve();
+            }, 100);
+          });
+          return;
+        }
         
-        // Redirigir al dashboard
-        this.$router.push('/');
+        // Si llegamos aquí, la respuesta no tiene el formato esperado
+        console.error('Unexpected response format:', result);
+        throw new Error('Formato de respuesta inesperado del servidor');
       } catch (error) {
         console.error('Error al iniciar sesión:', error);
-        this.errorMessage = error.message || 'Error al iniciar sesión';
+        // Mostrar mensaje de error más amigable
+        if (error.message.includes('401') || error.message.toLowerCase().includes('credenciales')) {
+          this.errorMessage = 'Correo o contraseña incorrectos';
+        } else {
+          this.errorMessage = error.message || 'Error al iniciar sesión. Por favor, inténtalo de nuevo.';
+        }
       } finally {
         this.isLoading = false;
       }

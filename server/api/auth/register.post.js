@@ -1,6 +1,7 @@
 // API para registro de usuarios
-import { container } from '../../utils/cosmos';
+import { connectToDatabase } from '../../utils/mongodb';
 import { hashPassword, generateToken } from '../../utils/auth';
+import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   try {
@@ -16,43 +17,48 @@ export default defineEventHandler(async (event) => {
       };
     }
     
+    // Conectar a MongoDB
+    const { db } = await connectToDatabase();
+    const usersCollection = db.collection('users');
+    
     // Comprobar si el usuario ya existe
-    const querySpec = {
-      query: "SELECT * FROM c WHERE c.username = @username OR c.email = @email",
-      parameters: [
-        { name: "@username", value: username },
-        { name: "@email", value: email }
+    const existingUser = await usersCollection.findOne({
+      $or: [
+        { username },
+        { email }
       ]
-    };
+    });
     
-    const { resources: existingUsers } = await container.items.query(querySpec).fetchAll();
-    
-    if (existingUsers.length > 0) {
+    if (existingUser) {
       return {
-        statusCode: 409,
-        body: { error: 'El usuario o correo electrónico ya está registrado' }
+        statusCode: 400,
+        body: { error: 'El nombre de usuario o correo electrónico ya está en uso' }
       };
     }
     
     // Encriptar contraseña
     const hashedPassword = await hashPassword(password);
     
-    // Crear usuario en Cosmos DB
+    // Crear el nuevo usuario en MongoDB
     const newUser = {
-      id: `user-${Date.now()}`,
       username,
       email,
-      name,
       password: hashedPassword,
-      isAdmin: false,
-      createdAt: new Date().toISOString()
+      name,
+      role: 'user',
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
     
-    const { resource: createdUser } = await container.items.create(newUser);
+    const result = await usersCollection.insertOne(newUser);
+    const createdUser = {
+      _id: result.insertedId,
+      ...newUser
+    };
     
     // Generar token JWT
     const token = generateToken({
-      id: createdUser.id,
+      id: createdUser._id.toString(),
       username: createdUser.username,
       email: createdUser.email,
       name: createdUser.name,
