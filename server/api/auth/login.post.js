@@ -1,39 +1,45 @@
 // API para inicio de sesión de usuarios
-import { container } from '../../utils/cosmos';
+import { connectToDatabase } from '../../utils/mongodb';
 import { comparePassword, generateToken } from '../../utils/auth';
+import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   try {
     // Obtener datos del cuerpo de la petición
     const body = await readBody(event);
-    const { username, password } = body;
+    const { email, password } = body;
     
     // Validar datos
-    if (!username || !password) {
+    if (!email || !password) {
       return {
         statusCode: 400,
-        body: { error: 'El usuario y la contraseña son obligatorios' }
+        body: { error: 'El correo electrónico y la contraseña son obligatorios' }
       };
     }
     
-    // Buscar usuario en Cosmos DB
-    const querySpec = {
-      query: "SELECT * FROM c WHERE c.username = @username",
-      parameters: [
-        { name: "@username", value: username }
-      ]
-    };
+    // Validar formato de correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return {
+        statusCode: 400,
+        body: { error: 'Por favor, ingresa un correo electrónico válido' }
+      };
+    }
     
-    const { resources: users } = await container.items.query(querySpec).fetchAll();
+    // Conectar a MongoDB
+    const { db } = await connectToDatabase();
+    const usersCollection = db.collection('user');
     
-    if (users.length === 0) {
+    // Buscar usuario en MongoDB por email
+    const user = await usersCollection.findOne({ email });
+    
+    if (!user) {
+      console.error('Usuario no encontrado para el email:', email);
       return {
         statusCode: 401,
-        body: { error: 'Usuario o contraseña incorrectos' }
+        body: { error: 'Correo o contraseña incorrectos' }
       };
     }
-    
-    const user = users[0];
     
     // Verificar contraseña
     const isPasswordValid = await comparePassword(password, user.password);
@@ -47,7 +53,7 @@ export default defineEventHandler(async (event) => {
     
     // Generar token JWT
     const token = generateToken({
-      id: user.id,
+      id: user._id.toString(),
       username: user.username,
       email: user.email,
       name: user.name,
@@ -61,11 +67,12 @@ export default defineEventHandler(async (event) => {
         message: 'Inicio de sesión exitoso',
         token,
         user: {
-          id: user.id,
+          id: user._id.toString(),
           username: user.username,
           email: user.email,
           name: user.name,
-          isAdmin: user.isAdmin
+          role: user.role || 'user',
+          isAdmin: (user.role === 'admin') || false
         }
       }
     };
