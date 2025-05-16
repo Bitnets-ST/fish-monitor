@@ -1,8 +1,8 @@
 <template>
-  <div :class="{ 'dark': isDarkMode }">
+  <div :class="{ 'dark': isDark }">
     <div class="page-content bg-transparent dark:bg-gray-900 dark:text-white min-h-screen">
       <AppHeader v-if="!isLoginPage" />
-      <NotificationSystem ref="notificationSystem" />
+      <NotificationSystem ref="notificationSystem" id="notification-system" />
       <div :class="{ 'pt-16': !isLoginPage }">
         <NuxtPage />
       </div>
@@ -10,34 +10,36 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import AppHeader from '~/components/AppHeader.vue'
 import NotificationSystem from '~/components/NotificationSystem.vue'
 import { useNuxtApp } from '#app'
+import { useDarkMode } from '~/composables/useDarkMode'
 
-export default {
-  name: 'DefaultLayout',
-  components: {
-    AppHeader,
-    NotificationSystem
-  },
-  computed: {
-    isLoginPage() {
-      return this.$route.path === '/login' || this.$route.path === '/register';
-    },
-    isDarkMode() {
-      const nuxtApp = useNuxtApp();
-      return nuxtApp.$darkMode?.value || false;
-    }
-  },
-  mounted() {
-    // Registrar el sistema de notificaciones
-    const nuxtApp = useNuxtApp();
-    if (nuxtApp.$notifications) {
-      nuxtApp.$notifications.setNotificationSystem(this.$refs.notificationSystem);
-    }
+// Usar el composable de modo oscuro
+const { isDark, initDarkMode } = useDarkMode()
+
+// Obtener la ruta actual
+const route = useRoute()
+
+// Comprobar si estamos en la página de login
+const isLoginPage = computed(() => {
+  return route.path === '/login' || route.path === '/register'
+})
+
+// Al montar el componente
+onMounted(() => {
+  // Inicializar el modo oscuro
+  initDarkMode()
+  
+  // Registrar el sistema de notificaciones
+  const nuxtApp = useNuxtApp()
+  if (nuxtApp.$notifications) {
+    nuxtApp.$notifications.setNotificationSystem(document.querySelector('#notification-system'))
   }
-}
+})
 </script>
 
 <style scoped>
