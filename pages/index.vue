@@ -1,11 +1,17 @@
 <template>
   <div>
-    <Dashboard/>
+    <ClientOnly>
+      <Dashboard v-if="isAuthenticated" />
+      <div v-else class="flex justify-center items-center h-screen">
+        <p>Verificando autenticación...</p>
+      </div>
+    </ClientOnly>
   </div>
 </template>
 
 <script>
 import Dashboard from '../components/dashboard/Dashboard.vue'
+import { useUserStore } from '~/stores/user'
 
 export default {
   middleware: 'auth',
@@ -15,8 +21,12 @@ export default {
   name: 'IndexPage',
   data() {
     return {
-      
+      isAuthenticated: false
     }
+  },
+  mounted() {
+    const userStore = useUserStore();
+    this.isAuthenticated = userStore.isAuthenticated;
   },
   methods: {
    

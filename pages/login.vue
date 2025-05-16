@@ -1,7 +1,7 @@
 <template>
   <div>
     <ClientOnly>
-      <div class="bg-[#01374a] min-h-screen flex items-center justify-center relative">
+      <div v-if="!isLoading && !isAuthenticated" class="bg-[#01374a] min-h-screen flex items-center justify-center relative">
         <MouseEffectBackground class="absolute inset-0 -z-10" />
         <div class="w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10">
         <!-- Columna izquierda: formulario -->
@@ -81,14 +81,30 @@ export default {
       email: '',
       password: '',
       errorMessage: '',
-      isLoading: false
+      isLoading: false,
+      isAuthenticated: false
     };
   },
   mounted() {
-    // Si el usuario ya está autenticado, redirigir al dashboard
+    // Verificar autenticación inmediatamente
+    this.isLoading = true;
+    
+    // Verificar en el store y en el modelo User
     const userStore = useUserStore();
-    if (userStore.isAuthenticated || User.isAuthenticated()) {
-      this.$router.push('/');
+    
+    // Intentar cargar desde cookies primero
+    if (!userStore.isAuthenticated) {
+      userStore.loadFromCookies();
+    }
+    
+    // Si el usuario ya está autenticado, establecer la bandera y redirigir
+    this.isAuthenticated = userStore.isAuthenticated || User.isAuthenticated();
+    
+    if (this.isAuthenticated) {
+      // Redirigir al dashboard inmediatamente
+      this.$router.replace('/');
+    } else {
+      this.isLoading = false;
     }
   },
   methods: {

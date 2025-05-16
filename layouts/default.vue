@@ -1,11 +1,13 @@
 <template>
   <div :class="{ 'dark': isDark }">
     <div class="page-content bg-transparent dark:bg-gray-900 dark:text-white min-h-screen">
-      <AppHeader v-if="!isLoginPage" />
-      <NotificationSystem ref="notificationSystem" id="notification-system" />
-      <div :class="{ 'pt-16': !isLoginPage }">
-        <NuxtPage />
-      </div>
+      <ClientOnly>
+        <AppHeader v-if="!isLoginPage" />
+        <NotificationSystem ref="notificationSystem" id="notification-system" />
+        <div :class="{ 'pt-16': !isLoginPage }">
+          <NuxtPage />
+        </div>
+      </ClientOnly>
     </div>
   </div>
 </template>
