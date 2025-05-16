@@ -10,12 +10,14 @@
         
         <div class="avatar-container flex justify-center">
           <div class="w-20 h-20 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 p-1">
-            <div v-if="userImage" class="w-full h-full rounded-full overflow-hidden">
-              <img :src="userImage" alt="Foto de perfil" class="w-full h-full object-cover">
-            </div>
-            <div v-else class="w-full h-full rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-3xl font-bold text-blue-600">
-              {{ getUserInitials() }}
-            </div>
+            <ClientOnly>
+              <div v-if="userImage" class="w-full h-full rounded-full overflow-hidden">
+                <img :src="userImage" alt="Foto de perfil" class="w-full h-full object-cover">
+              </div>
+              <div v-else class="w-full h-full rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-3xl font-bold text-blue-600">
+                {{ getUserInitials() }}
+              </div>
+            </ClientOnly>
           </div>
         </div>
         
@@ -98,6 +100,27 @@
 <script>
 export default {
   name: 'DashboardSidebar',
+  components: {
+    ClientOnly: {
+      inheritAttrs: false,
+      setup(_, { slots }) {
+        const show = ref(false);
+        onMounted(() => {
+          show.value = true;
+        });
+        return () => (show.value && slots.default ? slots.default() : null);
+      },
+    },
+  },
+  data() {
+    return {
+      isMounted: false,
+      userRole: this.role
+    }
+  },
+  mounted() {
+    this.isMounted = true;
+  },
   props: {
     username: {
       type: String,

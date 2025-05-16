@@ -23,7 +23,6 @@ export async function connectToDatabase() {
   try {
     // Conectar al cluster de MongoDB
     const client = new MongoClient(uri, {
-      useNewUrlParser: true,
       useUnifiedTopology: true,
     });
 
