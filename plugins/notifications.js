@@ -10,13 +10,14 @@ export default defineNuxtPlugin((nuxtApp) => {
     
     // Establecer el sistema de notificaciones
     setNotificationSystem(system) {
+      // Puede ser una referencia directa o un elemento del DOM
       this.notificationSystem = system;
     },
     
     // Agregar una notificación
     notify({ title, message, type = 'info', showToast = true }) {
       // Crear un ID único para la notificación
-      const id = Date.now() + Math.floor(Math.random() * 1000);
+      const id = uuidv4();
       
       // Crear la notificación
       const notification = {
