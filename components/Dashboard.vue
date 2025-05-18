@@ -1028,7 +1028,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div v-for="camera in cameras" :key="camera.id" class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
               <div class="p-2 relative h-48 bg-black">
-                <img :src="camera.thumbnailUrl || '/images/camera-placeholder.jpg'" alt="Cámara" class="w-full h-full object-cover">
+                <img :src="camera.thumbnailUrl " alt="Cámara" class="w-full h-full object-cover">
                 <div class="absolute top-2 right-2 px-2 py-1 text-xs rounded-full" :class="camera.isActive ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'">
                   {{ camera.isActive ? 'En línea' : 'Inactiva' }}
                 </div>
@@ -1214,19 +1214,7 @@
                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-white"
                         >
                       </div>
-                      <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Rol
-                        </label>
-                        <select 
-                          v-model="profileForm.role"
-                          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-white"
-                        >
-                          <option value="admin">Administrador</option>
-                          <option value="supervisor">Supervisor</option>
-                          <option value="operator">Operador</option>
-                        </select>
-                      </div>
+                     
                     </div>
                     
                     <div class="mt-6">
@@ -1246,7 +1234,6 @@
 </template>
 
 <script >
-import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useNuxtApp } from '#app';
 import { User } from '~/models/User';
 import DashboardSidebar from './dashboard/sidebar/DashboardSidebar.vue';
@@ -1443,12 +1430,12 @@ export default {
       ],
       // Datos para las vistas nuevas
       cameras: [
-        { id: 1, name: "Cámara Principal Zona 1", isActive: true, pondName: "Alao Oeste", thumbnailUrl: "/images/camera1.jpg" },
-        { id: 2, name: "Cámara Auxiliar Zona 1", isActive: true, pondName: "Puerto Varas", thumbnailUrl: "/images/camera2.jpg" },
-        { id: 3, name: "Cámara Principal Zona 2", isActive: false, pondName: "Punta Arenas", thumbnailUrl: "/images/camera3.jpg" },
-        { id: 4, name: "Cámara Nocturna", isActive: true, pondName: "Caleta Andrade", thumbnailUrl: "/images/camera4.jpg" },
-        { id: 5, name: "Cámara de Monitoreo", isActive: false, pondName: "Bahía Drake", thumbnailUrl: "/images/camera5.jpg" },
-        { id: 6, name: "Cámara Subacuática", isActive: true, pondName: "Talofa Sur", thumbnailUrl: "/images/camera6.jpg" }
+        { id: 1, name: "Cámara Principal Zona 1", isActive: true, pondName: "Alao Oeste"  },
+        { id: 2, name: "Cámara Auxiliar Zona 1", isActive: true, pondName: "Puerto Varas"  },
+        { id: 3, name: "Cámara Principal Zona 2", isActive: false, pondName: "Punta Arenas" },
+        { id: 4, name: "Cámara Nocturna", isActive: true, pondName: "Caleta Andrade" },
+        { id: 5, name: "Cámara de Monitoreo", isActive: false, pondName: "Bahía Drake" },
+        { id: 6, name: "Cámara Subacuática", isActive: true, pondName: "Talofa Sur" }
       ],
       zones: [
         { id: 1, name: "Zona Norte", pondCount: 3, fishCount: 420, avgTemperature: 18.1, status: "normal" },
@@ -1969,15 +1956,9 @@ export default {
     handlePhotoChange(event) {
       const file = event.target.files[0];
       if (!file) return;
-      
-      // Aquí puedes implementar la lógica para subir la imagen
-      // Por ahora, solo mostraremos un mensaje en la consola
       console.log('Foto seleccionada:', file.name);
       
-      // Para una implementación completa, podrías:
-      // 1. Crear un objeto URL para previsualizar la imagen
-      // const imageUrl = URL.createObjectURL(file);
-      // this.profilePhotoUrl = imageUrl;
+    
       
       // 2. Subir la imagen a un servidor (simulado aquí)
       this.$notifications.notify({

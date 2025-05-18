@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Dashboard from '../components/dashboard/Dashboard.vue'
+import Dashboard from '../components/dashboard/DashboardC.vue'
 import { useUserStore } from '~/stores/user'
 
 export default {
