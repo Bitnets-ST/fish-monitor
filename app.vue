@@ -25,6 +25,16 @@ export default {
 </script>
 
 <style>
+
+/* Ocultar loader de Nuxt (pantalla de carga verde con logo) */
+/* Oculta completamente el loader de Nuxt */
+#__nuxt-loading,
+.nuxt-loading-indicator {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
 :root {
   --color-background: #f9f5f0;
 }

@@ -50,11 +50,7 @@ export default defineNuxtConfig({
     
     // Variables públicas (accesibles desde el cliente)
     public: {
-      loadingIndicator: {
-        name: 'custom',
-        color: '#3498db',
-        background: 'white'
-      }
+      loadingIndicator: false,
     }
   },
   // Cargar variables de entorno en desarrollo
