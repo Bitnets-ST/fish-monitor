@@ -22,9 +22,7 @@ export async function connectToDatabase() {
 
   try {
     // Conectar al cluster de MongoDB
-    const client = new MongoClient(uri, {
-      useUnifiedTopology: true,
-    });
+    const client = new MongoClient(uri);
 
     await client.connect();
     console.log('Conectado a MongoDB Atlas');
